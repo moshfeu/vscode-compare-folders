@@ -11,13 +11,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "compare-folders" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-
-		compare();
+	let disposable = vscode.commands.registerCommand('extension.compare', () => {
+		compare(); // we'll get this later
 	});
 
 	context.subscriptions.push(disposable);
@@ -40,28 +35,33 @@ function openFolder(): Promise<string> {
 }
 
 async function compare() {
+  // open folder picker dialog to choose first folder
   const folder1 = await openFolder();
+  // open folder picker dialog to choose second folder
   const folder2 = await openFolder();
 
+  // compare folders by contents
   const options = {compareContent: true};
+  // do the compare
   const res = compareSync(
     folder1,
     folder2,
     options
   );
 
+  // get the diffs
   const { diffSet = [] } = res;
 
+  // diffSet contains all the files and filter only the not equals files and map them to pairs of Uris
   const diffs = diffSet
     .filter(diff => diff.state === 'distinct')
     .map(diff => [`${diff.path1}/${diff.name1}`, `${diff.path2}/${diff.name2}`]);
 
-  let success = await vscode.commands.executeCommand('vscode.diff',
+  await vscode.commands.executeCommand('vscode.diff',
     vscode.Uri.file(diffs[0][0]),
     vscode.Uri.file(diffs[0][1]),
     'My great Diff'
   );
-  // console.log(success);
 }
 
 // this method is called when your extension is deactivated
