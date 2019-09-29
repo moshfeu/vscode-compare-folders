@@ -1,16 +1,17 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, Command, commands, Uri } from 'vscode';
-import { join, parse } from 'path';
-import { CHOOSE_FOLDERS_AND_COMPARE, COMPARE_FILES } from '../constants/commands';
-import { chooseFoldersAndCompare, showDiffs } from '../services/comparer';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, Command, commands, workspace, window } from 'vscode';
+import * as path from 'path';
+import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
+import { chooseFoldersAndCompare, showDiffs, compare } from '../services/comparer';
+import { File } from '../models/file';
+import { build } from '../services/tree-builder';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
 
-  private _diffs: string[][] | undefined;
+  private _diffs: string[][] = [];
 
-	constructor(private workspaceRoot?: string) {
-
+	constructor(private workspaceRoot: string) {
   }
 
   chooseFoldersAndCompare = async () => {
@@ -32,59 +33,31 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   getTreeItem(element: File): TreeItem {
 		return element;
-	}
+  }
+
+  getFolderName(filePath: string, basePath: string) {
+    const base = basePath ? `${this.workspaceRoot}/${basePath}` : this.workspaceRoot;
+    return path.basename(path.dirname(filePath.replace(base, '')));
+  }
 
 	getChildren(element?: File): File[] {
+    if (element && element.children) {
+      return element.children;
+    }
+
     const children: File[] = [new File(
         'Click to select folder',
         TreeItemCollapsibleState.None,
+        'open',
         {
           title: 'title',
           command: CHOOSE_FOLDERS_AND_COMPARE,
           arguments: [this.workspaceRoot]
         },
-        'open'
       )
     ];
-    if (this._diffs) {
-      children.push(...this._diffs.map(diff => new File(
-        parse(diff[0]).name,
-        TreeItemCollapsibleState.None,
-        {
-          title: 'title',
-          command: COMPARE_FILES,
-          arguments: [diff]
-        },
-        'file'
-      )));
-    }
-		return children;
+    const tree = build(this._diffs, this.workspaceRoot);
+    children.push(...tree.treeItems);
+    return children;
 	}
-}
-
-export class File extends TreeItem {
-
-	constructor(
-		public readonly label: string,
-		public readonly collapsibleState: TreeItemCollapsibleState,
-    public readonly command: Command,
-    public readonly type: 'file' | 'open',
-	) {
-		super(label, collapsibleState);
-	}
-
-	get tooltip(): string {
-		return this.label;
-	}
-
-	get description(): string {
-		return this.label;
-	}
-
-	iconPath = {
-		light: join(__filename, '..', '..', '..', 'resources', `${this.type}.svg`),
-		dark: join(__filename, '..', '..', '..', 'resources', `${this.type}.svg`),
-	};
-
-	contextValue = 'file';
 }

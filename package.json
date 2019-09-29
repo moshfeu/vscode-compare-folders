@@ -23,16 +23,16 @@
     ],
     "viewsContainers": {
       "activitybar": [{
-        "id": "foldersCompare",
-        "title": "Folders Compare",
-        "icon": "resources/icon.svg"
-      }]
+          "id": "foldersCompare",
+          "title": "Folders Compare",
+          "icon": "resources/icon.svg"
+        }]
     },
     "views": {
       "foldersCompare": [{
-        "id": "foldersCompareAppService",
-        "name": "Compare"
-      }]
+          "id": "foldersCompareAppService",
+          "name": "Compare"
+        }]
     }
   },
   "scripts": {
@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
+    "@types/lodash": "^4.14.140",
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.21",
     "@types/vscode": "^1.38.0",
@@ -54,6 +55,8 @@
     "vscode-test": "^1.0.2"
   },
   "dependencies": {
-    "dir-compare": "^1.7.3"
+    "dir-compare": "^1.7.3",
+    "lodash": "^4.17.15",
+    "text-diff": "^1.0.1"
   }
 }
