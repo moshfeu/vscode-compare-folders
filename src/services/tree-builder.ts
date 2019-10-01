@@ -3,33 +3,35 @@ import set from 'lodash/set';
 import { COMPARE_FILES } from '../constants/commands';
 import { File } from '../models/file';
 
+type AnonymusObject = {[key: string]: AnonymusObject | Array<any> };
+
 export function build(paths: string[][], basePath: string) {
   const tree = {};
   paths.forEach(path => {
     const relativePath = path[0].replace(`${basePath}/`, '');
     const segments = relativePath.split('/');
 
-    set(tree, segments, path);
+    set(tree, segments, [path, relativePath]);
   });
 
   const treeItems = createHierarchy(tree);
   return {tree, treeItems};
 }
 
-type AnonymusObject = {[key: string]: AnonymusObject};
-
 function createHierarchy(src: AnonymusObject): File[] {
   let children: File[] = [];
   for (const key in src) {
-    if (Array.isArray(src[key])) {
+    const childrenOrFileData = src[key];
+    if (Array.isArray(childrenOrFileData)) {
+      const [paths, title] = childrenOrFileData;
       children.push(new File(
         key,
         TreeItemCollapsibleState.None,
         'file',
         {
-          title: 'title',
+          title: key,
           command: COMPARE_FILES,
-          arguments: [src[key]]
+          arguments: [paths, title]
         }
       ));
     } else {
@@ -38,7 +40,7 @@ function createHierarchy(src: AnonymusObject): File[] {
         TreeItemCollapsibleState.Collapsed,
         'folder',
         undefined,
-        createHierarchy(src[key])
+        createHierarchy(childrenOrFileData)
       ));
     }
   }

@@ -1,6 +1,6 @@
 import { ExtensionContext, workspace, window, commands, Disposable } from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
-import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE } from './constants/commands';
+import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH } from './constants/commands';
 
 const disposables: Disposable[] = [];
 export function activate(context: ExtensionContext) {
@@ -10,6 +10,7 @@ export function activate(context: ExtensionContext) {
   window.registerTreeDataProvider('foldersCompareAppService', foldersCompareProvider);
   commands.registerCommand(COMPARE_FILES, foldersCompareProvider.onFileClicked);
   commands.registerCommand(CHOOSE_FOLDERS_AND_COMPARE, foldersCompareProvider.chooseFoldersAndCompare);
+  commands.registerCommand(REFRESH, foldersCompareProvider.refresh);
 }
 
 export function deactivate() {

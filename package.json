@@ -14,25 +14,36 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "menus": {
+      "view/title": [{
+        "command": "foldersCompare.refresh",
+        "group": "navigation"
+      }]
+    },
     "commands": [
       {
         "title": "Choose Folders And Compare",
         "command": "foldersCompare.chooseFoldersAndCompare",
         "enablement": "false"
+      },
+      {
+        "title": "Refresh",
+        "command": "foldersCompare.refresh",
+        "icon": "resources/refresh.svg"
       }
     ],
     "viewsContainers": {
       "activitybar": [{
-          "id": "foldersCompare",
-          "title": "Folders Compare",
-          "icon": "resources/icon.svg"
-        }]
+        "id": "foldersCompare",
+        "title": "Folders Compare",
+        "icon": "resources/icon.svg"
+      }]
     },
     "views": {
       "foldersCompare": [{
-          "id": "foldersCompareAppService",
-          "name": "Compare"
-        }]
+        "id": "foldersCompareAppService",
+        "name": "Compare"
+      }]
     }
   },
   "scripts": {
