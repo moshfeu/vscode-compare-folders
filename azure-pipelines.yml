@@ -1,0 +1,24 @@
+pool:
+  vmImage: 'ubuntu-16.04'
+trigger:
+  - master
+steps:
+  - task: CopyFiles@2
+    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Templates'
+    inputs:
+      SourceFolder: deployment
+      Contents: '*.json'
+      TargetFolder: '$(build.artifactstagingdirectory)/Templates'
+  - task: Npm@1
+    displayName: 'npm custom'
+    inputs:
+      command: custom
+      verbose: false
+      customCommand: 'install --production'
+  - task: ArchiveFiles@2
+    displayName: 'Archive $(Build.SourcesDirectory)'
+    inputs:
+      rootFolderOrFile: '$(Build.SourcesDirectory)'
+      includeRootFolder: false
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
