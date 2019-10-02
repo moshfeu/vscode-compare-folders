@@ -15,7 +15,7 @@
   ],
   "icon": "resources/icon.png",
   "galleryBanner": {
-    "color": "#C80000",
+    "color": "#f5f5f5",
     "theme": "light"
   },
   "publisher": "moshfeu",
