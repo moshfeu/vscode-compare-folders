@@ -36,3 +36,8 @@ steps:
   displayName: Run Tests
   env:
     DISPLAY: ':99.0'
+
+- bash: |
+    echo ">>> Publish"
+    vsce publish -p $(token)
+  displayName: Publish
