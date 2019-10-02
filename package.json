@@ -1,8 +1,24 @@
 {
   "name": "compare-folders",
-  "displayName": "compare-folders",
-  "description": "",
+  "displayName": "Compare Folders",
+  "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moshfeu/vscode-compare-folders"
+  },
+  "keywords": ["compare", "folders compare", "diff", "folders diff"],
+  "icon": "resources/icon.png",
+  "galleryBanner": {
+    "color": "#C80000",
+    "theme": "light"
+  },
+  "publisher": "moshfeu",
+  "author": {
+    "name": "Mosh Feuchtwanger",
+    "email": "moshfeu.dev@gmail.com",
+    "url": "https://twitter.com/moshfeu"
+  },
   "engines": {
     "vscode": "^1.38.0"
   },

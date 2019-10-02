@@ -6,4 +6,4 @@ You can find the sieres of the posts about how this extension developed step by 
 
 
 ## Credits
-Activity bar's icon by [Stockio.com](https://www.stockio.com/free-icon/folders)
+Activity bar's icon (and more) by [Stockio.com](https://www.stockio.com/free-icon/folders)
