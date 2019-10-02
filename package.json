@@ -7,7 +7,12 @@
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
   },
-  "keywords": ["compare", "folders compare", "diff", "folders diff"],
+  "keywords": [
+    "compare",
+    "folders compare",
+    "diff",
+    "folders diff"
+  ],
   "icon": "resources/icon.png",
   "galleryBanner": {
     "color": "#C80000",
@@ -31,10 +36,12 @@
   "main": "./out/extension.js",
   "contributes": {
     "menus": {
-      "view/title": [{
-        "command": "foldersCompare.refresh",
-        "group": "navigation"
-      }]
+      "view/title": [
+        {
+          "command": "foldersCompare.refresh",
+          "group": "navigation"
+        }
+      ]
     },
     "commands": [
       {
@@ -49,17 +56,21 @@
       }
     ],
     "viewsContainers": {
-      "activitybar": [{
-        "id": "foldersCompare",
-        "title": "Folders Compare",
-        "icon": "resources/icon.svg"
-      }]
+      "activitybar": [
+        {
+          "id": "foldersCompare",
+          "title": "Folders Compare",
+          "icon": "resources/icon.svg"
+        }
+      ]
     },
     "views": {
-      "foldersCompare": [{
-        "id": "foldersCompareAppService",
-        "name": "Compare"
-      }]
+      "foldersCompare": [
+        {
+          "id": "foldersCompareAppService",
+          "name": "Compare"
+        }
+      ]
     }
   },
   "scripts": {
@@ -67,7 +78,8 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "deploy": "vsce publish -p"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
@@ -79,6 +91,7 @@
     "mocha": "^6.1.4",
     "tslint": "^5.12.1",
     "typescript": "^3.3.1",
+    "vsce": "^1.67.1",
     "vscode-test": "^1.0.2"
   },
   "dependencies": {
