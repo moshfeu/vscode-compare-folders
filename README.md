@@ -8,15 +8,15 @@ The extension allows the user to compare folders, show the diffs in a list and p
 The extension shows only differences in files at the same path with different content. For example:
 
 ```
-// folderA/file.txt
-// folderB/file.txt
+folderA/file.txt
+folderB/file.txt
 ```
 
 It will not show differences in
 
 ```
-// folderA/file.txt
-// folderB/folderA/file.txt
+folderA/file.txt
+folderB/folderA/file.txt
 ```
 
 In this case, the extension will show a message that it couldn't find any changes
