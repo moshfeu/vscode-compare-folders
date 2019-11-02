@@ -4,7 +4,25 @@ The extension allows the user to compare folders, show the diffs in a list and p
 
 ![screen record](https://user-images.githubusercontent.com/3723951/66277133-cb9e3580-e8a2-11e9-9149-383a8683fcd1.gif)
 
+### Notice
+The extension shows only differences in files at the same path with different content. For example:
+
+```
+// folderA/file.txt
+// folderB/file.txt
+```
+
+It will not show differences in
+
+```
+// folderA/file.txt
+// folderB/folderA/file.txt
+```
+
+In this case, the extension will show a message that it couldn't find any changes
+
 You can find the series of the posts about how this extension developed step by step in [medium.com](https://medium.com/@moshfeu/comparefolders-visual-studio-code-extension-journey-intro-b540a0539629?source=friends_link&sk=db37e1889766ccd8fe553958a12a8f69).
+
 
 
 ## Credits
