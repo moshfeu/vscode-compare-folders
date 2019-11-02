@@ -1,11 +1,12 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, Command, commands, workspace, window } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, Command, commands, workspace, window, Uri, env } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compare } from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/tree-builder';
-import { setComparedPath, getComparedPath } from '../context/path';
+import { getComparedPath } from '../context/path';
 import { getRelativePath } from '../utils/path';
+import { MORE_INFO } from '../constants/windowInformationResult';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -18,7 +19,14 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   chooseFoldersAndCompare = async () => {
     this._diffs = await chooseFoldersAndCompare(this.workspaceRoot);
-    this.refresh();
+    if (this._diffs.length) {
+      this.refresh();
+    } else {
+      const result = await window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.', MORE_INFO);
+      if (result === MORE_INFO) {
+        env.openExternal(Uri.parse('https://github.com/moshfeu/vscode-compare-folders#notice'));
+      }
+    }
   }
 
   async onFileClicked([path1, path2]: [string, string], title: string): Promise<void> {
