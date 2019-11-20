@@ -52,7 +52,10 @@
       {
         "title": "Refresh",
         "command": "foldersCompare.refresh",
-        "icon": "resources/refresh.svg"
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
       }
     ],
     "viewsContainers": {

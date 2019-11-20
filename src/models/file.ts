@@ -20,8 +20,8 @@ export class File extends TreeItem {
 	}
 
 	iconPath = {
-		light: join(__filename, '..', '..', '..', 'resources', `${this.type}.svg`),
-		dark: join(__filename, '..', '..', '..', 'resources', `${this.type}.svg`),
+		light: join(__filename, '..', '..', '..', 'resources', 'light', `${this.type}.svg`),
+		dark: join(__filename, '..', '..', '..', 'resources', 'dark', `${this.type}.svg`),
 	};
 
 	contextValue = 'file';
