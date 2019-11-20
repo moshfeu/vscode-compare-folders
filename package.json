@@ -2,16 +2,16 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
   },
   "keywords": [
     "compare",
-    "folders compare",
+    "compare folders",
     "diff",
-    "folders diff"
+    "diff folders"
   ],
   "icon": "resources/icon.png",
   "galleryBanner": {
@@ -59,7 +59,7 @@
       "activitybar": [
         {
           "id": "foldersCompare",
-          "title": "Folders Compare",
+          "title": "Compare Folders",
           "icon": "resources/icon.svg"
         }
       ]
