@@ -1,14 +1,15 @@
-import { ExtensionContext, workspace, window, commands, Disposable } from 'vscode';
+import { ExtensionContext, workspace, window, commands, Disposable, env, Uri } from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
-import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH } from './constants/commands';
+import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, GO_TO_NOTICE } from './constants/commands';
+import { NOTICE_URL } from './constants/constants';
 
 const disposables: Disposable[] = [];
 export function activate(context: ExtensionContext) {
-  const workspaceUrl = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.path : '';
-  const foldersCompareProvider = new CompareFoldersProvider(workspaceUrl);
+  const foldersCompareProvider = new CompareFoldersProvider();
 
   window.registerTreeDataProvider('foldersCompareAppService', foldersCompareProvider);
   commands.registerCommand(COMPARE_FILES, foldersCompareProvider.onFileClicked);
+  commands.registerCommand(GO_TO_NOTICE, () => env.openExternal(Uri.parse(NOTICE_URL)));
   commands.registerCommand(CHOOSE_FOLDERS_AND_COMPARE, foldersCompareProvider.chooseFoldersAndCompare);
   commands.registerCommand(REFRESH, foldersCompareProvider.refresh);
 }

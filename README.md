@@ -27,3 +27,5 @@ You can find the series of the posts about how this extension developed step by 
 
 ## Credits
 Activity bar's icon (and more) by [Stockio.com](https://www.stockio.com/free-icon/folders)
+Null icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0
+External link icon made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>

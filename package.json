@@ -36,10 +36,32 @@
   "main": "./out/extension.js",
   "contributes": {
     "menus": {
+      "commandPalette": [
+        {
+          "command": "foldersCompare.goToNotice",
+          "when": "false"
+        },
+        {
+          "command": "foldersCompare.refresh",
+          "when": "false"
+        },
+        {
+          "command": "foldersCompare.chooseFoldersAndCompare",
+          "when": "false"
+        }
+      ],
       "view/title": [
         {
           "command": "foldersCompare.refresh",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "foldersCompare.goToNotice",
+          "alt": "More info",
+          "group": "inline",
+          "when": "viewItem == empty"
         }
       ]
     },
@@ -55,6 +77,14 @@
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "title": "More Info",
+        "command": "foldersCompare.goToNotice",
+        "icon": {
+          "light": "resources/light/external-link-symbol.svg",
+          "dark": "resources/dark/external-link-symbol.svg"
         }
       }
     ],

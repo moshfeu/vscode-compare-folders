@@ -1,14 +1,14 @@
 import { TreeItem, TreeItemCollapsibleState, Command } from 'vscode';
 import { join } from 'path';
 
-type FileIconType = 'file' | 'open' | 'folder';
+type FileType = 'file' | 'open' | 'folder' | 'empty';
 
 export class File extends TreeItem {
 
 	constructor(
 		public readonly label: string,
 		public readonly collapsibleState: TreeItemCollapsibleState,
-    public readonly type: FileIconType,
+    public readonly type: FileType,
     public readonly command?: Command,
     public readonly children?: File[],
 	) {
@@ -24,5 +24,5 @@ export class File extends TreeItem {
 		dark: join(__filename, '..', '..', '..', 'resources', 'dark', `${this.type}.svg`),
 	};
 
-	contextValue = 'file';
+	contextValue = this.type;
 }
