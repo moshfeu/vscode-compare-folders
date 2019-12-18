@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -102,7 +102,7 @@
         {
           "id": "foldersCompareAppService",
           "name": "Compare",
-          "when": "workspaceFolderCount == 1"
+          "when": "workspaceFolderCount != 0"
         }
       ]
     }

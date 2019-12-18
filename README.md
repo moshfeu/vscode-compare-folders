@@ -25,6 +25,17 @@ In this case, the extension will show a message that it couldn't find any change
 
 You can find the series of the posts about how this extension developed step by step in [medium.com](https://medium.com/@moshfeu/comparefolders-visual-studio-code-extension-journey-intro-b540a0539629?source=friends_link&sk=db37e1889766ccd8fe553958a12a8f69).
 
+## Change log
+
+**0.3.0**
+
+Support multiple workspaces
+
+<img width="496" alt="Screen Shot 2019-12-19 at 0 15 50" src="https://user-images.githubusercontent.com/3723951/71128162-44036a00-21f5-11ea-88fe-9c2519b8a2e8.png">
+
+**0.2.0**
+- Improve UI: #5, #6, #7
+- Supports dark mode!
 
 
 ## Credits

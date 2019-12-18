@@ -3,8 +3,11 @@ import { compareSync } from 'dir-compare';
 import { openFolder } from './open-folder';
 import { setComparedPath } from '../context/path';
 
-export async function chooseFoldersAndCompare(rootPath?: string) {
-  const folder1Path: string = rootPath || await openFolder();
+export async function chooseFoldersAndCompare(path?: string) {
+  if (!path) {
+    return;
+  }
+  const folder1Path: string = path || await openFolder();
   const folder2Path = await openFolder();
 
   setComparedPath(folder2Path);

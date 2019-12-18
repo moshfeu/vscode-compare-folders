@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, Command, commands, workspace, window, Uri, env } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, Command, commands, workspace, window, Uri, env, WorkspaceFolder } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE, GO_TO_NOTICE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compare } from '../services/comparer';
@@ -18,15 +18,42 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _diffs: string[][] = [];
 
 	chooseFoldersAndCompare = async () => {
-    this._diffs = await chooseFoldersAndCompare(workspaceRoot);
+    const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder());;
+    if (!diffs) {
+      return;
+    }
+    this._diffs = diffs;
     if (this._diffs.length) {
-      this.refresh();
+      this.emptyState = false;
+      this._onDidChangeTreeData.fire();
     } else {
       this.showEmptyState();
       const result = await window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.', MORE_INFO);
       if (result === MORE_INFO) {
         commands.executeCommand(GO_TO_NOTICE);
       }
+    }
+  }
+
+  getWorkspaceFolder = async () => {
+    if (workspace.workspaceFolders && workspace.workspaceFolders.length === 1) {
+      return Promise.resolve(workspaceRoot);
+    } else {
+      return this.chooseWorkspace();
+    }
+  }
+
+  chooseWorkspace = async () => {
+    const workspaces = (workspace.workspaceFolders as WorkspaceFolder[]).map(folder => ({
+      label: folder.name,
+      description: folder.uri.fsPath
+    }));
+    const result = await window.showQuickPick(workspaces, {
+      canPickMany: false,
+      placeHolder: 'Choose a workspace to compare with'
+    });
+    if (result) {
+      return result.description;
     }
   }
 
@@ -52,7 +79,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   showEmptyState() {
     this.emptyState = true;
-    this.refresh();
+    this._onDidChangeTreeData.fire();
   }
 
   getTreeItem(element: File): TreeItem {
