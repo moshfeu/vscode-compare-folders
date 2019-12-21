@@ -5,7 +5,7 @@ The extension allows the user to compare folders, show the diffs in a list and p
 ![screen record](https://user-images.githubusercontent.com/3723951/66277133-cb9e3580-e8a2-11e9-9149-383a8683fcd1.gif)
 
 ### Notice
-- The extension works only when the vscode instance has only one workspace (or one folder). It's not working for [empty workspace](https://user-images.githubusercontent.com/3723951/70967746-d560c800-209f-11ea-8148-12c5251b00ea.png) or [multiple workspaces](https://user-images.githubusercontent.com/3723951/70967800-148f1900-20a0-11ea-8a57-e7ab028e8cdf.png).
+- The extension works only when the vscode instance has one workspace (or one folder) or more. It's not working for [empty workspace](https://user-images.githubusercontent.com/3723951/70967746-d560c800-209f-11ea-8148-12c5251b00ea.png).
 
 - The extension shows only differences in files at the same path with different content. For example:
 
