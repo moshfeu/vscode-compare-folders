@@ -8,8 +8,6 @@ import { getComparedPath } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { MORE_INFO } from '../constants/windowInformationResult';
 
-const workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.path : '';
-
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
@@ -17,8 +15,14 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private emptyState: boolean = false;
   private _diffs: string[][] = [];
 
+  private workspaceRoot: string;
+
+  constructor() {
+    this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.path : '';
+  }
+
 	chooseFoldersAndCompare = async () => {
-    const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder());;
+    const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder());
     if (!diffs) {
       return;
     }
@@ -36,14 +40,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   getWorkspaceFolder = async () => {
+    if (!workspace.workspaceFolders) {
+      return;
+    }
     if (workspace.workspaceFolders && workspace.workspaceFolders.length === 1) {
-      return Promise.resolve(workspaceRoot);
+      return Promise.resolve(this.workspaceRoot);
     } else {
       return this.chooseWorkspace();
     }
   }
 
-  chooseWorkspace = async () => {
+  chooseWorkspace = async (): Promise<string | undefined> => {
     const workspaces = (workspace.workspaceFolders as WorkspaceFolder[]).map(folder => ({
       label: folder.name,
       description: folder.uri.fsPath
@@ -53,7 +60,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       placeHolder: 'Choose a workspace to compare with'
     });
     if (result) {
-      return result.description;
+      this.workspaceRoot = result.description;
+      return this.workspaceRoot;
     }
   }
 
@@ -67,7 +75,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
 	refresh = (): void => {
     try {
-      this._diffs = compare(workspaceRoot, getComparedPath());
+      this._diffs = compare(this.workspaceRoot, getComparedPath());
       this._onDidChangeTreeData.fire();
       if (this._diffs.length) {
         window.showInformationMessage('Source refreshed', 'Dismiss');
@@ -87,7 +95,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   getFolderName(filePath: string, basePath: string) {
-    const base = basePath ? `${workspaceRoot}/${basePath}` : workspaceRoot;
+    const base = basePath ? `${this.workspaceRoot}/${basePath}` : this.workspaceRoot;
     return path.basename(path.dirname(getRelativePath(filePath, base)));
   }
 
@@ -101,7 +109,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     if (this.emptyState) {
       children.push(emptyStateChild);
     } else {
-      const tree = build(this._diffs, workspaceRoot);
+      const tree = build(this._diffs, this.workspaceRoot);
       children.push(...tree.treeItems);
     }
 
@@ -116,7 +124,6 @@ const openFolderChild: File = new File(
   {
     title: 'title',
     command: CHOOSE_FOLDERS_AND_COMPARE,
-    arguments: [workspaceRoot]
   },
 );
 
