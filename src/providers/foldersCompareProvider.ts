@@ -1,23 +1,24 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, Command, commands, workspace, window, Uri, env, WorkspaceFolder } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE, GO_TO_NOTICE } from '../constants/commands';
-import { chooseFoldersAndCompare, showDiffs, compare } from '../services/comparer';
+import { chooseFoldersAndCompare, showDiffs, compare, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/tree-builder';
 import { getComparedPath } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { MORE_INFO } from '../constants/windowInformationResult';
+import { ViewOnlyProvider } from './viewOnlyProvider';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
 
   private emptyState: boolean = false;
-  private _diffs: string[][] = [];
+  private _diffs: CompareResult | null = null;
 
   private workspaceRoot: string;
 
-  constructor() {
+  constructor(private onlyInA: ViewOnlyProvider, private onlyInB: ViewOnlyProvider) {
     this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.path : '';
   }
 
@@ -27,16 +28,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       return;
     }
     this._diffs = diffs;
-    if (this._diffs.length) {
-      this.emptyState = false;
-      this._onDidChangeTreeData.fire();
-    } else {
-      this.showEmptyState();
-      const result = await window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.', MORE_INFO);
-      if (result === MORE_INFO) {
-        commands.executeCommand(GO_TO_NOTICE);
-      }
-    }
+    this.updateUI();
   }
 
   getWorkspaceFolder = async () => {
@@ -65,21 +57,44 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   }
 
-  async onFileClicked([path1, path2]: [string, string], title: string): Promise<void> {
+  onFileClicked([path1, path2]: [string, string], title: string) {
     try {
-      await showDiffs([path1, path2], title);
+      if (path2) {
+        showDiffs([path1, path2], title);
+      } else {
+        showFile(path1, title);
+      }
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  async updateUI() {
+    if (!this._diffs) {
+      return;
+    }
+    if (this._diffs.hasResult()) {
+      this.emptyState = false;
+      this._onDidChangeTreeData.fire();
+
+      this.onlyInA.update(this._diffs.left, this._diffs.leftPath);
+      this.onlyInB.update(this._diffs.right, this._diffs.rightPath);
+    } else {
+      this.showEmptyState();
+      const result = await window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.', MORE_INFO);
+      if (result === MORE_INFO) {
+        commands.executeCommand(GO_TO_NOTICE);
+      }
     }
   }
 
 	refresh = (): void => {
     try {
       this._diffs = compare(this.workspaceRoot, getComparedPath());
-      this._onDidChangeTreeData.fire();
-      if (this._diffs.length) {
+      if (this._diffs.hasResult()) {
         window.showInformationMessage('Source refreshed', 'Dismiss');
       }
+      this.updateUI();
     } catch (error) {
       console.log(error);
     }
@@ -108,8 +123,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
     if (this.emptyState) {
       children.push(emptyStateChild);
-    } else {
-      const tree = build(this._diffs, this.workspaceRoot);
+    } else if (this._diffs) {
+      const tree = build(this._diffs.distinct, this.workspaceRoot);
       children.push(...tree.treeItems);
     }
 

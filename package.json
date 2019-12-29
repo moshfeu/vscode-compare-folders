@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -53,7 +53,8 @@
       "view/title": [
         {
           "command": "foldersCompare.refresh",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == foldersCompareAppService"
         }
       ],
       "view/item/context": [
@@ -101,7 +102,17 @@
       "foldersCompare": [
         {
           "id": "foldersCompareAppService",
-          "name": "Compare",
+          "name": "Differences",
+          "when": "workspaceFolderCount != 0"
+        },
+        {
+          "id": "foldersCompareAppServiceOnlyA",
+          "name": "Only in my folder",
+          "when": "workspaceFolderCount != 0"
+        },
+        {
+          "id": "foldersCompareAppServiceOnlyB",
+          "name": "Only in compared folder",
           "when": "workspaceFolderCount != 0"
         }
       ]

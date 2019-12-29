@@ -27,14 +27,20 @@ You can find the series of the posts about how this extension developed step by 
 
 ## Change log
 
+**0.4.0**
+
+Show missing/additional files [#9](https://github.com/moshfeu/vscode-compare-folders/issues/9) (Thanks to [@fbaligand](https://github.com/fbaligand))
+
+<img width="334" alt="missing/additional files screenshot" src="https://user-images.githubusercontent.com/3723951/71563330-90bd2f80-2a96-11ea-91b3-e2f531f2f74d.png">
+
 **0.3.0**
 
 Support multiple workspaces
 
-<img width="496" alt="Screen Shot 2019-12-19 at 0 15 50" src="https://user-images.githubusercontent.com/3723951/71128162-44036a00-21f5-11ea-88fe-9c2519b8a2e8.png">
+<img width="496" alt="Multiple workspaces screenshot" src="https://user-images.githubusercontent.com/3723951/71128162-44036a00-21f5-11ea-88fe-9c2519b8a2e8.png">
 
 **0.2.0**
-- Improve UI: #5, #6, #7
+- Improve UI: [#5](https://github.com/moshfeu/vscode-compare-folders/issues/5), [#6](https://github.com/moshfeu/vscode-compare-folders/issues/6), [#7](https://github.com/moshfeu/vscode-compare-folders/issues/7) thanks to [@gjsjohnmurray](https://github.com/gjsjohnmurray)
 - Supports dark mode!
 
 
