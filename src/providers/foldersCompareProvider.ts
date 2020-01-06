@@ -1,5 +1,5 @@
 import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder } from 'vscode';
-import * as path from 'path';
+import { sep, basename, dirname } from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE, GO_TO_NOTICE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compare, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
@@ -110,8 +110,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   getFolderName(filePath: string, basePath: string) {
-    const base = basePath ? `${this.workspaceRoot}/${basePath}` : this.workspaceRoot;
-    return path.basename(path.dirname(getRelativePath(filePath, base)));
+    const base = basePath ? `${this.workspaceRoot}${sep}${basePath}` : this.workspaceRoot;
+    return basename(dirname(getRelativePath(filePath, base)));
   }
 
 	getChildren(element?: File): File[] {
