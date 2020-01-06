@@ -8,6 +8,10 @@ export async function chooseFoldersAndCompare(path?: string, options?: Options) 
   const folder1Path: string = path || await openFolder();
   const folder2Path = await openFolder();
 
+  if (!folder1Path || !folder2Path) {
+    return;
+  }
+
   setComparedPath(folder2Path);
   return compareFolders(folder1Path, folder2Path, options);
 }

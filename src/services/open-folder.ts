@@ -11,6 +11,8 @@ export function openFolder(): Promise<string> {
     window.showOpenDialog(options).then(fileUri => {
       if (fileUri && fileUri[0]) {
         resolve(fileUri[0].fsPath);
+      } else {
+        resolve();
       }
     });
   });
