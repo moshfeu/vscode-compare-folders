@@ -8,6 +8,7 @@ import { getComparedPath } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { MORE_INFO } from '../constants/windowInformationResult';
 import { ViewOnlyProvider } from './viewOnlyProvider';
+import { Options } from 'dir-compare';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -27,7 +28,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       location: ProgressLocation.Notification,
       title: `Compare folders...`
     }, async () => {
-      const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder());
+      const conf = workspace.getConfiguration('compare.folders.options');
+      // Use string array instead of comma separated list of exclude filters
+      const excludeFilterArray = <string[] | undefined> conf.get('excludeFilter');
+      // Use string array instead of comma separated list of include filters
+      const includeFilterArray = <string[] | undefined> conf.get('includeFilter');
+      const options: Options = {
+        compareContent: conf.get('compareContent'),
+        excludeFilter: excludeFilterArray?.join(','),
+        includeFilter: includeFilterArray?.join(','),
+      };
+      const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder(), options);
       if (!diffs) {
         return;
       }
