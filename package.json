@@ -35,6 +35,28 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Compare Folders Configuration",
+      "properties": {
+        "compare.folders.options.compareContent": {
+          "type": "boolean",
+          "default": true,
+          "description": "Compare content",
+          "scope": "resource"
+        },
+        "compare.folders.options.includeFilter": {
+          "type": "array",
+          "description": "Include filters",
+          "scope": "resource"
+        },
+        "compare.folders.options.excludeFilter": {
+          "type": "array",
+          "description": "Exclude filters",
+          "scope": "resource"
+        }
+      }
+    },
     "menus": {
       "commandPalette": [
         {
@@ -140,7 +162,7 @@
     "vscode-test": "^1.0.2"
   },
   "dependencies": {
-    "dir-compare": "^1.7.3",
+    "dir-compare": "^1.8.0",
     "lodash": "^4.17.15",
     "text-diff": "^1.0.1"
   }

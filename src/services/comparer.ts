@@ -1,14 +1,15 @@
 import { commands, Uri } from 'vscode';
-import { compareSync } from 'dir-compare';
+import { compareSync, compare, Options } from 'dir-compare';
 import { openFolder } from './open-folder';
 import { setComparedPath } from '../context/path';
+import * as path from 'path';
 
-export async function chooseFoldersAndCompare(path?: string) {
+export async function chooseFoldersAndCompare(path?: string, options?: Options) {
   const folder1Path: string = path || await openFolder();
   const folder2Path = await openFolder();
 
   setComparedPath(folder2Path);
-  return compare(folder1Path,  folder2Path);
+  return compareFolders(folder1Path, folder2Path, options);
 }
 
 export async function showDiffs([file1, file2]: [string, string], title: string) {
@@ -25,14 +26,14 @@ export async function showFile(file: string, title: string) {
   );
 }
 
-export function compare(folder1Path: string, folder2Path: string): CompareResult {
+export async function compareFolders(folder1Path: string, folder2Path: string, options?: Options): Promise<CompareResult> {
   // compare folders by contents
-  const options = {compareContent: true};
+  const concatenatedOptions = {compareContent: true, ...options};
   // do the compare
-  const res = compareSync(
+  const res = await compare(
     folder1Path,
     folder2Path,
-    options
+    concatenatedOptions
   );
 
   // get the diffs
@@ -42,18 +43,18 @@ export function compare(folder1Path: string, folder2Path: string): CompareResult
   const distinct = diffSet
     .filter(diff => diff.state === 'distinct')
     .map(diff => [
-      fixDoubleSlash(`${diff.path1}/${diff.name1}`),
-      fixDoubleSlash(`${diff.path2}/${diff.name2}`)
+      path.join(diff.path1!, diff.name1!),
+      path.join(diff.path2!, diff.name2!)
     ]);
 
   // readable 👍 performance 👎
   const left = diffSet
     .filter(diff => diff.state === 'left' && diff.type1 === 'file')
-    .map(diff => [fixDoubleSlash(`${diff.path1}/${diff.name1}`)]);
+    .map(diff => [path.join(diff.path1!, diff.name1!)]);
 
   const right = diffSet
     .filter(diff => diff.state === 'right' && diff.type2 === 'file')
-    .map(diff => [fixDoubleSlash(`${diff.path2}/${diff.name2}`)]);
+    .map(diff => [path.join(diff.path2!, diff.name2!)]);
 
   return new CompareResult(
     distinct,
@@ -64,9 +65,6 @@ export function compare(folder1Path: string, folder2Path: string): CompareResult
   );
 }
 
-function fixDoubleSlash(str: string) {
-  return str.replace('//', '/');
-}
 
 export class CompareResult {
   constructor(

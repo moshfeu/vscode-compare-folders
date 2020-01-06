@@ -1,13 +1,14 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder, ProgressLocation } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE, GO_TO_NOTICE } from '../constants/commands';
-import { chooseFoldersAndCompare, showDiffs, compare, CompareResult, showFile } from '../services/comparer';
+import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/tree-builder';
 import { getComparedPath } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { MORE_INFO } from '../constants/windowInformationResult';
 import { ViewOnlyProvider } from './viewOnlyProvider';
+import { Options } from 'dir-compare';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -19,16 +20,31 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private workspaceRoot: string;
 
   constructor(private onlyInA: ViewOnlyProvider, private onlyInB: ViewOnlyProvider) {
-    this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.path : '';
+    this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.fsPath : '';
   }
 
 	chooseFoldersAndCompare = async () => {
-    const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder());
-    if (!diffs) {
-      return;
-    }
-    this._diffs = diffs;
-    this.updateUI();
+    await window.withProgress({
+      location: ProgressLocation.Notification,
+      title: `Compare folders...`
+    }, async () => {
+      const conf = workspace.getConfiguration('compare.folders.options');
+      // Use string array instead of comma separated list of exclude filters
+      const excludeFilterArray = <string[] | undefined> conf.get('excludeFilter');
+      // Use string array instead of comma separated list of include filters
+      const includeFilterArray = <string[] | undefined> conf.get('includeFilter');
+      const options: Options = {
+        compareContent: conf.get('compareContent'),
+        excludeFilter: excludeFilterArray ? excludeFilterArray.join(',') : undefined,
+        includeFilter: includeFilterArray ? includeFilterArray.join(',') : undefined,
+      };
+      const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder(), options);
+      if (!diffs) {
+        return;
+      }
+      this._diffs = diffs;
+      await this.updateUI();
+    });
   }
 
   getWorkspaceFolder = async () => {
@@ -88,9 +104,9 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   }
 
-	refresh = (): void => {
+	refresh = async () => {
     try {
-      this._diffs = compare(this.workspaceRoot, getComparedPath());
+      this._diffs = await compareFolders(this.workspaceRoot, getComparedPath());
       if (this._diffs.hasResult()) {
         window.showInformationMessage('Source refreshed', 'Dismiss');
       }

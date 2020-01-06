@@ -2,16 +2,17 @@ import { TreeItemCollapsibleState } from 'vscode';
 import set from 'lodash/set';
 import { COMPARE_FILES } from '../constants/commands';
 import { File } from '../models/file';
+import * as path from 'path';
 
 type AnonymusObject = {[key: string]: AnonymusObject | Array<any> };
 
 export function build(paths: string[][], basePath: string) {
   const tree = {};
-  paths.forEach(path => {
-    const relativePath = path[0].replace(`${basePath}/`, '');
-    const segments = relativePath.split('/');
+  paths.forEach(filePath => {
+    const relativePath = path.relative(basePath, filePath[0]);
+    const segments = relativePath.split(path.sep);
 
-    set(tree, segments, [path, relativePath]);
+    set(tree, segments, [filePath, relativePath]);
   });
 
   const treeItems = createHierarchy(tree);
