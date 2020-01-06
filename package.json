@@ -162,7 +162,7 @@
     "vscode-test": "^1.0.2"
   },
   "dependencies": {
-    "dir-compare": "^1.7.3",
+    "dir-compare": "^1.8.0",
     "lodash": "^4.17.15",
     "text-diff": "^1.0.1"
   }
