@@ -1,5 +1,5 @@
 import { commands, Uri } from 'vscode';
-import { compareSync } from 'dir-compare';
+import { compareSync, compare } from 'dir-compare';
 import { openFolder } from './open-folder';
 import { setComparedPath } from '../context/path';
 
@@ -8,7 +8,7 @@ export async function chooseFoldersAndCompare(path?: string) {
   const folder2Path = await openFolder();
 
   setComparedPath(folder2Path);
-  return compare(folder1Path,  folder2Path);
+  return compareFolders(folder1Path,  folder2Path);
 }
 
 export async function showDiffs([file1, file2]: [string, string], title: string) {
@@ -25,11 +25,11 @@ export async function showFile(file: string, title: string) {
   );
 }
 
-export function compare(folder1Path: string, folder2Path: string): CompareResult {
+export async function compareFolders(folder1Path: string, folder2Path: string): Promise<CompareResult> {
   // compare folders by contents
   const options = {compareContent: true};
   // do the compare
-  const res = compareSync(
+  const res = await compare(
     folder1Path,
     folder2Path,
     options

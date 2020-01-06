@@ -1,7 +1,7 @@
 import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE, GO_TO_NOTICE } from '../constants/commands';
-import { chooseFoldersAndCompare, showDiffs, compare, CompareResult, showFile } from '../services/comparer';
+import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/tree-builder';
 import { getComparedPath } from '../context/path';
@@ -19,7 +19,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private workspaceRoot: string;
 
   constructor(private onlyInA: ViewOnlyProvider, private onlyInB: ViewOnlyProvider) {
-    this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.path : '';
+    this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.fsPath : '';
   }
 
 	chooseFoldersAndCompare = async () => {
@@ -88,9 +88,9 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   }
 
-	refresh = (): void => {
+	refresh = async () => {
     try {
-      this._diffs = compare(this.workspaceRoot, getComparedPath());
+      this._diffs = await compareFolders(this.workspaceRoot, getComparedPath());
       if (this._diffs.hasResult()) {
         window.showInformationMessage('Source refreshed', 'Dismiss');
       }
