@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder, ProgressLocation } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE, GO_TO_NOTICE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
@@ -23,12 +23,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
 	chooseFoldersAndCompare = async () => {
-    const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder());
-    if (!diffs) {
-      return;
-    }
-    this._diffs = diffs;
-    this.updateUI();
+    await window.withProgress({
+      location: ProgressLocation.Notification,
+      title: `Compare folders...`
+    }, async () => {
+      const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder());
+      if (!diffs) {
+        return;
+      }
+      this._diffs = diffs;
+      await this.updateUI();
+    });
   }
 
   getWorkspaceFolder = async () => {
