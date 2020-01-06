@@ -39,18 +39,18 @@
       "type": "object",
       "title": "Compare Folders Configuration",
       "properties": {
-        "compare.folders.options.compareContent": {
+        "compareFolders.compareContent": {
           "type": "boolean",
           "default": true,
           "description": "Compare content",
           "scope": "resource"
         },
-        "compare.folders.options.includeFilter": {
+        "compareFolders.includeFilter": {
           "type": "array",
           "description": "Include filters",
           "scope": "resource"
         },
-        "compare.folders.options.excludeFilter": {
+        "compareFolders.excludeFilter": {
           "type": "array",
           "description": "Exclude filters",
           "scope": "resource"
@@ -59,10 +59,6 @@
     },
     "menus": {
       "commandPalette": [
-        {
-          "command": "foldersCompare.goToNotice",
-          "when": "false"
-        },
         {
           "command": "foldersCompare.refresh",
           "when": "false"
@@ -78,14 +74,6 @@
           "group": "navigation",
           "when": "view == foldersCompareAppService"
         }
-      ],
-      "view/item/context": [
-        {
-          "command": "foldersCompare.goToNotice",
-          "alt": "More info",
-          "group": "inline",
-          "when": "viewItem == empty"
-        }
       ]
     },
     "commands": [
@@ -100,14 +88,6 @@
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
-        }
-      },
-      {
-        "title": "More Info",
-        "command": "foldersCompare.goToNotice",
-        "icon": {
-          "light": "resources/light/external-link-symbol.svg",
-          "dark": "resources/dark/external-link-symbol.svg"
         }
       }
     ],

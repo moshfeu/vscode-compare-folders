@@ -1,12 +1,11 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, commands, workspace, window, WorkspaceFolder, ProgressLocation } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation } from 'vscode';
 import * as path from 'path';
-import { CHOOSE_FOLDERS_AND_COMPARE, GO_TO_NOTICE } from '../constants/commands';
+import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/tree-builder';
 import { getComparedPath } from '../context/path';
 import { getRelativePath } from '../utils/path';
-import { MORE_INFO } from '../constants/windowInformationResult';
 import { ViewOnlyProvider } from './viewOnlyProvider';
 import { Options } from 'dir-compare';
 
@@ -28,7 +27,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       location: ProgressLocation.Notification,
       title: `Compare folders...`
     }, async () => {
-      const conf = workspace.getConfiguration('compare.folders.options');
+      const conf = workspace.getConfiguration('compareFolders');
       // Use string array instead of comma separated list of exclude filters
       const excludeFilterArray = <string[] | undefined> conf.get('excludeFilter');
       // Use string array instead of comma separated list of include filters
@@ -97,10 +96,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       this.onlyInB.update(this._diffs.right, this._diffs.rightPath);
     } else {
       this.showEmptyState();
-      const result = await window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.', MORE_INFO);
-      if (result === MORE_INFO) {
-        commands.executeCommand(GO_TO_NOTICE);
-      }
+      window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.');
     }
   }
 
@@ -162,8 +158,4 @@ const emptyStateChild: File = new File(
   'There are no files to compare',
   TreeItemCollapsibleState.None,
   'empty',
-  {
-    title: '',
-    command: GO_TO_NOTICE,
-  }
 );

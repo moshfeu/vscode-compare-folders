@@ -1,1 +1,0 @@
-export const NOTICE_URL = 'https://github.com/moshfeu/vscode-compare-folders#notice';
