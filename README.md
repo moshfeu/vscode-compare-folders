@@ -25,24 +25,20 @@ In this case, the extension will show a message that it couldn't find any change
 
 You can find the series of the posts about how this extension developed step by step in [medium.com](https://medium.com/@moshfeu/comparefolders-visual-studio-code-extension-journey-intro-b540a0539629?source=friends_link&sk=db37e1889766ccd8fe553958a12a8f69).
 
-## Change log
+## Contributors
 
-**0.4.0**
-
-Show missing/additional files [#9](https://github.com/moshfeu/vscode-compare-folders/issues/9) (Thanks to [@fbaligand](https://github.com/fbaligand))
-
-<img width="334" alt="missing/additional files screenshot" src="https://user-images.githubusercontent.com/3723951/71563330-90bd2f80-2a96-11ea-91b3-e2f531f2f74d.png">
-
-**0.3.0**
-
-Support multiple workspaces
-
-<img width="496" alt="Multiple workspaces screenshot" src="https://user-images.githubusercontent.com/3723951/71128162-44036a00-21f5-11ea-88fe-9c2519b8a2e8.png">
-
-**0.2.0**
-- Improve UI: [#5](https://github.com/moshfeu/vscode-compare-folders/issues/5), [#6](https://github.com/moshfeu/vscode-compare-folders/issues/6), [#7](https://github.com/moshfeu/vscode-compare-folders/issues/7) thanks to [@gjsjohnmurray](https://github.com/gjsjohnmurray)
-- Supports dark mode!
-
+<table>
+  <tr>
+    <td>
+      <a href="https://github.com/llgcode" target="_blank">
+        <img width="40" height="40" src="https://avatars3.githubusercontent.com/u/524083?s=88&v=4" alt="llgcode">
+        <div>
+          llgcode
+        </div>
+      </a>
+    </td>
+  </tr>
+</table>
 
 ## Credits
 Activity bar's icon (and more) by [Stockio.com](https://www.stockio.com/free-icon/folders)
