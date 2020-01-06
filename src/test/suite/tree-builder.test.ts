@@ -3,6 +3,7 @@ import { build } from '../../services/tree-builder';
 import { File } from '../../models/file';
 import { TreeItemCollapsibleState } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';
+import * as path from 'path';
 
 suite('Extension Test Suite', () => {
 	test('Generate tree with one file', () => {
@@ -31,7 +32,7 @@ suite('Extension Test Suite', () => {
           folder2: {
             'index.html': [
               paths[0],
-              'folder1/folder2/index.html'
+              path.join('folder1/folder2/index.html')
             ]
           }
         }
@@ -53,7 +54,7 @@ suite('Extension Test Suite', () => {
             new File('index.html', TreeItemCollapsibleState.None, 'file', {
               title: 'index.html',
               command: COMPARE_FILES,
-              arguments: [paths[0], 'folder1/folder2/index.html']
+              arguments: [paths[0], path.join('folder1/folder2/index.html')]
             })
           ])
         ])
