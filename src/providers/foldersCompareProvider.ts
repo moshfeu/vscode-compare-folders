@@ -35,8 +35,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       const includeFilterArray = <string[] | undefined> conf.get('includeFilter');
       const options: Options = {
         compareContent: conf.get('compareContent'),
-        excludeFilter: excludeFilterArray?.join(','),
-        includeFilter: includeFilterArray?.join(','),
+        excludeFilter: excludeFilterArray ? excludeFilterArray.join(',') : undefined,
+        includeFilter: includeFilterArray ? includeFilterArray.join(',') : undefined,
       };
       const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder(), options);
       if (!diffs) {
