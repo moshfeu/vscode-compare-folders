@@ -1,8 +1,9 @@
 import { commands, Uri } from 'vscode';
-import { compareSync, compare, Options } from 'dir-compare';
+import { compare, Options } from 'dir-compare';
 import { openFolder } from './open-folder';
 import { setComparedPath } from '../context/path';
 import * as path from 'path';
+import { getConfiguration } from './configuration';
 
 export async function chooseFoldersAndCompare(path?: string, options?: Options) {
   const folder1Path: string = path || await openFolder();
@@ -16,11 +17,23 @@ export async function chooseFoldersAndCompare(path?: string, options?: Options) 
   return compareFolders(folder1Path, folder2Path, options);
 }
 
+function getTitle(path: string, relativePath: string): string {
+  const { diffViewTitle } = getConfiguration('diffViewTitle');
+  switch (diffViewTitle) {
+    case 'name only':
+      return relativePath;
+    case 'compared path':
+      return `${path} ↔ ${relativePath}`;
+    default:
+      return '';
+  }
+}
+
 export async function showDiffs([file1, file2]: [string, string], title: string) {
   commands.executeCommand('vscode.diff',
     Uri.file(file1),
     Uri.file(file2),
-    title
+    getTitle(file1, title)
   );
 }
 

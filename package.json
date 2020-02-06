@@ -54,6 +54,22 @@
           "type": "array",
           "description": "Exclude filters",
           "scope": "resource"
+        },
+        "compareFolders.diffViewTitle": {
+          "type": "string",
+					"default": "name only",
+					"enum": [
+						"name only",
+						"compared path",
+            "full path"
+					],
+					"enumDescriptions": [
+						"eg. file-name.txt",
+						"eg. file-name.txt ↔ path/to/compared/file-name.txt",
+						"eg. c:\/\/file-name.txt ↔ c:\/\/path/to/compared/file-name.txt"
+					],
+					"markdownDescription": "Specifies how the diff view's title look like",
+					"scope": "window"
         }
       }
     },
