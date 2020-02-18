@@ -143,12 +143,13 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
+    "vscode:prepublish": "tsc -p ./",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
-    "deploy": "vsce publish -p"
+    "deploy": "vsce publish -p",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
