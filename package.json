@@ -31,7 +31,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:foldersCompareAppService"
+    "onView:foldersCompareAppService",
+    "onCommand:foldersCompare.compareFileFromFolder"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -88,6 +89,10 @@
         {
           "command": "foldersCompare.chooseFoldersAndCompare",
           "when": "false"
+        },
+        {
+          "command": "foldersCompare.compareFileFromFolder",
+          "when": "false"
         }
       ],
       "view/title": [
@@ -95,6 +100,27 @@
           "command": "foldersCompare.refresh",
           "group": "navigation",
           "when": "view == foldersCompareAppService"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "foldersCompare.compareFileFromFolder",
+          "group": "9_compare",
+          "when": "!explorerResourceIsFolder"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "foldersCompare.compareFileFromFolder",
+          "group": "9_compare",
+          "when": "!explorerResourceIsFolder"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "foldersCompare.compareFileFromFolder",
+          "group": "9_compare",
+          "when": "!explorerResourceIsFolder"
         }
       ]
     },
@@ -111,6 +137,10 @@
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
         }
+      },
+      {
+        "title": "Compare File from Folder...",
+        "command": "foldersCompare.compareFileFromFolder"
       }
     ],
     "viewsContainers": {

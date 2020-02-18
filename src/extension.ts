@@ -1,6 +1,6 @@
 import { window, commands, Disposable, workspace, Uri } from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
-import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH } from './constants/commands';
+import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FILE_FROM_FOLDER } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
 import { getConfiguration } from './services/configuration';
 import * as path from 'path';
@@ -19,7 +19,7 @@ export function activate() {
       commands.registerCommand(COMPARE_FILES, foldersCompareProvider.onFileClicked),
       commands.registerCommand(CHOOSE_FOLDERS_AND_COMPARE, foldersCompareProvider.chooseFoldersAndCompare),
       commands.registerCommand(REFRESH, foldersCompareProvider.refresh),
-      commands.registerCommand('compareFolders.relatedFolders', compareFileFromFolder),
+      commands.registerCommand(COMPARE_FILE_FROM_FOLDER, compareFileFromFolder),
     ]
   );
 }
