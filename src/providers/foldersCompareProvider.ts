@@ -77,7 +77,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   onFileClicked([path1, path2]: [string, string], title: string) {
     try {
       if (path2) {
-        showDiffs([path1, path2], title);
+        showDiffs([path2, path1], title);
       } else {
         showFile(path1, title);
       }
