@@ -70,6 +70,12 @@
 					],
 					"markdownDescription": "Specifies how the diff view's title look like",
 					"scope": "window"
+        },
+        "compareFolders.relatedFolders": {
+          "type": "array",
+          "default": [],
+          "description": "Related folders to compared.",
+          "scope": "resource"
         }
       }
     },
