@@ -28,18 +28,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       location: ProgressLocation.Notification,
       title: `Compare folders...`
     }, async () => {
-      const {
-        compareContent,
-        excludeFilter,
-        includeFilter,
-      } = getConfiguration('compareContent', 'excludeFilter', 'includeFilter');
-
-      const options: Options = {
-        compareContent,
-        excludeFilter: excludeFilter ? excludeFilter.join(',') : undefined,
-        includeFilter: includeFilter ? includeFilter.join(',') : undefined,
-      };
-      const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder(), options);
+      const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder(), this.getOptions());
       if (!diffs) {
         return;
       }
@@ -48,14 +37,35 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     });
   }
 
-  getWorkspaceFolder = async () => {
+  getOptions = () => {
+    const {
+      compareContent,
+      excludeFilter,
+      includeFilter,
+      ignoreFileNameCase,
+    } = getConfiguration('compareContent', 'excludeFilter', 'includeFilter', 'ignoreFileNameCase');
+
+    const options: Options = {
+      compareContent,
+      excludeFilter: excludeFilter ? excludeFilter.join(',') : undefined,
+      includeFilter: includeFilter ? includeFilter.join(',') : undefined,
+      ignoreCase: ignoreFileNameCase
+    };
+    return options;
+  }
+
+  getWorkspaceFolder = async (): Promise<string> | never => {
     if (!workspace.workspaceFolders) {
-      return;
+      throw new Error('Oops 😬, it wasn\'t supposed to happen.\nSeems like you, somehow, be able to use the extension with no workspace\nPlease contact the author asap');
     }
     if (workspace.workspaceFolders && workspace.workspaceFolders.length === 1) {
       return Promise.resolve(this.workspaceRoot);
     } else {
-      return this.chooseWorkspace();
+      const selectedWorkspace = await this.chooseWorkspace();
+      if (!selectedWorkspace) {
+        throw new Error('Workspace not selected');
+      }
+      return selectedWorkspace;
     }
   }
 
@@ -104,7 +114,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
 	refresh = async () => {
     try {
-      this._diffs = await compareFolders(this.workspaceRoot, getComparedPath());
+      this._diffs = await compareFolders(this.workspaceRoot, getComparedPath(), this.getOptions());
       if (this._diffs.hasResult()) {
         window.showInformationMessage('Source refreshed', 'Dismiss');
       }

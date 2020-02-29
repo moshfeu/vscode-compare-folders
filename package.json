@@ -45,6 +45,12 @@
           "description": "Compare content",
           "scope": "resource"
         },
+        "compareFolders.ignoreFileNameCase": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true fileName / FileName / FiLE naMe will consider as same file and will be compared",
+          "scope": "resource"
+        },
         "compareFolders.includeFilter": {
           "type": "array",
           "description": "Include filters",
