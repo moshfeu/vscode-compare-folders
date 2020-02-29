@@ -1,5 +1,13 @@
 ## Change log
 
+**0.7.0**
+
+Added the ability to ignore files names' case when comparing ([#23](https://github.com/moshfeu/vscode-compare-folders/issues/23))
+
+**0.6.0**
+
+Added the ability to choose the compare tab's title format ([#13](https://github.com/moshfeu/vscode-compare-folders/issues/13))
+
 **0.5.0**
 
 Thanks to [@llgcode](https://github.com/llgcode)!
