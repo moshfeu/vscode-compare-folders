@@ -6,6 +6,7 @@ interface IConfigurations {
   includeFilter: string[] | undefined;
   diffViewTitle: 'name only' | 'compared path' | 'full path';
   relatedFolders: string[] | undefined;
+  ignoreFileNameCase: boolean;
 }
 
 type ConfigurationItem = keyof IConfigurations;
