@@ -14,11 +14,11 @@ function get() {
   return workspace.getConfiguration('compareFolders');
 }
 
-export function getConfiguration(...args: ConfigurationItem[]): Partial<IConfigurations> {
+export function getConfiguration<T extends ConfigurationItem>(...args: T[]) {
   const config = get();
   const result: Partial<IConfigurations> = {};
   args.forEach(arg => {
     result[arg] = config.get(arg) as any;
   });
-  return result;
+  return result as Record<T, any>;
 }
