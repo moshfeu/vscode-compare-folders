@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -75,6 +75,20 @@
 						"eg. c:\/\/file-name.txt ↔ c:\/\/path/to/compared/file-name.txt"
 					],
 					"markdownDescription": "Specifies how the diff view's title look like",
+					"scope": "window"
+        },
+        "compareFolders.diffLayout": {
+          "type": "string",
+					"default": "local <> compared",
+					"enum": [
+						"local <> compared",
+						"compared <> local"
+					],
+					"enumDescriptions": [
+						"eg. left: local file, right: compared file",
+						"eg. left: compared file, right: local file"
+					],
+					"markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
 					"scope": "window"
         }
       }
