@@ -1,5 +1,9 @@
 ## Change log
 
+**0.8.0**
+
+Allow the change diff view's sides ([#21](https://github.com/moshfeu/vscode-compare-folders/issues/21))
+
 **0.7.0**
 
 Added the ability to ignore files names' case when comparing ([#23](https://github.com/moshfeu/vscode-compare-folders/issues/23))

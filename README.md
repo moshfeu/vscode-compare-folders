@@ -16,6 +16,7 @@ The extension allows the user to compare folders, show the diffs in a list and p
 - `compareContent` - boolean - Compares files by content
 - `diffViewTitle` - One of the options: "name only", "compared path", "full path"
 - `ignoreFileNameCase` - boolean - Compare files with the same name but different case
+- `diffLayout` - One of the options: "local <> compared" or "compared <> local"
 
 **Example**
 
