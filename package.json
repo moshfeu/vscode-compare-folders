@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -43,6 +43,12 @@
           "type": "boolean",
           "default": true,
           "description": "Compare content",
+          "scope": "resource"
+        },
+        "compareFolders.ignoreFileNameCase": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true fileName / FileName / FiLE naMe will consider as same file and will be compared",
           "scope": "resource"
         },
         "compareFolders.includeFilter": {

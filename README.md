@@ -1,4 +1,9 @@
 [![Build Status](https://dev.azure.com/moshfeu-vscode/CompareFoldersExtension/_apis/build/status/moshfeu.vscode-compare-folders?branchName=master)](https://dev.azure.com/moshfeu-vscode/CompareFoldersExtension/_build/latest?definitionId=1&branchName=master)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-yellow.svg?style=flat)](https://github.com/Coding-Coach/find-a-mentor/issues)
+[![The MIT License](https://flat.badgen.net/badge/license/MIT/orange)](http://opensource.org/licenses/MIT)
+[![GitHub](https://flat.badgen.net/github/release/moshfeu/vscode-compare-folders)](https://github.com/moshfeu/vscode-compare-folders/releases)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/installs-short/moshfeu.compare-folders.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=moshfeu.compare-folders)
+[![Follow me on Twitter](https://img.shields.io/twitter/follow/moshfeu.svg?style=social)](https://twitter.com/moshfeu)
 
 The extension allows the user to compare folders, show the diffs in a list and present diff in a splitted view side by side.
 
@@ -9,6 +14,8 @@ The extension allows the user to compare folders, show the diffs in a list and p
 - `excludeFilter` - glob string
 - `includeFilter` - glob string
 - `compareContent` - boolean - Compares files by content
+- `diffViewTitle` - One of the options: "name only", "compared path", "full path"
+- `ignoreFileNameCase` - boolean - Compare files with the same name but different case
 
 **Example**
 
@@ -39,6 +46,17 @@ You can find the series of the posts about how this extension developed step by 
     </td>
   </tr>
 </table>
+
+## Like the extension?
+
+Show your love
+
+- [⭐️](https://github.com/moshfeu/vscode-compare-folders)
+- [Give it 5 ⭐️](https://marketplace.visualstudio.com/items?itemName=moshfeu.compare-folders&ssr=false#review-details)
+
+## Isn't working as expected?
+
+Please create [an issue](https://github.com/moshfeu/vscode-compare-folders/issues/new)
 
 ## Credits
 Activity bar's icon (and more) by [Stockio.com](https://www.stockio.com/free-icon/folders)
