@@ -70,6 +70,20 @@
 					],
 					"markdownDescription": "Specifies how the diff view's title look like",
 					"scope": "window"
+        },
+        "compareFolders.diffLayout": {
+          "type": "string",
+					"default": "local <> compared",
+					"enum": [
+						"local <> compared",
+						"compared <> local"
+					],
+					"enumDescriptions": [
+						"eg. left: local file, right: compared file",
+						"eg. left: compared file, right: local file"
+					],
+					"markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
+					"scope": "window"
         }
       }
     },

@@ -77,7 +77,11 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   onFileClicked([path1, path2]: [string, string], title: string) {
     try {
       if (path2) {
-        showDiffs([path2, path1], title);
+        let diffs: [string, string] = [path2, path1];
+        if (getConfiguration('diffLayout').diffLayout === 'local <> compared') {
+          diffs = [path1, path2];
+        }
+        showDiffs(diffs, title);
       } else {
         showFile(path1, title);
       }

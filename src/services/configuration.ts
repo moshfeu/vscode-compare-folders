@@ -5,6 +5,7 @@ interface IConfigurations {
   excludeFilter: string[] | undefined;
   includeFilter: string[] | undefined;
   diffViewTitle: 'name only' | 'compared path' | 'full path';
+  diffLayout: 'local <> compared' | 'compared <> local';
 }
 
 type ConfigurationItem = keyof IConfigurations;
