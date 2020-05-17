@@ -1,5 +1,12 @@
 ## Change log
 
+**0.9.0**
+
+Allow to choose 2 folders without having to open one of them as a workspace.
+
+If there is one folder in the workspace, it will compare this with the one the user choose.
+If there are more than one folder, it let's the user to choose one of the folders and then, the a different folder to compare.
+
 **0.8.0**
 
 Allow the change diff view's sides ([#21](https://github.com/moshfeu/vscode-compare-folders/issues/21))
