@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation, commands } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
@@ -23,17 +23,22 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.fsPath : '';
   }
 
-	chooseFoldersAndCompare = async () => {
+  compareFoldersAgainstEachOther = async () => {
+    await this.chooseFoldersAndCompare(true);
+  }
+
+	chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
     await window.withProgress({
       location: ProgressLocation.Notification,
       title: `Compare folders...`
     }, async () => {
-      const diffs = await chooseFoldersAndCompare(this.getOptions(), await this.getWorkspaceFolder());
+      const diffs = await chooseFoldersAndCompare(this.getOptions(), ignoreWorkspace ? undefined : await this.getWorkspaceFolder());
       if (!diffs) {
         return;
       }
       this._diffs = diffs;
       await this.updateUI();
+      commands.executeCommand('foldersCompareAppService.focus');
     });
   }
 
@@ -147,7 +152,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       return element.children;
     }
 
-    const children = [openFolderChild];
+    const children = [openFolderChild(!!this.workspaceRoot)];
 
     if (this.emptyState) {
       children.push(emptyStateChild);
@@ -160,10 +165,10 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 	}
 }
 
-const openFolderChild: File = new File(
-  'Click to select folder',
-  TreeItemCollapsibleState.None,
+const openFolderChild = (isSingle: boolean) => new File(
+  isSingle ? 'Click to select a folder' : 'Click to select folders',
   'open',
+  TreeItemCollapsibleState.None,
   {
     title: 'title',
     command: CHOOSE_FOLDERS_AND_COMPARE,
@@ -172,6 +177,6 @@ const openFolderChild: File = new File(
 
 const emptyStateChild: File = new File(
   'There are no files to compare',
-  TreeItemCollapsibleState.None,
   'empty',
+  TreeItemCollapsibleState.None,
 );

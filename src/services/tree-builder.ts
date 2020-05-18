@@ -27,8 +27,8 @@ function createHierarchy(src: AnonymusObject): File[] {
       const [paths, title] = childrenOrFileData;
       children.push(new File(
         key,
-        TreeItemCollapsibleState.None,
         'file',
+        TreeItemCollapsibleState.None,
         {
           title: key,
           command: COMPARE_FILES,
@@ -38,8 +38,8 @@ function createHierarchy(src: AnonymusObject): File[] {
     } else {
       children.push(new File(
         key,
-        TreeItemCollapsibleState.Collapsed,
         'folder',
+        TreeItemCollapsibleState.Collapsed,
         undefined,
         createHierarchy(childrenOrFileData)
       ));

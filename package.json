@@ -31,7 +31,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:foldersCompareAppService"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -102,6 +102,10 @@
         {
           "command": "foldersCompare.chooseFoldersAndCompare",
           "when": "false"
+        },
+        {
+          "command": "foldersCompare.compareFoldersAgainstWorkspace",
+          "when": "workspaceFolderCount != 0"
         }
       ],
       "view/title": [
@@ -117,6 +121,14 @@
         "title": "Choose Folders And Compare",
         "command": "foldersCompare.chooseFoldersAndCompare",
         "enablement": "false"
+      },
+      {
+        "title": "Compare Folders: Compare a folder against workspace",
+        "command": "foldersCompare.compareFoldersAgainstWorkspace"
+      },
+      {
+        "title": "Compare Folders: Choose 2 folders and compare",
+        "command": "foldersCompare.compareFoldersAgainstEachOther"
       },
       {
         "title": "Refresh",
@@ -159,7 +171,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
-    "deploy": "vsce publish -p"
+    "deploy": "vsce publish -p",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
