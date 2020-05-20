@@ -1,4 +1,4 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation, commands } from 'vscode';
+import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation, commands, Uri } from 'vscode';
 import * as path from 'path';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
@@ -29,37 +29,28 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await this.chooseFoldersAndCompare(true);
   }
 
+  compareSelectedFolders = async (_e: Uri, [{fsPath: folder1Path}, {fsPath: folder2Path}]: [Uri, Uri]) => {
+    pathContext.setPaths(folder1Path, folder2Path);
+    this.handleDiffResult(await compareFolders());
+  }
+
 	chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
     await window.withProgress({
       location: ProgressLocation.Notification,
       title: `Compare folders...`
     }, async () => {
-      const diffs = await chooseFoldersAndCompare(this.getOptions(), ignoreWorkspace ? undefined : await this.getWorkspaceFolder());
-      if (!diffs) {
-        return;
-      }
-      this._diffs = diffs;
-      await this.updateUI();
-      commands.executeCommand('foldersCompareAppService.focus');
-      setContext(HAS_FOLDERS, true);
+      this.handleDiffResult(await chooseFoldersAndCompare(ignoreWorkspace ? undefined : await this.getWorkspaceFolder()));
     });
   }
 
-  getOptions = () => {
-    const {
-      compareContent,
-      excludeFilter,
-      includeFilter,
-      ignoreFileNameCase,
-    } = getConfiguration('compareContent', 'excludeFilter', 'includeFilter', 'ignoreFileNameCase');
-
-    const options: Options = {
-      compareContent,
-      excludeFilter: excludeFilter ? excludeFilter.join(',') : undefined,
-      includeFilter: includeFilter ? includeFilter.join(',') : undefined,
-      ignoreCase: ignoreFileNameCase
-    };
-    return options;
+  async handleDiffResult(diffs?: CompareResult) {
+    if (!diffs) {
+      return;
+    }
+    this._diffs = diffs;
+    await this.updateUI();
+    commands.executeCommand('foldersCompareAppService.focus');
+    setContext(HAS_FOLDERS, true);
   }
 
   getWorkspaceFolder = async (): Promise<string | undefined> => {
@@ -126,7 +117,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
 	refresh = async () => {
     try {
-      this._diffs = await compareFolders(pathContext.mainPath, pathContext.comparedPath, this.getOptions());
+      this._diffs = await compareFolders();
       if (this._diffs.hasResult()) {
         window.showInformationMessage('Source refreshed', 'Dismiss');
       }

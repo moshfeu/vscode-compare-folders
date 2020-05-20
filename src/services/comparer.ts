@@ -5,7 +5,7 @@ import * as path from 'path';
 import { getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
 
-export async function chooseFoldersAndCompare(options: Options, path?: string) {
+export async function chooseFoldersAndCompare(path?: string) {
   const folder1Path: string = path || await openFolder();
   const folder2Path = await openFolder();
 
@@ -13,9 +13,8 @@ export async function chooseFoldersAndCompare(options: Options, path?: string) {
     return;
   }
 
-  pathContext.mainPath = folder1Path;
-  pathContext.comparedPath = folder2Path;
-  return compareFolders(folder1Path, folder2Path, options);
+  pathContext.setPaths(folder1Path, folder2Path);
+  return compareFolders();
 }
 
 function getTitle(path: string, relativePath: string): string {
@@ -44,7 +43,26 @@ export async function showFile(file: string, title: string) {
   );
 }
 
-export async function compareFolders(folder1Path: string, folder2Path: string, options: Options): Promise<CompareResult> {
+function getOptions() {
+  const {
+    compareContent,
+    excludeFilter,
+    includeFilter,
+    ignoreFileNameCase,
+  } = getConfiguration('compareContent', 'excludeFilter', 'includeFilter', 'ignoreFileNameCase');
+
+  const options: Options = {
+    compareContent,
+    excludeFilter: excludeFilter ? excludeFilter.join(',') : undefined,
+    includeFilter: includeFilter ? includeFilter.join(',') : undefined,
+    ignoreCase: ignoreFileNameCase
+  };
+  return options;
+}
+
+export async function compareFolders(): Promise<CompareResult> {
+  const [folder1Path, folder2Path] = pathContext.getPaths();
+  const options = getOptions();
   // compare folders by contents
   const concatenatedOptions = {compareContent: true, ...options};
   // do the compare

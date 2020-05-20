@@ -25,6 +25,15 @@ class PathContext {
   set comparedPath(path: string) {
     this._comparedPath = path;
   }
+
+  setPaths(path1: string, path2: string): void {
+    this.mainPath = path1;
+    this.comparedPath = path2;
+  }
+
+  getPaths(): [string, string] {
+    return [this.mainPath, this.comparedPath];
+  }
 }
 
 export const pathContext = new PathContext();
