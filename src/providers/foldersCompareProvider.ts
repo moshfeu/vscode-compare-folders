@@ -9,6 +9,8 @@ import { getRelativePath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
 import { Options } from 'dir-compare';
 import { getConfiguration } from '../services/configuration';
+import { setContext } from '../context/global';
+import { HAS_FOLDERS } from '../constants/contextKeys';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -39,6 +41,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       this._diffs = diffs;
       await this.updateUI();
       commands.executeCommand('foldersCompareAppService.focus');
+      setContext(HAS_FOLDERS, true);
     });
   }
 

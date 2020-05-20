@@ -112,7 +112,7 @@
         {
           "command": "foldersCompare.refresh",
           "group": "navigation",
-          "when": "view == foldersCompareAppService"
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
         }
       ]
     },
