@@ -1,11 +1,11 @@
 import { commands, Uri } from 'vscode';
 import { compare, Options } from 'dir-compare';
 import { openFolder } from './open-folder';
-import { setComparedPath } from '../context/path';
 import * as path from 'path';
 import { getConfiguration } from './configuration';
+import { pathContext } from '../context/path';
 
-export async function chooseFoldersAndCompare(path: string, options: Options) {
+export async function chooseFoldersAndCompare(options: Options, path?: string) {
   const folder1Path: string = path || await openFolder();
   const folder2Path = await openFolder();
 
@@ -13,7 +13,8 @@ export async function chooseFoldersAndCompare(path: string, options: Options) {
     return;
   }
 
-  setComparedPath(folder2Path);
+  pathContext.mainPath = folder1Path;
+  pathContext.comparedPath = folder2Path;
   return compareFolders(folder1Path, folder2Path, options);
 }
 

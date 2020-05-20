@@ -5,7 +5,7 @@
 [![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/installs-short/moshfeu.compare-folders.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=moshfeu.compare-folders)
 [![Follow me on Twitter](https://img.shields.io/twitter/follow/moshfeu.svg?style=social)](https://twitter.com/moshfeu)
 
-The extension allows the user to compare folders, show the diffs in a list and present diff in a splitted view side by side.
+The extension allows you to compare folders, show the diffs in a list and present diff in a splitted view side by side.
 
 ![Screen record](https://user-images.githubusercontent.com/3723951/71845669-7ce67e80-30d1-11ea-8a66-54222a8c628f.gif)
 

@@ -4,7 +4,7 @@ import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/tree-builder';
-import { getComparedPath } from '../context/path';
+import { pathContext } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
 import { Options } from 'dir-compare';
@@ -28,7 +28,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       location: ProgressLocation.Notification,
       title: `Compare folders...`
     }, async () => {
-      const diffs = await chooseFoldersAndCompare(await this.getWorkspaceFolder(), this.getOptions());
+      const diffs = await chooseFoldersAndCompare(this.getOptions(), await this.getWorkspaceFolder());
       if (!diffs) {
         return;
       }
@@ -54,9 +54,9 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     return options;
   }
 
-  getWorkspaceFolder = async (): Promise<string> | never => {
+  getWorkspaceFolder = async (): Promise<string | undefined> => {
     if (!workspace.workspaceFolders) {
-      throw new Error('Oops 😬, it wasn\'t supposed to happen.\nSeems like you, somehow, be able to use the extension with no workspace\nPlease contact the author asap');
+      return Promise.resolve(undefined);
     }
     if (workspace.workspaceFolders && workspace.workspaceFolders.length === 1) {
       return Promise.resolve(this.workspaceRoot);
@@ -118,7 +118,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
 	refresh = async () => {
     try {
-      this._diffs = await compareFolders(this.workspaceRoot, getComparedPath(), this.getOptions());
+      this._diffs = await compareFolders(pathContext.mainPath, pathContext.comparedPath, this.getOptions());
       if (this._diffs.hasResult()) {
         window.showInformationMessage('Source refreshed', 'Dismiss');
       }
@@ -152,7 +152,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     if (this.emptyState) {
       children.push(emptyStateChild);
     } else if (this._diffs) {
-      const tree = build(this._diffs.distinct, this.workspaceRoot);
+      const tree = build(this._diffs.distinct, pathContext.mainPath);
       children.push(...tree.treeItems);
     }
 
