@@ -7,7 +7,22 @@
 
 The extension allows you to compare folders, show the diffs in a list and present diff in a splitted view side by side.
 
-![Screen record](https://user-images.githubusercontent.com/3723951/71845669-7ce67e80-30d1-11ea-8a66-54222a8c628f.gif)
+![Screen record](https://user-images.githubusercontent.com/3723951/82501126-67607700-9afd-11ea-9578-8526f6172143.gif)
+
+## How to use?
+
+There are several ways to choose folders to compare:
+
+- Command Palette -
+  - `Compare a folder against workspace` choose a folder to compare against the workspace's folder (when workspace is not empty)
+  - `Choose 2 folders and compare` - opens OS folder chooser twice
+- Compare Folders Panel (Click on the icon in the Activity Bar)
+  - `Click to select a folder` see 1st item
+  - `Click to select folders` see 2nd item
+- File explorer
+  - Select 2 folders, right click and click on `Compare selected folders` see 2nd item
+
+`Refresh` - If there are changes in the compared folders' files, click on the `refresh` button (<img style="width: 15px; display: inline-block; vertical-align: sub" src="https://raw.githubusercontent.com/moshfeu/vscode-compare-folders/master/resources/dark/refresh.svg" alt="refresh button" />) will re-compare the folders.
 
 ## Options (under vscode settings)
 
@@ -28,8 +43,7 @@ The extension allows you to compare folders, show the diffs in a list and presen
 ]
 ```
 
-### Notice
-- The extension works only when the vscode instance has one workspace (or one folder) or more. It's not working for [empty workspace](https://user-images.githubusercontent.com/3723951/70967746-d560c800-209f-11ea-8148-12c5251b00ea.png).
+### Read more about the development process
 
 You can find the series of the posts about how this extension developed step by step in [medium.com](https://medium.com/@moshfeu/comparefolders-visual-studio-code-extension-journey-intro-b540a0539629?source=friends_link&sk=db37e1889766ccd8fe553958a12a8f69).
 
