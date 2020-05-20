@@ -22,7 +22,7 @@ There are several ways to choose folders to compare:
 - File explorer
   - Select 2 folders, right click and click on `Compare selected folders` see 2nd item
 
-`Refresh` - If there are changes in the compared folders' files, click on the `refresh` button (<img style="width: 15px; display: inline-block; vertical-align: sub" src="https://raw.githubusercontent.com/moshfeu/vscode-compare-folders/master/resources/dark/refresh.svg" alt="refresh button" />) will re-compare the folders.
+`Refresh` - If there are changes in the compared folders' files, click on the `refresh` button will re-compare the folders.
 
 ## Options (under vscode settings)
 
