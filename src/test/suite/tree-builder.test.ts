@@ -49,9 +49,9 @@ suite('Extension Test Suite', () => {
     assert.deepEqual(
       treeItems,
       [
-        new File('folder1', TreeItemCollapsibleState.Collapsed, 'folder', undefined, [
-          new File('folder2', TreeItemCollapsibleState.Collapsed, 'folder', undefined, [
-            new File('index.html', TreeItemCollapsibleState.None, 'file', {
+        new File('folder1', 'folder', TreeItemCollapsibleState.Collapsed, undefined, [
+          new File('folder2', 'folder', TreeItemCollapsibleState.Collapsed, undefined, [
+            new File('index.html', 'file', TreeItemCollapsibleState.None, {
               title: 'index.html',
               command: COMPARE_FILES,
               arguments: [paths[0], path.join('folder1/folder2/index.html')]

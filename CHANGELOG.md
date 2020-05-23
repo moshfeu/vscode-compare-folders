@@ -1,5 +1,13 @@
 ## Change log
 
+**0.10.0**
+
+- Show theme files icons instead of custom (uniform and boring) files icons
+- Allow to compare 2 selected folders (adds a context menu `Compare selected folders`) ([#26](https://github.com/moshfeu/vscode-compare-folders/issues/26))
+- Added 2 commands in the command palette
+  - `Compare a folder against workspace` (when workspace is not empty)
+  - `Choose 2 folders and compare` - as it sounds
+
 **0.9.0**
 
 Allow to choose 2 folders without having to open one of them as a workspace.

@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -31,7 +31,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:foldersCompareAppService"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -102,13 +102,27 @@
         {
           "command": "foldersCompare.chooseFoldersAndCompare",
           "when": "false"
+        },
+        {
+          "command": "foldersCompare.compareFoldersAgainstWorkspace",
+          "when": "workspaceFolderCount != 0"
+        },
+        {
+          "command": "foldersCompare.compareSelectedFolders",
+          "when": "false"
         }
       ],
       "view/title": [
         {
           "command": "foldersCompare.refresh",
           "group": "navigation",
-          "when": "view == foldersCompareAppService"
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "foldersCompare.compareSelectedFolders",
+          "when": "explorerResourceIsFolder && listDoubleSelection"
         }
       ]
     },
@@ -119,12 +133,24 @@
         "enablement": "false"
       },
       {
+        "title": "Compare Folders: Compare a folder against workspace",
+        "command": "foldersCompare.compareFoldersAgainstWorkspace"
+      },
+      {
+        "title": "Compare Folders: Choose 2 folders and compare",
+        "command": "foldersCompare.compareFoldersAgainstEachOther"
+      },
+      {
         "title": "Refresh",
         "command": "foldersCompare.refresh",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
         }
+      },
+      {
+        "command": "foldersCompare.compareSelectedFolders",
+        "title": "[Compare Folders] Compare selected folders"
       }
     ],
     "viewsContainers": {
@@ -159,7 +185,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
-    "deploy": "vsce publish -p"
+    "deploy": "vsce publish -p",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",

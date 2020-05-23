@@ -1,0 +1,1 @@
+export const HAS_FOLDERS = 'foldersCompareContext.hasFolders';
