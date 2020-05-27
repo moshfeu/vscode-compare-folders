@@ -7,11 +7,13 @@ import { ViewOnlyProvider } from './providers/viewOnlyProvider';
 export function activate(context: ExtensionContext) {
   const onlyInA = new ViewOnlyProvider();
   const onlyInB = new ViewOnlyProvider();
-  const foldersCompareProvider = new CompareFoldersProvider(onlyInA, onlyInB);
+  const identicals = new ViewOnlyProvider(false);
+  const foldersCompareProvider = new CompareFoldersProvider(onlyInA, onlyInB, identicals);
   context.subscriptions.push(
       window.registerTreeDataProvider('foldersCompareAppService', foldersCompareProvider),
       window.registerTreeDataProvider('foldersCompareAppServiceOnlyA', onlyInA),
       window.registerTreeDataProvider('foldersCompareAppServiceOnlyB', onlyInB),
+      window.registerTreeDataProvider('foldersCompareAppServiceIdenticals', identicals),
       commands.registerCommand(COMPARE_FILES, foldersCompareProvider.onFileClicked),
       commands.registerCommand(CHOOSE_FOLDERS_AND_COMPARE, foldersCompareProvider.chooseFoldersAndCompare),
       commands.registerCommand(COMPARE_FOLDERS_AGAINST_EACH_OTHER, foldersCompareProvider.compareFoldersAgainstEachOther),

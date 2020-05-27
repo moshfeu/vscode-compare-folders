@@ -90,6 +90,12 @@
 					],
 					"markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
 					"scope": "window"
+        },
+        "compareFolders.showIdentical": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show identical files",
+          "scope": "resource"
         }
       }
     },
@@ -188,6 +194,11 @@
         {
           "id": "foldersCompareAppServiceOnlyB",
           "name": "Only in compared folder"
+        },
+        {
+          "id": "foldersCompareAppServiceIdenticals",
+          "name": "Identical files",
+          "when": "config.compareFolders.showIdentical"
         }
       ]
     }

@@ -8,6 +8,8 @@ export class ViewOnlyProvider implements TreeDataProvider<File> {
   private diffs: string[][] = [];
   private rootPath: string = '';
 
+  constructor(private showPath = true) {}
+
   update(diffs: string[][], rootPath: string) {
     this.diffs = diffs;
     this.rootPath = rootPath;
@@ -23,9 +25,9 @@ export class ViewOnlyProvider implements TreeDataProvider<File> {
       return element.children;
     }
     const {treeItems} = build(this.diffs, this.rootPath);
-    const children = [];
-    if (this.rootPath) {
-      children.push(
+    let children: Array<File> = [];
+    if (this.rootPath && this.showPath) {
+      children = [
         new File(
           this.rootPath,
           'root',
@@ -33,7 +35,9 @@ export class ViewOnlyProvider implements TreeDataProvider<File> {
           undefined,
           treeItems
         )
-      );
+      ];
+    } else {
+      children = treeItems;
     }
 
     return children;
