@@ -32,6 +32,7 @@ There are several ways to choose folders to compare:
 - `diffViewTitle` - One of the options: "name only", "compared path", "full path"
 - `ignoreFileNameCase` - boolean - Compare files with the same name but different case
 - `diffLayout` - One of the options: "local <> compared" or "compared <> local"
+- `showIdentical` - boolean - Whether or not show the identical files panel
 
 **Example**
 
