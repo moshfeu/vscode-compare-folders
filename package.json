@@ -115,6 +115,11 @@
       "view/title": [
         {
           "command": "foldersCompare.refresh",
+          "group": "navigation@1",
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
+        },
+        {
+          "command": "foldersCompare.swap",
           "group": "navigation",
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
         }
@@ -146,6 +151,14 @@
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "title": "Swap Sides",
+        "command": "foldersCompare.swap",
+        "icon": {
+          "light": "resources/light/swap.svg",
+          "dark": "resources/dark/swap.svg"
         }
       },
       {

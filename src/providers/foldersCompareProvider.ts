@@ -127,6 +127,11 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   }
 
+  swap = () => {
+    pathContext.swap();
+    this.refresh();
+  }
+
   showEmptyState() {
     this.emptyState = true;
     this._onDidChangeTreeData.fire();
