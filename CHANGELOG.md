@@ -1,5 +1,10 @@
 ## Change log
 
+**0.11.0**
+
+- Allow to swap sides ([#14](https://github.com/moshfeu/vscode-compare-folders/issues/14))
+- Add identical files panel (under [configuration](https://github.com/moshfeu/vscode-compare-folders#options-under-vscode-settings)) ([#28](https://github.com/moshfeu/vscode-compare-folders/issues/28))
+
 **0.10.0**
 
 - Show theme files icons instead of custom (uniform and boring) files icons

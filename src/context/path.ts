@@ -34,6 +34,12 @@ class PathContext {
   getPaths(): [string, string] {
     return [this.mainPath, this.comparedPath];
   }
+
+  swap(): void {
+    const cachedMainPath = this._mainPath;
+    this._mainPath = this._comparedPath;
+    this._comparedPath = cachedMainPath;
+  }
 }
 
 export const pathContext = new PathContext();

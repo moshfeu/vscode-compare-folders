@@ -7,6 +7,7 @@ interface IConfigurations {
   diffViewTitle: 'name only' | 'compared path' | 'full path';
   diffLayout: 'local <> compared' | 'compared <> local';
   ignoreFileNameCase: boolean;
+  showIdentical: boolean;
 }
 
 type ConfigurationItem = keyof IConfigurations;

@@ -62,6 +62,7 @@ function getOptions() {
 
 export async function compareFolders(): Promise<CompareResult> {
   const [folder1Path, folder2Path] = pathContext.getPaths();
+  const {showIdentical} = getConfiguration('showIdentical');
   const options = getOptions();
   // compare folders by contents
   const concatenatedOptions = {compareContent: true, ...options};
@@ -92,10 +93,16 @@ export async function compareFolders(): Promise<CompareResult> {
     .filter(diff => diff.state === 'right' && diff.type2 === 'file')
     .map(diff => [path.join(diff.path2!, diff.name2!)]);
 
+  const identicals = showIdentical ?
+    diffSet.filter(diff => diff.state === 'equal' && diff.type1 === 'file')
+    .map(diff => [path.join(diff.path1!, diff.name1!)]) :
+    [];
+
   return new CompareResult(
     distinct,
     left,
     right,
+    identicals,
     folder1Path,
     folder2Path,
   );
@@ -107,6 +114,7 @@ export class CompareResult {
     public distinct: string[][],
     public left: string[][],
     public right: string[][],
+    public identicals: string[][],
     public leftPath: string,
     public rightPath: string,
   ) {

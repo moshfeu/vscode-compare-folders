@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -90,6 +90,12 @@
 					],
 					"markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
 					"scope": "window"
+        },
+        "compareFolders.showIdentical": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show identical files",
+          "scope": "resource"
         }
       }
     },
@@ -115,6 +121,11 @@
       "view/title": [
         {
           "command": "foldersCompare.refresh",
+          "group": "navigation@1",
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
+        },
+        {
+          "command": "foldersCompare.swap",
           "group": "navigation",
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
         }
@@ -149,6 +160,14 @@
         }
       },
       {
+        "title": "Swap Sides",
+        "command": "foldersCompare.swap",
+        "icon": {
+          "light": "resources/light/swap.svg",
+          "dark": "resources/dark/swap.svg"
+        }
+      },
+      {
         "command": "foldersCompare.compareSelectedFolders",
         "title": "[Compare Folders] Compare selected folders"
       }
@@ -175,6 +194,11 @@
         {
           "id": "foldersCompareAppServiceOnlyB",
           "name": "Only in compared folder"
+        },
+        {
+          "id": "foldersCompareAppServiceIdenticals",
+          "name": "Identical files",
+          "when": "config.compareFolders.showIdentical"
         }
       ]
     }
