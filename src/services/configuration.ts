@@ -8,6 +8,7 @@ interface IConfigurations {
   diffLayout: 'local <> compared' | 'compared <> local';
   ignoreFileNameCase: boolean;
   showIdentical: boolean;
+  useDiffMerge: boolean;
 }
 
 type ConfigurationItem = keyof IConfigurations;

@@ -96,6 +96,12 @@
           "default": false,
           "description": "Show identical files",
           "scope": "resource"
+        },
+        "compareFolders.useDiffMerge": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use Diff & Merge extension as diff view",
+          "scope": "window"
         }
       }
     },
