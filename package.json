@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -96,6 +96,12 @@
           "default": false,
           "description": "Show identical files",
           "scope": "resource"
+        },
+        "compareFolders.useDiffMerge": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use Diff & Merge extension as diff view",
+          "scope": "window"
         }
       }
     },

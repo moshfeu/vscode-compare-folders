@@ -1,5 +1,9 @@
 ## Change log
 
+**0.12.0**
+
+Allow to use [`Diff & Merge`](https://marketplace.visualstudio.com/items?itemName=moshfeu.diff-merge) extension as the Diff viewer (under [configuration](https://github.com/moshfeu/vscode-compare-folders#options-under-vscode-settings)) ([#34](https://github.com/moshfeu/vscode-compare-folders/issues/34))
+
 **0.11.0**
 
 - Allow to swap sides ([#14](https://github.com/moshfeu/vscode-compare-folders/issues/14))

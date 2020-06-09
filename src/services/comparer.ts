@@ -1,9 +1,11 @@
-import { commands, Uri } from 'vscode';
+import { commands, Uri, extensions, window } from 'vscode';
 import { compare, Options } from 'dir-compare';
 import { openFolder } from './open-folder';
 import * as path from 'path';
 import { getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
+
+const compareFolderExtension = extensions.getExtension('moshfeu.diff-merge');
 
 export async function chooseFoldersAndCompare(path?: string) {
   const folder1Path: string = path || await openFolder();
@@ -30,11 +32,21 @@ function getTitle(path: string, relativePath: string): string {
 }
 
 export async function showDiffs([file1, file2]: [string, string], title: string) {
-  commands.executeCommand('vscode.diff',
-    Uri.file(file1),
-    Uri.file(file2),
-    getTitle(file1, title)
-  );
+  const {useDiffMerge} = getConfiguration('useDiffMerge');
+  if (useDiffMerge) {
+    if (compareFolderExtension) {
+      commands.executeCommand('diffMerge.compareSelected', Uri.file(file1), [Uri.file(file1), Uri.file(file2)]);
+    } else {
+      window.showErrorMessage('In order to use "Diff & Merge" extension you should install / enable it');
+    }
+    return;
+  } else {
+    commands.executeCommand('vscode.diff',
+      Uri.file(file1),
+      Uri.file(file2),
+      getTitle(file1, title)
+    );
+  }
 }
 
 export async function showFile(file: string, title: string) {

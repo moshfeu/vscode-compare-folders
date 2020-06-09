@@ -33,6 +33,7 @@ There are several ways to choose folders to compare:
 - `ignoreFileNameCase` - boolean - Compare files with the same name but different case
 - `diffLayout` - One of the options: "local <> compared" or "compared <> local"
 - `showIdentical` - boolean - Whether or not show the identical files panel
+- `useDiffMerge` - boolean - Whther or not using [`Diff & Merge`](https://marketplace.visualstudio.com/items?itemName=moshfeu.diff-merge) extension as the Diff viewer. In order to use this option, you should install the extension
 
 **Example**
 
