@@ -22,7 +22,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private workspaceRoot: string;
 
   constructor(private onlyInA: ViewOnlyProvider, private onlyInB: ViewOnlyProvider, private identicals: ViewOnlyProvider) {
-    this.workspaceRoot = workspace.workspaceFolders ? workspace.workspaceFolders[0].uri.fsPath : '';
+    this.workspaceRoot = (workspace.workspaceFolders && workspace.workspaceFolders.length) ? workspace.workspaceFolders[0].uri.fsPath : '';
   }
 
   compareFoldersAgainstEachOther = async () => {
