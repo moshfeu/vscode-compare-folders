@@ -5,7 +5,7 @@ import * as path from 'path';
 import { getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
 
-const compareFolderExtension = extensions.getExtension('moshfeu.diff-merge');
+const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
 export async function chooseFoldersAndCompare(path?: string) {
   const folder1Path: string = path || await openFolder();
@@ -34,7 +34,7 @@ function getTitle(path: string, relativePath: string): string {
 export async function showDiffs([file1, file2]: [string, string], title: string) {
   const {useDiffMerge} = getConfiguration('useDiffMerge');
   if (useDiffMerge) {
-    if (compareFolderExtension) {
+    if (diffMergeExtension) {
       commands.executeCommand('diffMerge.compareSelected', Uri.file(file1), [Uri.file(file1), Uri.file(file2)]);
     } else {
       window.showErrorMessage('In order to use "Diff & Merge" extension you should install / enable it');
