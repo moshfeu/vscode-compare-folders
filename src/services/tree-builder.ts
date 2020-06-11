@@ -17,10 +17,11 @@ export function build(paths: string[][], basePath: string) {
       set(tree, segments, [filePath, relativePath]);
     });
 
-    const treeItems = createHierarchy(tree);
-    return {tree, treeItems};
   } catch (error) {
     log(`can't build the tree: ${error}`);
+  } finally {
+    const treeItems = createHierarchy(tree);
+    return {tree, treeItems};
   }
 }
 
