@@ -1,5 +1,6 @@
 import { TreeItem, TreeItemCollapsibleState, Command, Uri } from 'vscode';
 import { join } from 'path';
+import { log } from '../services/logger';
 
 type FileType = 'file' | 'open' | 'folder' | 'empty' | 'root';
 
@@ -13,6 +14,14 @@ export class File extends TreeItem {
     public readonly children?: File[],
 	) {
 		super(label, collapsibleState);
+
+    try {
+      this.resourceUri = this.hasIcon ?
+        undefined :
+        this.command?.arguments ? Uri.parse(this.command?.arguments![0][0]) : Uri.parse(__dirname);
+    } catch (error) {
+      log(`can't set resourceUri: ${error}`);
+    }
 	}
 
 	get tooltip(): string {
@@ -28,9 +37,7 @@ export class File extends TreeItem {
 		dark: join(__filename, '..', '..', '..', 'resources', 'dark', `${this.type}.svg`),
 	} : undefined;
 
-  resourceUri = this.hasIcon ?
-    undefined :
-    this.command?.arguments ? Uri.parse(this.command?.arguments![0][0]) : Uri.parse(__dirname);
+
 
 	contextValue = this.type;
 }

@@ -3,20 +3,25 @@ import set from 'lodash/set';
 import { COMPARE_FILES } from '../constants/commands';
 import { File } from '../models/file';
 import * as path from 'path';
+import { log } from 'util';
 
 type AnonymusObject = {[key: string]: AnonymusObject | Array<any> };
 
 export function build(paths: string[][], basePath: string) {
   const tree = {};
-  paths.forEach(filePath => {
-    const relativePath = path.relative(basePath, filePath[0]);
-    const segments = relativePath.split(path.sep);
+  try {
+    paths.forEach(filePath => {
+      const relativePath = path.relative(basePath, filePath[0]);
+      const segments = relativePath.split(path.sep);
 
-    set(tree, segments, [filePath, relativePath]);
-  });
+      set(tree, segments, [filePath, relativePath]);
+    });
 
-  const treeItems = createHierarchy(tree);
-  return {tree, treeItems};
+    const treeItems = createHierarchy(tree);
+    return {tree, treeItems};
+  } catch (error) {
+    log(`can't build the tree: ${error}`);
+  }
 }
 
 function createHierarchy(src: AnonymusObject): File[] {
