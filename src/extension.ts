@@ -1,4 +1,4 @@
-import { window, commands, ExtensionContext} from 'vscode';
+import { window, commands, ExtensionContext, workspace} from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
 import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
@@ -22,5 +22,14 @@ export function activate(context: ExtensionContext) {
       commands.registerCommand(REFRESH, foldersCompareProvider.refresh),
       commands.registerCommand(SWAP, foldersCompareProvider.swap),
   );
+
+  if (process.env.COMPARE_FOLDERS === 'DIFF') {
+    if (workspace.workspaceFolders?.length !== 2) {
+      window.showInformationMessage(`In order to compare folders, the command should been called with 2 folders: e.g. COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2. Actual folders: ${workspace.workspaceFolders?.length || 0}`);
+      return;
+    }
+    const [folder1Path, folder2Path] = workspace.workspaceFolders.map(folder => folder.uri);
+    foldersCompareProvider.compareSelectedFolders(folder1Path, [folder1Path, folder2Path]);
+  }
 }
 
