@@ -1,6 +1,7 @@
 ## Change log
 
 **0.13.0**
+
 Allow to compare directly from the CLI (open a vscode instance, compare the folders and focus on compareFolders view) by the following command
 
 ```shell
