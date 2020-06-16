@@ -45,6 +45,14 @@ There are several ways to choose folders to compare:
 ]
 ```
 
+## CLI
+
+By calling the following command from the terminal / command line, the extension will be calling on vscode load and show the differences view
+
+```shell
+COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2
+```
+
 ### Read more about the development process
 
 You can find the series of the posts about how this extension developed step by step in [medium.com](https://medium.com/@moshfeu/comparefolders-visual-studio-code-extension-journey-intro-b540a0539629?source=friends_link&sk=db37e1889766ccd8fe553958a12a8f69).

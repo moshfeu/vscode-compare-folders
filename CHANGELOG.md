@@ -1,5 +1,12 @@
 ## Change log
 
+**0.13.0**
+Allow to compare directly from the CLI (open a vscode instance, compare the folders and focus on compareFolders view) by the following command
+
+```shell
+COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2
+```
+
 **0.12.0**
 
 Allow to use [`Diff & Merge`](https://marketplace.visualstudio.com/items?itemName=moshfeu.diff-merge) extension as the Diff viewer (under [configuration](https://github.com/moshfeu/vscode-compare-folders#options-under-vscode-settings)) ([#34](https://github.com/moshfeu/vscode-compare-folders/issues/34))
