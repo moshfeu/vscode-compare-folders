@@ -63,33 +63,33 @@
         },
         "compareFolders.diffViewTitle": {
           "type": "string",
-					"default": "name only",
-					"enum": [
-						"name only",
-						"compared path",
+          "default": "name only",
+          "enum": [
+            "name only",
+            "compared path",
             "full path"
-					],
-					"enumDescriptions": [
-						"eg. file-name.txt",
-						"eg. file-name.txt ↔ path/to/compared/file-name.txt",
-						"eg. c:\/\/file-name.txt ↔ c:\/\/path/to/compared/file-name.txt"
-					],
-					"markdownDescription": "Specifies how the diff view's title look like",
-					"scope": "window"
+          ],
+          "enumDescriptions": [
+            "eg. file-name.txt",
+            "eg. file-name.txt ↔ path/to/compared/file-name.txt",
+            "eg. c://file-name.txt ↔ c://path/to/compared/file-name.txt"
+          ],
+          "markdownDescription": "Specifies how the diff view's title look like",
+          "scope": "window"
         },
         "compareFolders.diffLayout": {
           "type": "string",
-					"default": "local <> compared",
-					"enum": [
-						"local <> compared",
-						"compared <> local"
-					],
-					"enumDescriptions": [
-						"eg. left: local file, right: compared file",
-						"eg. left: compared file, right: local file"
-					],
-					"markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
-					"scope": "window"
+          "default": "local <> compared",
+          "enum": [
+            "local <> compared",
+            "compared <> local"
+          ],
+          "enumDescriptions": [
+            "eg. left: local file, right: compared file",
+            "eg. left: compared file, right: local file"
+          ],
+          "markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
+          "scope": "window"
         },
         "compareFolders.showIdentical": {
           "type": "boolean",
@@ -122,6 +122,14 @@
         {
           "command": "foldersCompare.compareSelectedFolders",
           "when": "false"
+        },
+        {
+          "command": "foldersCompare.copyToCompared",
+          "when": "false"
+        },
+        {
+          "command": "foldersCompare.copyToMy",
+          "when": "false"
         }
       ],
       "view/title": [
@@ -141,9 +149,29 @@
           "command": "foldersCompare.compareSelectedFolders",
           "when": "explorerResourceIsFolder && listDoubleSelection"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "foldersCompare.copyToCompared",
+          "when": "view == foldersCompareAppServiceOnlyA",
+          "group": "1_folderCompares_actions@1"
+        },
+        {
+          "command": "foldersCompare.copyToMy",
+          "when": "view == foldersCompareAppServiceOnlyB",
+          "group": "1_folderCompares_actions@1"
+        }
       ]
     },
     "commands": [
+      {
+        "title": "Copy to compared folder",
+        "command": "foldersCompare.copyToCompared"
+      },
+      {
+        "title": "Copy to my folder",
+        "command": "foldersCompare.copyToMy"
+      },
       {
         "title": "Choose Folders And Compare",
         "command": "foldersCompare.chooseFoldersAndCompare",
@@ -219,6 +247,7 @@
     "package": "vsce package"
   },
   "devDependencies": {
+    "@types/fs-extra": "8.1.0",
     "@types/glob": "^7.1.1",
     "@types/lodash": "^4.14.140",
     "@types/mocha": "^5.2.6",
@@ -233,6 +262,7 @@
   },
   "dependencies": {
     "dir-compare": "^1.8.0",
+    "fs-extra": "8.1.0",
     "lodash": "^4.17.15",
     "text-diff": "^1.0.1"
   }

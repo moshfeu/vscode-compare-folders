@@ -1,5 +1,6 @@
 import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation, commands, Uri } from 'vscode';
 import * as path from 'path';
+import { copySync } from 'fs-extra';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
@@ -7,10 +8,10 @@ import { build } from '../services/tree-builder';
 import { pathContext } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
-import { Options } from 'dir-compare';
 import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
+import { log } from '../services/logger';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -131,6 +132,29 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   swap = () => {
     pathContext.swap();
     this.refresh();
+  }
+
+  // TODO -refactor
+  copyToCompared = (e: TreeItem) => {
+    try {
+      const [folder1Path, folder2Path] = pathContext.getPaths();
+      const toPath = path.parse(path.join(folder2Path, e.resourceUri!.path.replace(folder1Path, '')));
+      copySync(e.resourceUri!.fsPath, path.format(toPath));
+      this.refresh();
+    } catch (error) {
+      log(error);
+    }
+  }
+
+  copyToMy = (e: TreeItem) => {
+    try {
+      const [folder1Path, folder2Path] = pathContext.getPaths();
+      const toPath = path.parse(path.join(folder1Path, e.resourceUri!.path.replace(folder2Path, '')));
+      copySync(e.resourceUri!.fsPath, path.format(toPath));
+      this.refresh();
+    } catch (error) {
+      log(error);
+    }
   }
 
   showEmptyState() {

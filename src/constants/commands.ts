@@ -5,3 +5,5 @@ export const COMPARE_FOLDERS_AGAINST_EACH_OTHER = 'foldersCompare.compareFolders
 export const COMPARE_SELECTED_FOLDERS = 'foldersCompare.compareSelectedFolders';
 export const REFRESH = 'foldersCompare.refresh';
 export const SWAP = 'foldersCompare.swap';
+export const COPY_TO_COMPARED = 'foldersCompare.copyToCompared';
+export const COPY_TO_MY = 'foldersCompare.copyToMy';
