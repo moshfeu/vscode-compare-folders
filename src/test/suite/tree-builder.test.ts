@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import { build } from '../../services/tree-builder';
 import { File } from '../../models/file';
-import { TreeItemCollapsibleState } from 'vscode';
+import { TreeItemCollapsibleState, Uri } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';
 import * as path from 'path';
 
@@ -29,7 +29,9 @@ suite('Extension Test Suite', () => {
       build(paths, basePath).tree,
       {
         folder1: {
+          path: path.join(basePath, 'folder1'),
           folder2: {
+            path: path.join(basePath, 'folder1', 'folder2'),
             'index.html': [
               paths[0],
               path.join('folder1/folder2/index.html')
@@ -55,9 +57,9 @@ suite('Extension Test Suite', () => {
               title: 'index.html',
               command: COMPARE_FILES,
               arguments: [paths[0], path.join('folder1/folder2/index.html')]
-            })
-          ])
-        ])
+            }, undefined, undefined)
+          ], Uri.parse(path.join(basePath, 'folder1', 'folder2')))
+        ], Uri.parse(path.join(basePath, 'folder1')))
       ]
     );
   });
