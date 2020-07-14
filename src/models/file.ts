@@ -12,13 +12,16 @@ export class File extends TreeItem {
 		public readonly collapsibleState?: TreeItemCollapsibleState,
     public readonly command?: Command,
     public readonly children?: File[],
+    public resourceUri?: Uri
 	) {
 		super(label, collapsibleState);
 
     try {
-      this.resourceUri = this.hasIcon ?
-        undefined :
-        this.command?.arguments ? Uri.parse(this.command?.arguments![0][0]) : Uri.parse(__dirname);
+      this.resourceUri = this.resourceUri || (
+        this.hasIcon ?
+          undefined :
+          Uri.parse(this.command?.arguments![0][0])
+      );
     } catch (error) {
       log(`can't set resourceUri: ${error}`);
     }

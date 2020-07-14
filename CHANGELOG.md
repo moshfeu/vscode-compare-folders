@@ -1,5 +1,9 @@
 ## Change log
 
+**0.14.0**
+
+Allow to copy files from "my folder" to "compared folder" and vice-versa
+
 **0.13.0**
 
 Allow to compare directly from the CLI (open a vscode instance, compare the folders and focus on compareFolders view) by the following command

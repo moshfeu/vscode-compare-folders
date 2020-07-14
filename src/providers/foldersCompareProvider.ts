@@ -1,5 +1,6 @@
 import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation, commands, Uri } from 'vscode';
 import * as path from 'path';
+import { copySync } from 'fs-extra';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
@@ -7,10 +8,10 @@ import { build } from '../services/tree-builder';
 import { pathContext } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
-import { Options } from 'dir-compare';
 import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
+import { log } from '../services/logger';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -131,6 +132,26 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   swap = () => {
     pathContext.swap();
     this.refresh();
+  }
+
+  copyToCompared = (e: TreeItem) => {
+    this.copyToFolder(e, 'to-compared');
+  }
+
+  copyToMy = (e: TreeItem) => {
+    this.copyToFolder(e, 'to-me');
+  }
+
+  copyToFolder(e: TreeItem, direction: 'to-compared' | 'to-me') {
+    try {
+      const [folder1Path, folder2Path] = pathContext.getPaths();
+      const [from, to] = direction === 'to-me' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
+      const toPath = path.parse(path.join(from, e.resourceUri!.path.replace(to, '')));
+      copySync(e.resourceUri!.fsPath, path.format(toPath));
+      this.refresh();
+    } catch (error) {
+      log(error);
+    }
   }
 
   showEmptyState() {
