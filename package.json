@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.14.1",
+  "version": "0.14.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -253,7 +253,7 @@
     "@types/lodash": "^4.14.140",
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.21",
-    "@types/vscode": "^1.38.0",
+    "@types/vscode": "1.44.0",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
     "mocha": "^6.1.4",
