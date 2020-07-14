@@ -134,22 +134,19 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     this.refresh();
   }
 
-  // TODO -refactor
   copyToCompared = (e: TreeItem) => {
-    try {
-      const [folder1Path, folder2Path] = pathContext.getPaths();
-      const toPath = path.parse(path.join(folder2Path, e.resourceUri!.path.replace(folder1Path, '')));
-      copySync(e.resourceUri!.fsPath, path.format(toPath));
-      this.refresh();
-    } catch (error) {
-      log(error);
-    }
+    this.copyToFolder(e, 'to-compared');
   }
 
   copyToMy = (e: TreeItem) => {
+    this.copyToFolder(e, 'to-me');
+  }
+
+  copyToFolder(e: TreeItem, direction: 'to-compared' | 'to-me') {
     try {
       const [folder1Path, folder2Path] = pathContext.getPaths();
-      const toPath = path.parse(path.join(folder1Path, e.resourceUri!.path.replace(folder2Path, '')));
+      const [from, to] = direction === 'to-me' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
+      const toPath = path.parse(path.join(from, e.resourceUri!.path.replace(to, '')));
       copySync(e.resourceUri!.fsPath, path.format(toPath));
       this.refresh();
     } catch (error) {
