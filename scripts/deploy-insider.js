@@ -27,7 +27,7 @@ readme = `
 🙏 Thank you for using the Insider version.<br />
 👍 Please don't rate this app.<br />
 🥳 If you like it, rate the [real one](https://marketplace.visualstudio.com/items?itemName=moshfeu.compare-folders).<br />
-💅 If you don't (that's ok 😀), or if you find any issues, please [open an issue](https://github.com/moshfeu/vscode-compare-folders/issues/new) or [email me](moshfeu.dev@gmail.com)<br />
+💅 If you don't (that's ok 😀), or if you find any issues, please [open an issue](https://github.com/moshfeu/vscode-compare-folders/issues/new) or [email me](mailto:moshfeu.dev@gmail.com)<br />
 
 --------------------------------------------
 
