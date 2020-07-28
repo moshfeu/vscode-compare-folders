@@ -1,5 +1,9 @@
 ## Change log
 
+**0.15.0**
+
+Allow to take a compared file over my file and visa-versa in the "differences" section
+
 **0.14.0**
 
 Allow to copy files from "my folder" to "compared folder" and vice-versa

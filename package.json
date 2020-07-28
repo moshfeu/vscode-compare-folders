@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -130,6 +130,14 @@
         {
           "command": "foldersCompare.copyToMy",
           "when": "false"
+        },
+        {
+          "command": "foldersCompare.takeMyFile",
+          "when": "false"
+        },
+        {
+          "command": "foldersCompare.takeComparedFile",
+          "when": "false"
         }
       ],
       "view/title": [
@@ -160,6 +168,16 @@
           "command": "foldersCompare.copyToMy",
           "when": "view == foldersCompareAppServiceOnlyB",
           "group": "1_folderCompares_actions@1"
+        },
+        {
+          "command": "foldersCompare.takeMyFile",
+          "when": "view == foldersCompareAppService",
+          "group": "1_folderCompares_actions@1"
+        },
+        {
+          "command": "foldersCompare.takeComparedFile",
+          "when": "view == foldersCompareAppService",
+          "group": "1_folderCompares_actions@2"
         }
       ]
     },
@@ -171,6 +189,14 @@
       {
         "title": "Copy to my folder",
         "command": "foldersCompare.copyToMy"
+      },
+      {
+        "title": "Take my file",
+        "command": "foldersCompare.takeMyFile"
+      },
+      {
+        "title": "Take compared file",
+        "command": "foldersCompare.takeComparedFile"
       },
       {
         "title": "Choose Folders And Compare",
