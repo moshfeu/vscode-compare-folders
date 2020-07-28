@@ -12,6 +12,7 @@ import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
 import { log } from '../services/logger';
+import { showInfoMessageWithTimeout } from '../utils/ui';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -121,7 +122,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     try {
       this._diffs = await compareFolders();
       if (this._diffs.hasResult()) {
-        window.showInformationMessage('Source refreshed', 'Dismiss');
+        showInfoMessageWithTimeout('Source Refreshed', 3000);
       }
       this.updateUI();
     } catch (error) {
