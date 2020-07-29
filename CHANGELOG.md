@@ -2,7 +2,8 @@
 
 **0.15.0**
 
-Allow to take a compared file over my file and visa-versa in the "differences" section
+- Allow to take a compared file over my file and visa-versa in the "differences" section
+- "Source Refreshed" (after refresh etc.) message now is auto dismissed (3s)
 
 **0.14.0**
 
