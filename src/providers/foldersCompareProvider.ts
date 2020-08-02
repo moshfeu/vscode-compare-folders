@@ -108,14 +108,13 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     if (this._diffs.hasResult()) {
       this.emptyState = false;
       this._onDidChangeTreeData.fire();
-
-      this.onlyInA.update(this._diffs.left, this._diffs.leftPath);
-      this.onlyInB.update(this._diffs.right, this._diffs.rightPath);
-      this.identicals.update(this._diffs.identicals, this._diffs.leftPath);
     } else {
       this.showEmptyState();
       window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.');
     }
+    this.onlyInA.update(this._diffs.left, this._diffs.leftPath);
+    this.onlyInB.update(this._diffs.right, this._diffs.rightPath);
+    this.identicals.update(this._diffs.identicals, this._diffs.leftPath);
   }
 
 	refresh = async () => {
