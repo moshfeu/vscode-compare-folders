@@ -1,6 +1,6 @@
 import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation, commands, Uri } from 'vscode';
 import * as path from 'path';
-import { copySync } from 'fs-extra';
+import { copySync, removeSync } from 'fs-extra';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
@@ -89,7 +89,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     try {
       if (path2) {
         let diffs: [string, string] = [path2, path1];
-        if (getConfiguration('diffLayout').diffLayout === 'local <> compared') {
+        if (getConfiguration('diffLayout') === 'local <> compared') {
           diffs = [path1, path2];
         }
         showDiffs(diffs, title);
@@ -140,6 +140,22 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   copyToMy = (e: TreeItem) => {
     this.copyToFolder(e.resourceUri!, 'to-me');
+  }
+
+  deleteFile = async (e: TreeItem) => {
+    const yesMessage = `Yes. I know what I'm doing`;
+    let shouldDelete = true;
+
+    if (getConfiguration('warnBeforeDelete')) {
+      shouldDelete = yesMessage === await window.showInformationMessage('Are you sure you want to delete this file?', {
+        modal: true
+      }, yesMessage);
+    }
+
+    if (shouldDelete) {
+      removeSync(e.resourceUri!.fsPath);
+      this.refresh();
+    }
   }
 
   takeMyFile = (e: TreeItem) => {

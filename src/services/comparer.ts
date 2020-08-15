@@ -20,8 +20,7 @@ export async function chooseFoldersAndCompare(path?: string) {
 }
 
 function getTitle(path: string, relativePath: string): string {
-  const { diffViewTitle } = getConfiguration('diffViewTitle');
-  switch (diffViewTitle) {
+  switch (getConfiguration('diffViewTitle')) {
     case 'name only':
       return relativePath;
     case 'compared path':
@@ -32,8 +31,7 @@ function getTitle(path: string, relativePath: string): string {
 }
 
 export async function showDiffs([file1, file2]: [string, string], title: string) {
-  const {useDiffMerge} = getConfiguration('useDiffMerge');
-  if (useDiffMerge) {
+  if (getConfiguration('useDiffMerge')) {
     if (diffMergeExtension) {
       commands.executeCommand('diffMerge.compareSelected', Uri.file(file1), [Uri.file(file1), Uri.file(file2)]);
     } else {
@@ -74,7 +72,7 @@ function getOptions() {
 
 export async function compareFolders(): Promise<CompareResult> {
   const [folder1Path, folder2Path] = pathContext.getPaths();
-  const {showIdentical} = getConfiguration('showIdentical');
+  const showIdentical = getConfiguration('showIdentical');
   const options = getOptions();
   // compare folders by contents
   const concatenatedOptions = {compareContent: true, ...options};

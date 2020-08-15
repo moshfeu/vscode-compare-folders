@@ -9,3 +9,4 @@ export const COPY_TO_COMPARED = 'foldersCompare.copyToCompared';
 export const COPY_TO_MY = 'foldersCompare.copyToMy';
 export const TAKE_MY_FILE = 'foldersCompare.takeMyFile';
 export const TAKE_COMPARED_FILE = 'foldersCompare.takeComparedFile';
+export const DELETE_FILE = 'foldersCompare.deleteFile';
