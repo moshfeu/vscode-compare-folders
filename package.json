@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -47,7 +47,7 @@
         },
         "compareFolders.ignoreFileNameCase": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "If true fileName / FileName / FiLE naMe will consider as same file and will be compared",
           "scope": "resource"
         },
@@ -102,6 +102,12 @@
           "default": false,
           "description": "Use Diff & Merge extension as diff view",
           "scope": "window"
+        },
+        "compareFolders.warnBeforeDelete": {
+          "type": "boolean",
+          "default": "true",
+          "description": "Show a warning message before deleting files",
+          "scope": "resource"
         }
       }
     },
@@ -138,6 +144,10 @@
         {
           "command": "foldersCompare.takeComparedFile",
           "when": "false"
+        },
+        {
+          "command": "foldersCompare.deleteFile",
+          "when": "false"
         }
       ],
       "view/title": [
@@ -170,6 +180,10 @@
           "group": "1_folderCompares_actions@1"
         },
         {
+          "command": "foldersCompare.deleteFile",
+          "when": "view == foldersCompareAppServiceOnlyA || view == foldersCompareAppServiceOnlyB"
+        },
+        {
           "command": "foldersCompare.takeMyFile",
           "when": "view == foldersCompareAppService",
           "group": "1_folderCompares_actions@1"
@@ -189,6 +203,10 @@
       {
         "title": "Copy to my folder",
         "command": "foldersCompare.copyToMy"
+      },
+      {
+        "title": "Delete",
+        "command": "foldersCompare.deleteFile"
       },
       {
         "title": "Take my file",
