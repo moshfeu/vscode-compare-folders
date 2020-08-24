@@ -83,6 +83,10 @@ Show your love
 
 Please create [an issue](https://github.com/moshfeu/vscode-compare-folders/issues/new)
 
+## Changelog
+
+You can find it [here](/CHANGELOG.md)
+
 ## Credits
 Activity bar's icon (and more) by [Stockio.com](https://www.stockio.com/free-icon/folders)
 Null icon made from <a href="http://www.onlinewebfonts.com/icon">Icon Fonts</a> is licensed by CC BY 3.0
