@@ -197,6 +197,14 @@
     },
     "commands": [
       {
+        "title": "Compare Folders: Pick from recent compares",
+        "command": "foldersCompare.pickFromRecentCompares"
+      },
+      {
+        "title": "Compare Folders: Clear recent compares",
+        "command": "foldersCompare.clearRecentCompares"
+      },
+      {
         "title": "Copy to compared folder",
         "command": "foldersCompare.copyToCompared"
       },

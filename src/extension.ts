@@ -1,10 +1,13 @@
-import { window, commands, ExtensionContext, workspace} from 'vscode';
+import { window, commands, ExtensionContext, workspace, Uri} from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
-import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE } from './constants/commands';
+import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
-
+import { globalState } from './services/globalState';
+import { pickFromRecents } from './services/pickFromRecentCompares';
 
 export function activate(context: ExtensionContext) {
+  globalState.init(context);
+  console.log(111111, globalState.getPaths());
   const onlyInA = new ViewOnlyProvider();
   const onlyInB = new ViewOnlyProvider();
   const identicals = new ViewOnlyProvider(false);
@@ -26,6 +29,8 @@ export function activate(context: ExtensionContext) {
       commands.registerCommand(TAKE_MY_FILE, foldersCompareProvider.takeMyFile),
       commands.registerCommand(TAKE_COMPARED_FILE, foldersCompareProvider.takeComparedFile),
       commands.registerCommand(DELETE_FILE, foldersCompareProvider.deleteFile),
+      commands.registerCommand(PICK_FROM_RECENT_COMPARES, pickFromRecents),
+      commands.registerCommand(CLEAR_RECENT_COMPARES, globalState.clear),
   );
 
   if (process.env.COMPARE_FOLDERS === 'DIFF') {

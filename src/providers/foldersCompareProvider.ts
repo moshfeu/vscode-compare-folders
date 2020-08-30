@@ -4,7 +4,7 @@ import { copySync, removeSync } from 'fs-extra';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
 import { File } from '../models/file';
-import { build } from '../services/tree-builder';
+import { build } from '../services/treeBuilder';
 import { pathContext } from '../context/path';
 import { getRelativePath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
@@ -121,7 +121,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     try {
       this._diffs = await compareFolders();
       if (this._diffs.hasResult()) {
-        showInfoMessageWithTimeout('Source Refreshed', 3000);
+        showInfoMessageWithTimeout('Source Refreshed');
       }
       this.updateUI();
     } catch (error) {

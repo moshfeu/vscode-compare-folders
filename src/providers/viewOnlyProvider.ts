@@ -1,6 +1,6 @@
 import { TreeDataProvider, TreeItem, EventEmitter, Event, Uri, TreeItemCollapsibleState } from 'vscode';
 import { File } from '../models/file';
-import { build } from '../services/tree-builder';
+import { build } from '../services/treeBuilder';
 
 export class ViewOnlyProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();

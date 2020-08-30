@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { build } from '../../services/tree-builder';
+import { build } from '../../services/treeBuilder';
 import { File } from '../../models/file';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';

@@ -1,6 +1,6 @@
 import { commands, Uri, extensions, window } from 'vscode';
 import { compare, Options } from 'dir-compare';
-import { openFolder } from './open-folder';
+import { openFolder } from './openFolder';
 import * as path from 'path';
 import { getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
