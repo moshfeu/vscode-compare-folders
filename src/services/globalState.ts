@@ -1,5 +1,5 @@
 import { ExtensionContext, Memento } from 'vscode';
-import { isEmpty } from 'lodash';
+import { log } from './logger';
 
 class GlobalState {
   private readonly KEY = 'compareFolders.paths';
@@ -9,25 +9,30 @@ class GlobalState {
     this.globalState = context.globalState;
   }
 
-  async updatePaths(path1: string, path2: string) {
-    if (!this.globalState) {
-      throw new Error(`globalState hasn't been initilized`);
+  updatePaths(path1: string, path2: string) {
+    try {
+      if (!this.globalState) {
+        throw new Error(`globalState hasn't been initilized`);
+      }
+      const newPath = `${path1}${SEPERATOR}${path2}`;
+      const currentPaths = this.getPaths();
+      const newPaths = [newPath, ...currentPaths.filter(path => path !== newPath)];
+      this.globalState.update(this.KEY, newPaths);
+    } catch (error) {
+      log(error);
     }
-    const currentPaths = this.getPaths();
-    currentPaths.add(`${path1}${SEPERATOR}${path2}`);
-    await this.globalState.update(this.KEY, currentPaths);
   }
 
   getPaths() {
     if (!this.globalState) {
       throw new Error(`globalState hasn't been initilized`);
     }
-    const stateFromStorage = this.globalState.get<Set<string>>(this.KEY, new Set());
-    return isEmpty(stateFromStorage) ? new Set<string>() : stateFromStorage;
+
+    return this.globalState.get<Array<string>>(this.KEY, []);
   }
 
   clear = () => {
-    this.globalState?.update(this.KEY, new Set());
+    this.globalState?.update(this.KEY, []);
   }
 }
 

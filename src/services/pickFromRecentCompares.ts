@@ -6,7 +6,7 @@ import { log } from './logger';
 
 export async function pickFromRecents() {
   const paths = globalState.getPaths();
-  if (!paths.size) {
+  if (!paths?.length) {
     showInfoMessageWithTimeout('History is empty');
     return;
   }
