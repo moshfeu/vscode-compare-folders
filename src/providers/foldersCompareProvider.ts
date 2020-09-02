@@ -125,7 +125,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       }
       this.updateUI();
     } catch (error) {
-      console.log(error);
+      log(error);
     }
   }
 

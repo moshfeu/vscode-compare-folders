@@ -1,9 +1,8 @@
 import { window, commands, Uri } from 'vscode';
 import { globalState, SEPERATOR } from './globalState';
 import { showInfoMessageWithTimeout } from '../utils/ui';
-import {
-  COMPARE_SELECTED_FOLDERS,
-} from '../constants/commands';
+import { COMPARE_SELECTED_FOLDERS } from '../constants/commands';
+import { log } from './logger';
 
 export async function pickFromRecents() {
   const paths = globalState.getPaths();
@@ -24,6 +23,6 @@ export async function pickFromRecents() {
   try {
     await commands.executeCommand(COMPARE_SELECTED_FOLDERS, undefined, URIs);
   } catch (error) {
-    console.log(55555, error);
+    log(`failed to run COMPARE_SELECTED_FOLDERS because ${error}`);
   }
 }

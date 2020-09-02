@@ -7,7 +7,6 @@ import { pickFromRecents } from './services/pickFromRecentCompares';
 
 export function activate(context: ExtensionContext) {
   globalState.init(context);
-  console.log(111111, globalState.getPaths());
   const onlyInA = new ViewOnlyProvider();
   const onlyInB = new ViewOnlyProvider();
   const identicals = new ViewOnlyProvider(false);
