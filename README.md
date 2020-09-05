@@ -7,7 +7,7 @@
 
 The extension allows you to compare folders, show the diffs in a list and present diff in a splitted view side by side.
 
-![Screen record](https://user-images.githubusercontent.com/3723951/82501126-67607700-9afd-11ea-9578-8526f6172143.gif)
+![Screen record](https://user-images.githubusercontent.com/3723951/92312411-f1f3b600-efc8-11ea-93b8-e90a3e25e9cb.gif)
 
 ## How to use?
 
