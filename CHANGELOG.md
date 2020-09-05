@@ -2,7 +2,7 @@
 
 **0.17.0**
 
-- Allow to quick pick pait of folders from recent compares
+- Allow to quick pick pair of folders from recent compares
 - Allow to clear the recent compares list
 - New icons
 
