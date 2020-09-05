@@ -1,4 +1,5 @@
-import {workspace} from 'vscode';
+import { workspace } from 'vscode';
+import { globalState } from '../services/globalState';
 
 class PathContext {
   private _mainPath: string | undefined;
@@ -29,6 +30,7 @@ class PathContext {
   setPaths(path1: string, path2: string): void {
     this.mainPath = path1;
     this.comparedPath = path2;
+    globalState.updatePaths(path1, path2);
   }
 
   getPaths(): [string, string] {

@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -153,13 +153,18 @@
       "view/title": [
         {
           "command": "foldersCompare.refresh",
-          "group": "navigation@1",
+          "group": "navigation@2",
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
         },
         {
           "command": "foldersCompare.swap",
-          "group": "navigation",
+          "group": "navigation@1",
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
+        },
+        {
+          "command": "foldersCompare.pickFromRecentCompares",
+          "group": "navigation@3",
+          "when": "view == foldersCompareAppService"
         }
       ],
       "explorer/context": [
@@ -196,6 +201,18 @@
       ]
     },
     "commands": [
+      {
+        "title": "Compare Folders: Pick from recent compares",
+        "command": "foldersCompare.pickFromRecentCompares",
+        "icon": {
+          "dark": "resources/dark/history.svg",
+          "light": "resources/light/history.svg"
+        }
+      },
+      {
+        "title": "Compare Folders: Clear recent compares",
+        "command": "foldersCompare.clearRecentCompares"
+      },
       {
         "title": "Copy to compared folder",
         "command": "foldersCompare.copyToCompared"

@@ -10,3 +10,5 @@ export const COPY_TO_MY = 'foldersCompare.copyToMy';
 export const TAKE_MY_FILE = 'foldersCompare.takeMyFile';
 export const TAKE_COMPARED_FILE = 'foldersCompare.takeComparedFile';
 export const DELETE_FILE = 'foldersCompare.deleteFile';
+export const PICK_FROM_RECENT_COMPARES = 'foldersCompare.pickFromRecentCompares';
+export const CLEAR_RECENT_COMPARES = 'foldersCompare.clearRecentCompares';

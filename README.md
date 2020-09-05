@@ -21,6 +21,9 @@ There are several ways to choose folders to compare:
   - `Click to select folders` see 2nd item
 - File explorer
   - Select 2 folders, right click and click on `Compare selected folders` see 2nd item
+- From history
+  - `Pick from recent compares` chose one of the pairs you compared in the past.
+  - (The list can be reset by `Clear recent compares`)
 
 `Refresh` - If there are changes in the compared folders' files, click on the `refresh` button will re-compare the folders.
 

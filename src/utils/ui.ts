@@ -1,6 +1,6 @@
 import { window, ProgressLocation } from 'vscode';
 
-export function showInfoMessageWithTimeout(message: string, timeout: number) {
+export function showInfoMessageWithTimeout(message: string, timeout: number = 3000) {
   const upTo = timeout / 10;
   window.withProgress({
     location: ProgressLocation.Notification,
