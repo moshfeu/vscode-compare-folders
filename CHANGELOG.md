@@ -4,6 +4,7 @@
 
 - Allow to quick pick pait of folders from recent compares
 - Allow to clear the recent compares list
+- New icons
 
 **0.16.0**
 
