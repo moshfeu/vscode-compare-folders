@@ -31,8 +31,22 @@ export function activate(context: ExtensionContext) {
       commands.registerCommand(PICK_FROM_RECENT_COMPARES, pickFromRecents),
       commands.registerCommand(CLEAR_RECENT_COMPARES, globalState.clear),
   );
-
-  if (process.env.COMPARE_FOLDERS === 'DIFF') {
+  var conf = workspace.getConfiguration("compareFolders");
+  var folderLeft = conf.get('folderLeft','').trim();
+  var folderRight = conf.get('folderRight','').trim();
+  if (!folderLeft || ! folderRight)
+  {
+    window.showInformationMessage(`In order to compare folders, the command should have been called with 2 folderLeft and folderRight settings`);
+    return;
+  }
+  // if the user set both folderLeft and folderRight they will be used on activation
+  if (folderLeft && folderRight) {
+    var folderLeftUri = Uri.file(folderLeft);
+    var folderRightUri = Uri.file(folderRight);
+    window.showInformationMessage(`Please wait, comparing folder ${folderLeft}-->${folderRight}`);
+    foldersCompareProvider.compareSelectedFolders(folderLeftUri, [folderLeftUri, folderRightUri]);
+  }
+  else if (process.env.COMPARE_FOLDERS === 'DIFF') {
     if (workspace.workspaceFolders?.length !== 2) {
       window.showInformationMessage(`In order to compare folders, the command should been called with 2 folders: e.g. COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2. Actual folders: ${workspace.workspaceFolders?.length || 0}`);
       return;
@@ -40,5 +54,6 @@ export function activate(context: ExtensionContext) {
     const [folder1Path, folder2Path] = workspace.workspaceFolders.map(folder => folder.uri);
     foldersCompareProvider.compareSelectedFolders(folder1Path, [folder1Path, folder2Path]);
   }
+  
 }
 

@@ -39,6 +39,18 @@
       "type": "object",
       "title": "Compare Folders Configuration",
       "properties": {
+        "compareFolders.folderLeft": {
+          "type": "string",
+          "description": "Default setting for left folder",
+          "default":"",
+          "scope": "resource"
+        },
+        "compareFolders.folderRight": {
+          "type": "string",
+          "description": "Default setting for right folder",
+          "default":"",
+          "scope": "resource"
+        },
         "compareFolders.compareContent": {
           "type": "boolean",
           "default": true,
