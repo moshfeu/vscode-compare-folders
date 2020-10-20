@@ -33,7 +33,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   compareSelectedFolders = async (_e: Uri, [{fsPath: folder1Path}, {fsPath: folder2Path}]: [Uri, Uri]) => {
     pathContext.setPaths(folder1Path, folder2Path);
-    this.handleDiffResult(await compareFolders());
+    return this.handleDiffResult(await compareFolders());
   }
 
 	chooseFoldersAndCompare = async (ignoreWorkspace = false) => {

@@ -4,8 +4,10 @@ import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGA
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
 import { globalState } from './services/globalState';
 import { pickFromRecents } from './services/pickFromRecentCompares';
+import { getConfiguration } from './services/configuration';
+import { showDoneableInfo } from './utils/ui';
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
   globalState.init(context);
   const onlyInA = new ViewOnlyProvider();
   const onlyInB = new ViewOnlyProvider();
@@ -31,8 +33,22 @@ export function activate(context: ExtensionContext) {
       commands.registerCommand(PICK_FROM_RECENT_COMPARES, pickFromRecents),
       commands.registerCommand(CLEAR_RECENT_COMPARES, globalState.clear),
   );
-
-  if (process.env.COMPARE_FOLDERS === 'DIFF') {
+  const {folderLeft, folderRight} = getConfiguration('folderLeft', 'folderRight');
+  if (folderLeft || folderRight)
+  {
+    // if the user set both folderLeft and folderRight they will be used on activation
+    if (!folderLeft || !folderRight)
+    {
+      window.showInformationMessage(`In order to compare folders, the command should have been called with 2 folderLeft and folderRight settings`);
+      return;
+    }
+    const folderLeftUri = Uri.file(folderLeft);
+    const folderRightUri = Uri.file(folderRight);
+    showDoneableInfo(`Please wait, comparing folder ${folderLeft}-->${folderRight}`, () =>
+      foldersCompareProvider.compareSelectedFolders(folderLeftUri, [folderLeftUri, folderRightUri])
+    );
+  }
+  else if (process.env.COMPARE_FOLDERS === 'DIFF') {
     if (workspace.workspaceFolders?.length !== 2) {
       window.showInformationMessage(`In order to compare folders, the command should been called with 2 folders: e.g. COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2. Actual folders: ${workspace.workspaceFolders?.length || 0}`);
       return;
@@ -40,5 +56,6 @@ export function activate(context: ExtensionContext) {
     const [folder1Path, folder2Path] = workspace.workspaceFolders.map(folder => folder.uri);
     foldersCompareProvider.compareSelectedFolders(folder1Path, [folder1Path, folder2Path]);
   }
+
 }
 
