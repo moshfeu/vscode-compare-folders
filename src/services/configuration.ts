@@ -10,6 +10,8 @@ interface IConfigurations {
   showIdentical: boolean;
   useDiffMerge: boolean;
   warnBeforeDelete: boolean;
+  folderLeft: string;
+  folderRight: string;
 }
 
 type ConfigurationItem = keyof IConfigurations;

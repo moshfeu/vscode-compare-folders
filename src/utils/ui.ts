@@ -20,3 +20,10 @@ export function showInfoMessageWithTimeout(message: string, timeout: number = 30
     });
   });
 }
+
+export async function showDoneableInfo(title: string, callback: () => Promise<void>) {
+  await window.withProgress({
+    location: ProgressLocation.Notification,
+    title,
+  }, async () => callback());
+}
