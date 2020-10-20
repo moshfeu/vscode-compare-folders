@@ -1,5 +1,9 @@
 ## Change log
 
+**0.18.0**
+
+- Allow to set pair of folders in settings to auto compare when the extension launched
+
 **0.17.0**
 
 - Allow to quick pick pair of folders from recent compares
