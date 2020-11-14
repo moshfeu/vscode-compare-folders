@@ -1,5 +1,9 @@
 ## Change log
 
+**0.19.0**
+
+- Added an option to ignore files extension under configuration ([More info](https://github.com/moshfeu/vscode-compare-folders/#options-under-vscode-settings))
+
 **0.18.0**
 
 - Allow to set pair of folders in settings to auto compare when the extension launched

@@ -1,8 +1,26 @@
-import { TreeItemCollapsibleState, TreeDataProvider, EventEmitter, Event, TreeItem, workspace, window, WorkspaceFolder, ProgressLocation, commands, Uri } from 'vscode';
+import {
+  TreeItemCollapsibleState,
+  TreeDataProvider,
+  EventEmitter,
+  Event,
+  TreeItem,
+  workspace,
+  window,
+  WorkspaceFolder,
+  ProgressLocation,
+  commands,
+  Uri,
+} from 'vscode';
 import * as path from 'path';
 import { copySync, removeSync } from 'fs-extra';
 import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
-import { chooseFoldersAndCompare, showDiffs, compareFolders, CompareResult, showFile } from '../services/comparer';
+import {
+  chooseFoldersAndCompare,
+  showDiffs,
+  compareFolders,
+  CompareResult,
+  showFile,
+} from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/treeBuilder';
 import { pathContext } from '../context/path';
@@ -23,27 +41,44 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   private workspaceRoot: string;
 
-  constructor(private onlyInA: ViewOnlyProvider, private onlyInB: ViewOnlyProvider, private identicals: ViewOnlyProvider) {
-    this.workspaceRoot = (workspace.workspaceFolders && workspace.workspaceFolders.length) ? workspace.workspaceFolders[0].uri.fsPath : '';
+  constructor(
+    private onlyInA: ViewOnlyProvider,
+    private onlyInB: ViewOnlyProvider,
+    private identicals: ViewOnlyProvider
+  ) {
+    this.workspaceRoot =
+      workspace.workspaceFolders && workspace.workspaceFolders.length
+        ? workspace.workspaceFolders[0].uri.fsPath
+        : '';
   }
 
   compareFoldersAgainstEachOther = async () => {
     await this.chooseFoldersAndCompare(true);
-  }
+  };
 
-  compareSelectedFolders = async (_e: Uri, [{fsPath: folder1Path}, {fsPath: folder2Path}]: [Uri, Uri]) => {
+  compareSelectedFolders = async (
+    _e: Uri,
+    [{ fsPath: folder1Path }, { fsPath: folder2Path }]: [Uri, Uri]
+  ) => {
     pathContext.setPaths(folder1Path, folder2Path);
     return this.handleDiffResult(await compareFolders());
-  }
+  };
 
-	chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
-    await window.withProgress({
-      location: ProgressLocation.Notification,
-      title: `Compare folders...`
-    }, async () => {
-      this.handleDiffResult(await chooseFoldersAndCompare(ignoreWorkspace ? undefined : await this.getWorkspaceFolder()));
-    });
-  }
+  chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
+    await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: `Compare folders...`,
+      },
+      async () => {
+        this.handleDiffResult(
+          await chooseFoldersAndCompare(
+            ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
+          )
+        );
+      }
+    );
+  };
 
   async handleDiffResult(diffs?: CompareResult) {
     if (!diffs) {
@@ -68,33 +103,33 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       }
       return selectedWorkspace;
     }
-  }
+  };
 
   chooseWorkspace = async (): Promise<string | undefined> => {
-    const workspaces = (workspace.workspaceFolders as WorkspaceFolder[]).map(folder => ({
+    const workspaces = (workspace.workspaceFolders as WorkspaceFolder[]).map((folder) => ({
       label: folder.name,
-      description: folder.uri.fsPath
+      description: folder.uri.fsPath,
     }));
     const result = await window.showQuickPick(workspaces, {
       canPickMany: false,
-      placeHolder: 'Choose a workspace to compare with'
+      placeHolder: 'Choose a workspace to compare with',
     });
     if (result) {
       this.workspaceRoot = result.description;
       return this.workspaceRoot;
     }
-  }
+  };
 
-  onFileClicked([path1, path2]: [string, string], title: string) {
+  onFileClicked([path1, path2]: [string, string], relativePath: string) {
     try {
       if (path2) {
         let diffs: [string, string] = [path2, path1];
         if (getConfiguration('diffLayout') === 'local <> compared') {
           diffs = [path1, path2];
         }
-        showDiffs(diffs, title);
+        showDiffs(diffs, relativePath);
       } else {
-        showFile(path1, title);
+        showFile(path1);
       }
     } catch (error) {
       console.error(error);
@@ -110,14 +145,16 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       this._onDidChangeTreeData.fire();
     } else {
       this.showEmptyState();
-      window.showInformationMessage('[Compare Folders] There are no differences in any file at the same path.');
+      window.showInformationMessage(
+        '[Compare Folders] There are no differences in any file at the same path.'
+      );
     }
     this.onlyInA.update(this._diffs.left, this._diffs.leftPath);
     this.onlyInB.update(this._diffs.right, this._diffs.rightPath);
     this.identicals.update(this._diffs.identicals, this._diffs.leftPath);
   }
 
-	refresh = async () => {
+  refresh = async () => {
     try {
       this._diffs = await compareFolders();
       if (this._diffs.hasResult()) {
@@ -127,51 +164,58 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     } catch (error) {
       log(error);
     }
-  }
+  };
 
   swap = () => {
     pathContext.swap();
     this.refresh();
-  }
+  };
 
   copyToCompared = (e: TreeItem) => {
     this.copyToFolder(e.resourceUri!, 'to-compared');
-  }
+  };
 
   copyToMy = (e: TreeItem) => {
     this.copyToFolder(e.resourceUri!, 'to-me');
-  }
+  };
 
   deleteFile = async (e: TreeItem) => {
     const yesMessage = `Yes. I know what I'm doing`;
     let shouldDelete = true;
 
     if (getConfiguration('warnBeforeDelete')) {
-      shouldDelete = yesMessage === await window.showInformationMessage('Are you sure you want to delete this file?', {
-        modal: true
-      }, yesMessage);
+      shouldDelete =
+        yesMessage ===
+        (await window.showInformationMessage(
+          'Are you sure you want to delete this file?',
+          {
+            modal: true,
+          },
+          yesMessage
+        ));
     }
 
     if (shouldDelete) {
       removeSync(e.resourceUri!.fsPath);
       this.refresh();
     }
-  }
+  };
 
   takeMyFile = (e: TreeItem) => {
     const [[filePath]] = e.command!.arguments!;
     this.copyToFolder(Uri.parse(filePath), 'to-compared');
-  }
+  };
 
   takeComparedFile = (e: TreeItem) => {
-    const [[,filePath]] = e.command!.arguments!;
+    const [[, filePath]] = e.command!.arguments!;
     this.copyToFolder(Uri.parse(filePath), 'to-me');
-  }
+  };
 
   copyToFolder(uri: Uri, direction: 'to-compared' | 'to-me') {
     try {
       const [folder1Path, folder2Path] = pathContext.getPaths();
-      const [from, to] = direction === 'to-me' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
+      const [from, to] =
+        direction === 'to-me' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
       const toPath = path.parse(path.join(from, uri.path.replace(to, '')));
       copySync(uri.fsPath, path.format(toPath));
       this.refresh();
@@ -186,7 +230,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   getTreeItem(element: File): TreeItem {
-		return element;
+    return element;
   }
 
   getFolderName(filePath: string, basePath: string) {
@@ -194,7 +238,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     return path.basename(path.dirname(getRelativePath(filePath, base)));
   }
 
-	getChildren(element?: File): File[] {
+  getChildren(element?: File): File[] {
     if (element && element.children) {
       return element.children;
     }
@@ -209,21 +253,22 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
 
     return children;
-	}
+  }
 }
 
-const openFolderChild = (isSingle: boolean) => new File(
-  isSingle ? 'Click to select a folder' : 'Click to select folders',
-  'open',
-  TreeItemCollapsibleState.None,
-  {
-    title: 'title',
-    command: CHOOSE_FOLDERS_AND_COMPARE,
-  },
-);
+const openFolderChild = (isSingle: boolean) =>
+  new File(
+    isSingle ? 'Click to select a folder' : 'Click to select folders',
+    'open',
+    TreeItemCollapsibleState.None,
+    {
+      title: 'title',
+      command: CHOOSE_FOLDERS_AND_COMPARE,
+    }
+  );
 
 const emptyStateChild: File = new File(
   'There are no files to compare',
   'empty',
-  TreeItemCollapsibleState.None,
+  TreeItemCollapsibleState.None
 );
