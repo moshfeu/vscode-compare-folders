@@ -15,6 +15,7 @@ const promises = [];
 package.displayName += ' - Insider';
 package.galleryBanner.color = '#daf8d6';
 package.name += '-insider';
+package.version = process.env.VERSION || package.version;
 promises.push(
   fs.promises.writeFile('./package.json', JSON.stringify(package, null, 2))
 )
