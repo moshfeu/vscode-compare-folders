@@ -11,16 +11,24 @@ export function compareName(name1: string, name2: string, options: CompreOptions
     name2 = name2.toLowerCase();
   }
   if (options.ignoreExtension) {
-    if (
-      options.ignoreExtension.some((exts: [string, string]) => {
-        return exts.includes(extnameOnly(name1)) && exts.includes(extnameOnly(name2));
-      })
-    ) {
-      name1 = path.basename(name1, path.extname(name1));
-      name2 = path.basename(name2, path.extname(name2));
-    }
+    options.ignoreExtension.some((exts, index) => {
+      let exists = false;
+      if (exts.includes(extnameOnly(name1))) {
+        exists = true;
+        name1 = identityExtension(name1, index);
+      }
+      if (exts.includes(extnameOnly(name2))) {
+        exists = true;
+        name2 = identityExtension(name2, index);
+      }
+      return exists;
+    });
   }
   return strcmp(name1, name2);
+}
+
+function identityExtension(name: string, id: number) {
+  return path.basename(name).replace(path.extname(name), `.$ext${id}`)
 }
 
 function strcmp(str1: string, str2: string) {
