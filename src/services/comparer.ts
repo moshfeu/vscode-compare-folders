@@ -4,7 +4,7 @@ import { openFolder } from './openFolder';
 import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
-import { compareIgnoredExtension, compareName } from './compareName';
+import { compareIgnoredExtension, compareName, validate } from './ignoreExtensionTools';
 import { CompreOptions } from '../types';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
@@ -90,6 +90,9 @@ function getOptions() {
 }
 
 export async function compareFolders(): Promise<CompareResult> {
+  if (!validate()) {
+    return Promise.resolve(new CompareResult([], [], [], [], '', ''));
+  }
   const [folder1Path, folder2Path] = pathContext.getPaths();
   const showIdentical = getConfiguration('showIdentical');
   const options = getOptions();
