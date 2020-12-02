@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -42,13 +42,13 @@
         "compareFolders.folderLeft": {
           "type": "string",
           "description": "Default setting for left folder",
-          "default":"",
+          "default": "",
           "scope": "resource"
         },
         "compareFolders.folderRight": {
           "type": "string",
           "description": "Default setting for right folder",
-          "default":"",
+          "default": "",
           "scope": "resource"
         },
         "compareFolders.compareContent": {
@@ -61,6 +61,12 @@
           "type": "boolean",
           "default": true,
           "description": "If true fileName / FileName / FiLE naMe will consider as same file and will be compared",
+          "scope": "resource"
+        },
+        "compareFolders.ignoreExtension": {
+          "type": "array",
+          "default": [],
+          "description": "Pairs of extensions to to considered the same file (.e.g [index.js, index.ts]). Each extension can appear **only once**",
           "scope": "resource"
         },
         "compareFolders.includeFilter": {
@@ -336,7 +342,7 @@
     "vscode-test": "^1.0.2"
   },
   "dependencies": {
-    "dir-compare": "^1.8.0",
+    "dir-compare": "^2.4.0",
     "fs-extra": "8.1.0",
     "lodash": "^4.17.15",
     "text-diff": "^1.0.1"

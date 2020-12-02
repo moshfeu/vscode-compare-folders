@@ -31,6 +31,16 @@ There are several ways to choose folders to compare:
 
 - `excludeFilter` - glob string
 - `includeFilter` - glob string
+
+***Example***
+
+```json
+"compareFolders.excludeFilter": [
+  "**/node_modules",
+  "**/.svn",
+  "**/.git"
+]
+```
 - `compareContent` - boolean - Compares files by content
 - `diffViewTitle` - One of the options: "name only", "compared path", "full path"
 - `ignoreFileNameCase` - boolean - Compare files with the same name but different case
@@ -38,14 +48,12 @@ There are several ways to choose folders to compare:
 - `showIdentical` - boolean - Whether or not show the identical files panel
 - `useDiffMerge` - boolean - Whether or not using [`Diff & Merge`](https://marketplace.visualstudio.com/items?itemName=moshfeu.diff-merge) extension as the Diff viewer. In order to use this option, you should install the extension
 - `folderLeft` + `folderRight` - strings - paths of 2 folders, compare them on the extension load.
+- `ignoreExtension` - Set groups of extensions so while comparing, pairs of files considered the same file if both of the files extension are in the same group. **Note:** each extension can show **only once** it this list
 
-**Example**
-
+***Example***
 ```json
-"compareFolders.excludeFilter": [
-  "**/node_modules",
-  "**/.svn",
-  "**/.git"
+"compareFolders.ignoreExtension": [
+  ["php", "cs"]
 ]
 ```
 
