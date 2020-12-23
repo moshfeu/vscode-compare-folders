@@ -1,5 +1,5 @@
 import { commands, Uri, extensions, window } from 'vscode';
-import { compare, Options } from 'dir-compare';
+import { compare, fileCompareHandlers } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
@@ -70,12 +70,16 @@ function getOptions() {
     includeFilter,
     ignoreFileNameCase,
     ignoreExtension,
+    ignoreWhiteSpaces,
+    ignoreLineEnding,
   } = getConfiguration(
     'compareContent',
     'excludeFilter',
     'includeFilter',
     'ignoreFileNameCase',
-    'ignoreExtension'
+    'ignoreExtension',
+    'ignoreWhiteSpaces',
+    'ignoreLineEnding',
   );
 
   const options: CompreOptions = {
@@ -84,6 +88,9 @@ function getOptions() {
     includeFilter: includeFilter ? includeFilter.join(',') : undefined,
     ignoreCase: ignoreFileNameCase,
     ignoreExtension,
+    ignoreWhiteSpaces,
+    ignoreLineEnding,
+    compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,
   };
   return options;

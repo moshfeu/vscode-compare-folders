@@ -14,6 +14,8 @@ interface IConfigurations {
   warnBeforeDelete: boolean;
   folderLeft: string;
   folderRight: string;
+  ignoreWhiteSpaces: boolean;
+  ignoreLineEnding: boolean;
 }
 
 type ConfigurationItem = keyof IConfigurations;

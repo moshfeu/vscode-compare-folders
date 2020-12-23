@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -55,6 +55,18 @@
           "type": "boolean",
           "default": true,
           "description": "Compare content",
+          "scope": "resource"
+        },
+        "compareFolders.ignoreLineEnding": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ignore line ending",
+          "scope": "resource"
+        },
+        "compareFolders.ignoreWhiteSpaces": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ignore white spaces",
           "scope": "resource"
         },
         "compareFolders.ignoreFileNameCase": {
