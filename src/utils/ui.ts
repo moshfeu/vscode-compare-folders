@@ -9,7 +9,7 @@ export function showInfoMessageWithTimeout(message: string, timeout: number = 30
   },
   async (progress) => {
     let counter = 0;
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       const interval = setInterval(() => {
         progress.report({increment: counter / upTo});
         if (++counter === upTo) {
