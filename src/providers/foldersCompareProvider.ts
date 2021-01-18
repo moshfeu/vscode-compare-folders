@@ -272,7 +272,7 @@ const openFolderChild = (isSingle: boolean) =>
   );
 
 const emptyStateChild: File = new File(
-  'There are no files to compare',
+  'The compared folders are synchronized',
   'empty',
   TreeItemCollapsibleState.None
 );
