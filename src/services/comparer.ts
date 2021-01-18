@@ -104,7 +104,6 @@ export async function compareFolders(): Promise<CompareResult> {
     if (!validate()) {
       return emptyResponse();
     }
-    throw new Error('blabla');
     const [folder1Path, folder2Path] = pathContext.getPaths();
     const showIdentical = getConfiguration('showIdentical');
     const options = getOptions();
