@@ -1,4 +1,4 @@
-import { window, commands, ExtensionContext, workspace, Uri} from 'vscode';
+import { window, commands, ExtensionContext, workspace, Uri, version} from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
 import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';

@@ -1,7 +1,8 @@
-import { window, ProgressLocation, env, Uri } from 'vscode';
-import { log } from '../services/logger';
+import { window, ProgressLocation, env, Uri, version } from 'vscode';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 import os from 'os';
-import { version } from '../../package.json';
+import { log } from '../services/logger';
 
 export function showInfoMessageWithTimeout(message: string, timeout: number = 3000) {
   const upTo = timeout / 10;
@@ -42,7 +43,8 @@ export async function showErrorMessage(message: string, error: any) {
       const body = `**Original message**: ${message}
 
 **System Info**
-Extension version: ${version}
+Editor version: ${version}
+Extension version: ${getExtensionVersion()}
 OS: ${os.platform()} ${os.release()}
 
 **Stack**
@@ -58,4 +60,11 @@ ${error.stack || error.message || error}
       log(error);
     }
   }
+}
+
+function getExtensionVersion() {
+  const { version: extVersion } = JSON.parse(
+    readFileSync(join(__dirname, '..', 'package.json'), { encoding: 'utf8' })
+  );
+  return extVersion;
 }
