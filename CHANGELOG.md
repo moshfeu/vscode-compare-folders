@@ -1,5 +1,10 @@
 ## Change log
 
+**0.20.1** windows bug fixes
+
+- [#64](https://github.com/moshfeu/vscode-compare-folders/issues/64) - Recent folders are being duplicate and not working on Windows
+- [#61](https://github.com/moshfeu/vscode-compare-folders/issues/61) - "Copy to [folder]" is copying the whole directory tree, not just the file
+
 **0.20.0**
 
 - Added an option to ignore white spaces and end of lines while comparing [#59](https://github.com/moshfeu/vscode-compare-folders/issues/59) under configuration ([More info](https://github.com/moshfeu/vscode-compare-folders/#options-under-vscode-settings))

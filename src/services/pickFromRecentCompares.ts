@@ -19,7 +19,9 @@ export async function pickFromRecents() {
     return;
   }
 
-  const URIs = chosen.split(SEPERATOR).map((path) => Uri.parse(path));
+  const URIs = chosen.split(SEPERATOR).map((path) => ({
+    fsPath: path
+  }));
   try {
     await commands.executeCommand(COMPARE_SELECTED_FOLDERS, undefined, URIs);
   } catch (error) {

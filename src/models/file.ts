@@ -17,6 +17,7 @@ export class File extends TreeItem {
 		super(label, collapsibleState);
 
     try {
+      this.tooltip = this.label;
       this.resourceUri = this.resourceUri || (
         this.hasIcon ?
           undefined :
@@ -25,10 +26,6 @@ export class File extends TreeItem {
     } catch (error) {
       log(`can't set resourceUri: ${error}`);
     }
-	}
-
-	get tooltip(): string {
-		return this.label;
 	}
 
   get hasIcon() {
