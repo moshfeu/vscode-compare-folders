@@ -7,3 +7,5 @@ src/**
 **/tslint.json
 **/*.map
 **/*.ts
+.env
+azure-pipelines.yml
