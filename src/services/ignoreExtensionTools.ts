@@ -2,7 +2,7 @@ import { window, env, Uri } from 'vscode';
 import { flatten } from 'lodash';
 import * as path from 'path';
 import { CompreOptions } from '../types';
-import { showInfoMessageWithTimeout } from '../utils/ui';
+import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
 import { getConfiguration } from './configuration';
 
 function extnameOnly(name: string) {
@@ -26,14 +26,8 @@ export function compareName(name1: string, name2: string, options: CompreOptions
   return strcmp(name1, name2);
 }
 
-async function showValidation(message: string) {
-  const moreInfo = 'More Info';
-  const result = await window.showErrorMessage(message, moreInfo);
-  if (result === moreInfo) {
-    env.openExternal(
-      Uri.parse('https://github.com/moshfeu/vscode-compare-folders#options-under-vscode-settings')
-    );
-  }
+function showValidation(message: string) {
+  showErrorMessageWithMoreInfo(message, 'https://github.com/moshfeu/vscode-compare-folders#options-under-vscode-settings');
 }
 
 export function validate(): boolean {
