@@ -51,7 +51,7 @@ Promise.all(promises).then(async () => {
 function deploy() {
   return new Promise((resolve, reject) => {
     cp
-      .spawn('yarn', ['deploy', process.env.TOKEN], {
+      .spawn('yarn', ['deploy', process.env.INSIDER-TOKEN], {
         stdio: 'inherit',
       })
       .on('exit', (code, signal) => {
