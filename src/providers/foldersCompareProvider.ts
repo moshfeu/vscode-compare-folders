@@ -30,7 +30,7 @@ import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
 import { log } from '../services/logger';
-import { showInfoMessageWithTimeout } from '../utils/ui';
+import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -56,10 +56,15 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await this.chooseFoldersAndCompare(true);
   };
 
-  compareSelectedFolders = async (
-    _e: Uri,
-    [{ fsPath: folder1Path }, { fsPath: folder2Path }]: [Uri, Uri]
-  ) => {
+  compareSelectedFolders = async (_e: Uri, uris?: [Uri, Uri]) => {
+    if (uris?.length !== 2) {
+      showErrorMessageWithMoreInfo(
+        'Unfortunately, this command can run only by right clicking on 2 folders, no shortcuts here 😕',
+        'https://github.com/microsoft/vscode/issues/3553'
+      );
+      return;
+    }
+    const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
     return this.handleDiffResult(await compareFolders());
   };
@@ -216,7 +221,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       const [folder1Path, folder2Path] = pathContext.getPaths();
       const [from, to] =
         direction === 'to-compared' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
-      const {root, dir, name} = path.parse(from);
+      const { root, dir, name } = path.parse(from);
       const pathWithoutSchema = dir.replace(root, '');
       const fileCopiedRelativePath = uri.fsPath.replace(pathWithoutSchema, '').replace(name, '');
       const fromPath = path.join(from, fileCopiedRelativePath);

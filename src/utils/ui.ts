@@ -62,6 +62,14 @@ ${error.stack || error.message || error}
   }
 }
 
+export async function showErrorMessageWithMoreInfo(message: string, link: string) {
+  const moreInfo = 'More Info';
+  const result = await window.showErrorMessage(message, moreInfo);
+  if (result === moreInfo) {
+    env.openExternal(Uri.parse(link));
+  }
+}
+
 function getExtensionVersion() {
   const { version: extVersion } = JSON.parse(
     readFileSync(join(__dirname, '..', 'package.json'), { encoding: 'utf8' })
