@@ -15,6 +15,8 @@ interface IConfigurations {
   folderLeft: string;
   folderRight: string;
   ignoreWhiteSpaces: boolean;
+  ignoreAllWhiteSpaces: boolean;
+  ignoreEmptyLines: boolean;
   ignoreLineEnding: boolean;
 }
 

@@ -73,6 +73,8 @@ function getOptions() {
     ignoreFileNameCase,
     ignoreExtension,
     ignoreWhiteSpaces,
+    ignoreAllWhiteSpaces,
+    ignoreEmptyLines,
     ignoreLineEnding,
   } = getConfiguration(
     'compareContent',
@@ -81,6 +83,8 @@ function getOptions() {
     'ignoreFileNameCase',
     'ignoreExtension',
     'ignoreWhiteSpaces',
+    'ignoreAllWhiteSpaces',
+    'ignoreEmptyLines',
     'ignoreLineEnding',
   );
 
@@ -91,6 +95,8 @@ function getOptions() {
     ignoreCase: ignoreFileNameCase,
     ignoreExtension,
     ignoreWhiteSpaces,
+    ignoreAllWhiteSpaces,
+    ignoreEmptyLines,
     ignoreLineEnding,
     compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,

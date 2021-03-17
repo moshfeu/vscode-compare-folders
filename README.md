@@ -9,6 +9,10 @@ The extension allows you to compare folders, show the diffs in a list and presen
 
 ![Screen record](https://user-images.githubusercontent.com/3723951/92312411-f1f3b600-efc8-11ea-93b8-e90a3e25e9cb.gif)
 
+### Thanks
+
+The extension uses the great [`dir-compare`](https://github.com/gliviu/dir-compare) package made by [Liviu Grigorescu](https://github.com/gliviu). If you like this extension, please give a star to `dir-compare`!
+
 ## How to use?
 
 There are several ways to choose folders to compare:
@@ -49,8 +53,10 @@ There are several ways to choose folders to compare:
 - `useDiffMerge` - boolean - Whether or not using [`Diff & Merge`](https://marketplace.visualstudio.com/items?itemName=moshfeu.diff-merge) extension as the Diff viewer. In order to use this option, you should install the extension
 - `folderLeft` + `folderRight` - strings - paths of 2 folders, compare them on the extension load.
 - `ignoreExtension` - Set groups of extensions so while comparing, pairs of files considered the same file if both of the files extension are in the same group. **Note:** each extension can show **only once** it this list
-- `ignoreLineEnding` - ignore end of line when comparing
-- `ignoreWhiteSpaces` - ignore white spaces when comparing
+- `ignoreLineEnding` - boolean - ignore crlf/lf line ending differences
+- `ignoreWhiteSpaces` - boolean - ignore white spaces at the beginning and ending of a line (similar to `diff -b`)
+- `ignoreAllWhiteSpaces` - boolean - ignore all white space differences (similar to `diff -w`)
+- `ignoreEmptyLines` - boolean - ignore differences caused by empty lines (similar to `diff -B`)
 
 ***Example***
 ```json
