@@ -60,13 +60,25 @@
         "compareFolders.ignoreLineEnding": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore line ending",
+          "description": "Ignore crlf/lf line ending differences",
           "scope": "resource"
         },
         "compareFolders.ignoreWhiteSpaces": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore white spaces",
+          "description": "Ignore white spaces at the beginning and ending of a line (similar to 'diff -b')",
+          "scope": "resource"
+        },
+        "compareFolders.ignoreAllWhiteSpaces": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ignore all white space differences (similar to 'diff -w')",
+          "scope": "resource"
+        },
+        "compareFolders.ignoreEmptyLines": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ignore differences caused by empty lines (similar to 'diff -B')",
           "scope": "resource"
         },
         "compareFolders.ignoreFileNameCase": {
@@ -354,7 +366,7 @@
     "vscode-test": "^1.0.2"
   },
   "dependencies": {
-    "dir-compare": "^2.4.0",
+    "dir-compare": "^3.1.5",
     "fs-extra": "8.1.0",
     "lodash": "^4.17.15",
     "text-diff": "^1.0.1"
