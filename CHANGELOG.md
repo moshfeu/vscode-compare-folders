@@ -1,5 +1,9 @@
 ## Change log
 
+**0.21.0**
+
+- [#65](https://github.com/moshfeu/vscode-compare-folders/issues/65) - Add `ignoreAllWhiteSpaces` and `ignoreEmptyLines` options
+
 **0.20.1** windows bug fixes
 
 - [#64](https://github.com/moshfeu/vscode-compare-folders/issues/64) - Recent folders are being duplicate and not working on Windows
