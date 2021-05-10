@@ -5,9 +5,10 @@ import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
 import { compareIgnoredExtension, compareName, validate } from './ignoreExtensionTools';
-import { CompreOptions } from '../types';
+import { CompareOptions } from '../types';
 import { log } from './logger';
 import { showErrorMessage } from '../utils/ui';
+import { validatePermissions } from './validators';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
@@ -88,7 +89,7 @@ function getOptions() {
     'ignoreLineEnding',
   );
 
-  const options: CompreOptions = {
+  const options: CompareOptions = {
     compareContent,
     excludeFilter: excludeFilter ? excludeFilter.join(',') : undefined,
     includeFilter: includeFilter ? includeFilter.join(',') : undefined,
@@ -111,10 +112,11 @@ export async function compareFolders(): Promise<CompareResult> {
       return emptyResponse();
     }
     const [folder1Path, folder2Path] = pathContext.getPaths();
+    validatePermissions(folder1Path, folder2Path);
     const showIdentical = getConfiguration('showIdentical');
     const options = getOptions();
     // compare folders by contents
-    const concatenatedOptions = { compareContent: true, ...options };
+    const concatenatedOptions: CompareOptions = { compareContent: true, handlePermissionDenied: true, ...options };
     // do the compare
     const res = await compare(folder1Path, folder2Path, concatenatedOptions);
 
