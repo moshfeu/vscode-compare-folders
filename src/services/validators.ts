@@ -9,9 +9,13 @@ export async function validatePermissions(path1: string, path2: string) {
   }
 }
 
+export function showUnaccessibleWarning(path: string) {
+  return showInfoMessageWithTimeout(`${path} ${NOT_ACCESSIBLE}`, 4000);
+}
+
 async function validatePath(path: string) {
   if (await hasPermissionDenied(path)) {
-    showInfoMessageWithTimeout(`${path} ${NOT_ACCESSIBLE}`, 4000);
+    showUnaccessibleWarning(path);
     return false;
   }
   return true;

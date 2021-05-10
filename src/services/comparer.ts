@@ -1,5 +1,5 @@
 import { commands, Uri, extensions, window } from 'vscode';
-import { compare, fileCompareHandlers } from 'dir-compare';
+import { compare, Difference, fileCompareHandlers } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
@@ -106,7 +106,7 @@ function getOptions() {
 }
 
 export async function compareFolders(): Promise<CompareResult> {
-  const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], '', ''));
+  const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], [], '', ''));
   try {
     if (!validate()) {
       return emptyResponse();
@@ -131,24 +131,34 @@ export async function compareFolders(): Promise<CompareResult> {
     // readable 👍 performance 👎
     const left = diffSet
       .filter((diff) => diff.state === 'left' && diff.type1 === 'file')
-      .map((diff) => [path.join(diff.path1!, diff.name1!)]);
+      .map((diff) => [buildPath(diff, '1')]);
 
     const right = diffSet
       .filter((diff) => diff.state === 'right' && diff.type2 === 'file')
-      .map((diff) => [path.join(diff.path2!, diff.name2!)]);
+      .map((diff) => [buildPath(diff, '2')]);
 
     const identicals = showIdentical
       ? diffSet
           .filter((diff) => diff.state === 'equal' && diff.type1 === 'file')
-          .map((diff) => [path.join(diff.path1!, diff.name1!)])
+          .map((diff) => [buildPath(diff, '1')])
       : [];
 
-    return new CompareResult(distinct, left, right, identicals, folder1Path, folder2Path);
+    const unaccessibles = diffSet
+      .filter((diff) => diff.permissionDeniedState !== 'access-ok')
+      .map((diff) =>
+        buildPath(diff, diff.permissionDeniedState === 'access-error-left' ? '1' : '2')
+      );
+
+    return new CompareResult(distinct, left, right, identicals, unaccessibles, folder1Path, folder2Path);
   } catch (error) {
     log('error while comparing', error);
     showErrorMessage('Oops, something went wrong while comparing', error);
     return emptyResponse();
   }
+}
+
+function buildPath(diff: Difference, side: '1' | '2') {
+  return path.join(diff[`path${side}`], diff[`name${side}`]);
 }
 
 export class CompareResult {
@@ -157,6 +167,7 @@ export class CompareResult {
     public left: string[][],
     public right: string[][],
     public identicals: string[][],
+    public unaccessibles: string[],
     public leftPath: string,
     public rightPath: string
   ) {
