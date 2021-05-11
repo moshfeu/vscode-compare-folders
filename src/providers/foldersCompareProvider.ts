@@ -31,6 +31,7 @@ import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
 import { log } from '../services/logger';
 import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
+import { showUnaccessibleWarning } from '../services/validators';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -91,8 +92,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     this._diffs = diffs;
     await this.updateUI();
+    this.warnUnaccessiblePaths()
     commands.executeCommand('foldersCompareAppService.focus');
     setContext(HAS_FOLDERS, true);
+  }
+
+  warnUnaccessiblePaths() {
+    if (!this._diffs?.unaccessibles.length) {
+      return;
+    }
+
+    showUnaccessibleWarning(this._diffs.unaccessibles.join('\n'));
   }
 
   getWorkspaceFolder = async (): Promise<string | undefined> => {

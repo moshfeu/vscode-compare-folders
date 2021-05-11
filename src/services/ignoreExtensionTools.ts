@@ -1,15 +1,14 @@
-import { window, env, Uri } from 'vscode';
 import { flatten } from 'lodash';
 import * as path from 'path';
-import { CompreOptions } from '../types';
-import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
+import { CompareOptions } from '../types';
+import { showErrorMessageWithMoreInfo } from '../utils/ui';
 import { getConfiguration } from './configuration';
 
 function extnameOnly(name: string) {
   return path.extname(name).replace('.', '');
 }
 
-export function compareName(name1: string, name2: string, options: CompreOptions) {
+export function compareName(name1: string, name2: string, options: CompareOptions) {
   if (options.ignoreCase) {
     name1 = name1.toLowerCase();
     name2 = name2.toLowerCase();
