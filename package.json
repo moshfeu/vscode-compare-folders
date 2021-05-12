@@ -348,6 +348,7 @@
     "test": "node ./out/test/runTest.js",
     "deploy": "vsce publish -p",
     "deploy:insider": "node scripts/deploy-insider.js",
+    "deploy:openvsx": "sh scripts/deploy-openvsx.sh",
     "package": "vsce package"
   },
   "devDependencies": {
