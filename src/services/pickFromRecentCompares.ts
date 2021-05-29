@@ -1,4 +1,4 @@
-import { window, commands, Uri } from 'vscode';
+import { window, commands, Uri, workspace } from 'vscode';
 import { globalState, SEPERATOR } from './globalState';
 import { showInfoMessageWithTimeout } from '../utils/ui';
 import { COMPARE_SELECTED_FOLDERS } from '../constants/commands';

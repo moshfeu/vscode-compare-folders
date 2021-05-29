@@ -1,5 +1,7 @@
-import { promises, constants } from 'fs';
+import { promises, constants, exists } from 'fs';
+import { Uri, workspace } from 'vscode';
 import { showInfoMessageWithTimeout } from '../utils/ui';
+import { resourceExists } from './fs';
 
 const NOT_ACCESSIBLE = 'is not accessible';
 
@@ -28,4 +30,12 @@ async function hasPermissionDenied(entryPath: string) {
 	} catch {
 		return true;
 	}
+}
+
+export async function foldersNotExist({fsPath: uri1}: Uri, {fsPath: uri2}: Uri) {
+  const existsAsync = (await Promise.all([Uri.parse(uri1), Uri.parse(uri2)]
+    .map(resourceExists)));
+  const notExist = existsAsync
+    .some(exists => !exists);
+  return notExist;
 }
