@@ -31,7 +31,7 @@ import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
 import { log } from '../services/logger';
 import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
-import { showUnaccessibleWarning } from '../services/validators';
+import { showUnaccessibleWarning, foldersNotExist } from '../services/validators';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -64,6 +64,9 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
         'https://github.com/microsoft/vscode/issues/3553'
       );
       return;
+    }
+    if (await foldersNotExist(uris[0], uris[1])) {
+      return showInfoMessageWithTimeout('One or both folders are not exist', 4000);
     }
     const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
