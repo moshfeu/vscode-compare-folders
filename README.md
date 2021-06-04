@@ -13,6 +13,11 @@ The extension allows you to compare folders, show the diffs in a list and presen
 
 The extension uses the great [`dir-compare`](https://github.com/gliviu/dir-compare) package made by [Liviu Grigorescu](https://github.com/gliviu). If you like this extension, please give a star to `dir-compare`!
 
+## Limitations
+
+Currently seems like there might be issues [[#81](https://github.com/moshfeu/vscode-compare-folders/issues/81), [#83](https://github.com/moshfeu/vscode-compare-folders/issues/83)] with comparing local and remote folders over ssh.
+Please take this under consideration.
+
 ## How to use?
 
 There are several ways to choose folders to compare:
