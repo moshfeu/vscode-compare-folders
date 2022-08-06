@@ -9,6 +9,7 @@ import { CompareOptions } from '../types';
 import { log } from './logger';
 import { showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
+import { getFilesToIgnore } from './excludeFilesGetter';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
@@ -77,6 +78,7 @@ function getOptions() {
     ignoreAllWhiteSpaces,
     ignoreEmptyLines,
     ignoreLineEnding,
+    respectGitIgnore,
   } = getConfiguration(
     'compareContent',
     'excludeFilter',
@@ -87,11 +89,12 @@ function getOptions() {
     'ignoreAllWhiteSpaces',
     'ignoreEmptyLines',
     'ignoreLineEnding',
+    'respectGitIgnore',
   );
 
   const options: CompareOptions = {
     compareContent,
-    excludeFilter: excludeFilter ? excludeFilter.join(',') : undefined,
+    excludeFilter: getFilesToIgnore(),
     includeFilter: includeFilter ? includeFilter.join(',') : undefined,
     ignoreCase: ignoreFileNameCase,
     ignoreExtension,

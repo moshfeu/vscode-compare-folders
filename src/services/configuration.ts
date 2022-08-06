@@ -18,6 +18,7 @@ interface IConfigurations {
   ignoreAllWhiteSpaces: boolean;
   ignoreEmptyLines: boolean;
   ignoreLineEnding: boolean;
+  respectGitIgnore: boolean;
 }
 
 type ConfigurationItem = keyof IConfigurations;

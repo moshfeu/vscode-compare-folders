@@ -62,6 +62,7 @@ There are several ways to choose folders to compare:
 - `ignoreWhiteSpaces` - boolean - ignore white spaces at the beginning and ending of a line (similar to `diff -b`)
 - `ignoreAllWhiteSpaces` - boolean - ignore all white space differences (similar to `diff -w`)
 - `ignoreEmptyLines` - boolean - ignore differences caused by empty lines (similar to `diff -B`)
+- - `respectGitIgnore` - boolean - exclude files that are in .gitignore
 
 ***Example***
 ```json
