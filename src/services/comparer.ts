@@ -7,7 +7,7 @@ import { pathContext } from '../context/path';
 import { compareIgnoredExtension, compareName, validate } from './ignoreExtensionTools';
 import { CompareOptions } from '../types';
 import { log } from './logger';
-import { showErrorMessage } from '../utils/ui';
+import { createProgressBar, showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
@@ -106,13 +106,14 @@ function getOptions() {
 }
 
 export async function compareFolders(): Promise<CompareResult> {
+  const progress = createProgressBar('Comparing your folders, hang on...');
   const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], [], '', ''));
   try {
     if (!validate()) {
       return emptyResponse();
     }
     const [folder1Path, folder2Path] = pathContext.getPaths();
-    validatePermissions(folder1Path, folder2Path);
+    await validatePermissions(folder1Path, folder2Path);
     const showIdentical = getConfiguration('showIdentical');
     const options = getOptions();
     // compare folders by contents
@@ -149,6 +150,7 @@ export async function compareFolders(): Promise<CompareResult> {
         buildPath(diff, diff.permissionDeniedState === 'access-error-left' ? '1' : '2')
       );
 
+    await progress.done();
     return new CompareResult(distinct, left, right, identicals, unaccessibles, folder1Path, folder2Path);
   } catch (error) {
     log('error while comparing', error);

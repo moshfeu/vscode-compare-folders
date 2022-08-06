@@ -1,8 +1,11 @@
-import { window, ProgressLocation, env, Uri, version } from 'vscode';
+import { window, ProgressLocation, env, Uri, version, Progress } from 'vscode';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import os from 'os';
 import { log } from '../services/logger';
+import { sleep } from '../services/sleep';
+
+type ProgressTaskData = { message: string; increment?: number };
 
 export function showInfoMessageWithTimeout(message: string, timeout: number = 3000) {
   const upTo = timeout / 10;
@@ -68,6 +71,29 @@ export async function showErrorMessageWithMoreInfo(message: string, link: string
   if (result === moreInfo) {
     env.openExternal(Uri.parse(link));
   }
+}
+
+export function createProgressBar(message: string) {
+  let progress: Progress<ProgressTaskData> & { done: (message?: string, timeout?: number) => Promise<void> };
+
+  window.withProgress(
+    {
+      location: ProgressLocation.Notification,
+      title: message,
+    },
+    async (_progress) => {
+      return new Promise<void>((resolve) => {
+        progress = {
+          report: (data: ProgressTaskData) => _progress.report(data),
+          done: async () => {
+            await sleep();
+            resolve();
+          },
+        };
+      });
+    }
+  );
+  return progress!;
 }
 
 function getExtensionVersion() {
