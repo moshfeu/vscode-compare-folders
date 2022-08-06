@@ -6,7 +6,7 @@ import { showErrorMessage } from '../utils/ui';
 import { getConfiguration } from './configuration';
 import { log } from './logger';
 
-const getGitIgnoreFiles = (): string => {
+function getGitIgnoreFiles(): string {
   const respectGitIgnore = getConfiguration('respectGitIgnore');
   if (!respectGitIgnore) {
     return '';
@@ -15,7 +15,7 @@ const getGitIgnoreFiles = (): string => {
   return [...readGitIgnore(folder1Path), ...readGitIgnore(folder2Path)].join(',');
 };
 
-const readGitIgnore = (folderPath: string): string[] => {
+function readGitIgnore(folderPath: string): string[] {
   const gitIgnorePath = join(folderPath, '.gitignore');
   if (pathExistsSync(gitIgnorePath)) {
     return readFileSync(gitIgnorePath, 'utf8').split('\n');
@@ -23,12 +23,12 @@ const readGitIgnore = (folderPath: string): string[] => {
   return [];
 }
 
-const getExclideFiles = (): string => {
+function getExclideFiles(): string {
   const excludeFilter = getConfiguration('excludeFilter');
   return (excludeFilter || []).join(',');
 };
 
-export const getFilesToIgnore = (): string => {
+export function getFilesToIgnore(): string {
   try {
     const excludeFiles = getExclideFiles();
     const gitIgnoreFiles = getGitIgnoreFiles();
