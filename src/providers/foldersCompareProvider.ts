@@ -28,7 +28,7 @@ import { getRelativePath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
 import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
-import { HAS_FOLDERS } from '../constants/contextKeys';
+import { contextKeys } from '../constants/contextKeys';
 import { log } from '../services/logger';
 import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
@@ -86,7 +86,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await this.updateUI();
     this.warnUnaccessiblePaths()
     commands.executeCommand('foldersCompareAppService.focus');
-    setContext(HAS_FOLDERS, true);
+    setContext(contextKeys.HAS_FOLDERS, true);
   }
 
   warnUnaccessiblePaths() {

@@ -10,6 +10,7 @@ import { log } from './logger';
 import { createProgressBar, showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
 import { setContext } from '../context/global';
+import { contextKeys } from '../constants/contextKeys';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
@@ -106,7 +107,7 @@ function getOptions() {
 
 export async function compareFolders(): Promise<CompareResult> {
   const progress = createProgressBar('Comparing your folders, hang on...');
-  setContext('foldersCompareContext.isComparing', true);
+  setContext(contextKeys.IS_COMPARING, true);
   const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], [], '', ''));
   try {
     if (!validate()) {
@@ -157,7 +158,7 @@ export async function compareFolders(): Promise<CompareResult> {
     return emptyResponse();
   } finally {
     await progress.done();
-    setContext('foldersCompareContext.isComparing', false);
+    setContext(contextKeys.IS_COMPARING, true);
   }
 }
 
