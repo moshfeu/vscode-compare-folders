@@ -9,6 +9,7 @@ import { CompareOptions } from '../types';
 import { log } from './logger';
 import { createProgressBar, showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
+import { setContext } from '../context/global';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
@@ -105,6 +106,7 @@ function getOptions() {
 
 export async function compareFolders(): Promise<CompareResult> {
   const progress = createProgressBar('Comparing your folders, hang on...');
+  setContext('foldersCompareContext.isComparing', true);
   const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], [], '', ''));
   try {
     if (!validate()) {
@@ -148,12 +150,14 @@ export async function compareFolders(): Promise<CompareResult> {
         buildPath(diff, diff.permissionDeniedState === 'access-error-left' ? '1' : '2')
       );
 
-    await progress.done();
     return new CompareResult(distinct, left, right, identicals, unaccessibles, folder1Path, folder2Path);
   } catch (error) {
     log('error while comparing', error);
     showErrorMessage('Oops, something went wrong while comparing', error);
     return emptyResponse();
+  } finally {
+    await progress.done();
+    setContext('foldersCompareContext.isComparing', false);
   }
 }
 

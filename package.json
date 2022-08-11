@@ -246,6 +246,7 @@
       {
         "title": "Compare Folders: Pick from recent compares",
         "command": "foldersCompare.pickFromRecentCompares",
+        "enablement": "!foldersCompareContext.isComparing",
         "icon": {
           "dark": "resources/dark/history.svg",
           "light": "resources/light/history.svg"
@@ -278,19 +279,22 @@
       {
         "title": "Choose Folders And Compare",
         "command": "foldersCompare.chooseFoldersAndCompare",
-        "enablement": "false"
+        "enablement": "!foldersCompareContext.isComparing"
       },
       {
         "title": "Compare Folders: Compare a folder against workspace",
-        "command": "foldersCompare.compareFoldersAgainstWorkspace"
+        "command": "foldersCompare.compareFoldersAgainstWorkspace",
+        "enablement": "!foldersCompareContext.isComparing"
       },
       {
         "title": "Compare Folders: Choose 2 folders and compare",
-        "command": "foldersCompare.compareFoldersAgainstEachOther"
+        "command": "foldersCompare.compareFoldersAgainstEachOther",
+        "enablement": "!foldersCompareContext.isComparing"
       },
       {
         "title": "Refresh",
         "command": "foldersCompare.refresh",
+        "enablement": "!foldersCompareContext.isComparing",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -299,6 +303,7 @@
       {
         "title": "Swap Sides",
         "command": "foldersCompare.swap",
+        "enablement": "!foldersCompareContext.isComparing",
         "icon": {
           "light": "resources/light/swap.svg",
           "dark": "resources/dark/swap.svg"
@@ -306,7 +311,8 @@
       },
       {
         "command": "foldersCompare.compareSelectedFolders",
-        "title": "[Compare Folders] Compare selected folders"
+        "title": "[Compare Folders] Compare selected folders",
+        "enablement": "!foldersCompareContext.isComparing"
       }
     ],
     "viewsContainers": {
