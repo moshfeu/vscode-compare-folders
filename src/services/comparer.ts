@@ -158,7 +158,7 @@ export async function compareFolders(): Promise<CompareResult> {
     return emptyResponse();
   } finally {
     await progress.done();
-    setContext(contextKeys.IS_COMPARING, true);
+    setContext(contextKeys.IS_COMPARING, false);
   }
 }
 
