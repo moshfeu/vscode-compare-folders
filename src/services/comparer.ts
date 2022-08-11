@@ -1,4 +1,4 @@
-import { commands, Uri, extensions, window } from 'vscode';
+import { commands, Uri, extensions, window, ProgressLocation } from 'vscode';
 import { compare, Difference, fileCompareHandlers } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
@@ -13,14 +13,12 @@ import { validatePermissions } from './validators';
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
 export async function chooseFoldersAndCompare(path?: string) {
+  const progress = createProgressBar('Waiting for folders to be chosen...');
   const folder1Path: string = path || (await openFolder());
   const folder2Path = await openFolder();
-
-  if (!folder1Path || !folder2Path) {
-    return;
-  }
-
   pathContext.setPaths(folder1Path, folder2Path);
+  await progress.done();
+
   return compareFolders();
 }
 

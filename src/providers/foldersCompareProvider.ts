@@ -71,18 +71,10 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   };
 
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: `Compare folders...`,
-      },
-      async () => {
-        this.handleDiffResult(
-          await chooseFoldersAndCompare(
-            ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
-          )
-        );
-      }
+    this.handleDiffResult(
+      await chooseFoldersAndCompare(
+        ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
+      )
     );
   };
 
