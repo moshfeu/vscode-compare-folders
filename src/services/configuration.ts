@@ -1,7 +1,8 @@
-import { workspace, WorkspaceConfiguration } from 'vscode';
+import { workspace } from 'vscode';
 
 export type DiffViewTitle = 'name only' | 'compared path' | 'full path';
-interface IConfigurations {
+
+export interface IConfigurations {
   compareContent: boolean;
   excludeFilter: string[] | undefined;
   includeFilter: string[] | undefined;

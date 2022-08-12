@@ -9,7 +9,7 @@ import { CompareOptions } from '../types';
 import { log } from './logger';
 import { showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
-import { getFilesToIgnore } from './excludeFilesGetter';
+import { getIncludeAndExcludePaths } from './includeExcludeFilesGetter';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
@@ -70,32 +70,28 @@ export async function showFile(file: string) {
 function getOptions() {
   const {
     compareContent,
-    excludeFilter,
-    includeFilter,
     ignoreFileNameCase,
     ignoreExtension,
     ignoreWhiteSpaces,
     ignoreAllWhiteSpaces,
     ignoreEmptyLines,
     ignoreLineEnding,
-    respectGitIgnore,
   } = getConfiguration(
     'compareContent',
-    'excludeFilter',
-    'includeFilter',
     'ignoreFileNameCase',
     'ignoreExtension',
     'ignoreWhiteSpaces',
     'ignoreAllWhiteSpaces',
     'ignoreEmptyLines',
     'ignoreLineEnding',
-    'respectGitIgnore',
   );
+
+  const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
 
   const options: CompareOptions = {
     compareContent,
-    excludeFilter: getFilesToIgnore(),
-    includeFilter: includeFilter ? includeFilter.join(',') : undefined,
+    excludeFilter,
+    includeFilter,
     ignoreCase: ignoreFileNameCase,
     ignoreExtension,
     ignoreWhiteSpaces,
@@ -119,7 +115,11 @@ export async function compareFolders(): Promise<CompareResult> {
     const showIdentical = getConfiguration('showIdentical');
     const options = getOptions();
     // compare folders by contents
-    const concatenatedOptions: CompareOptions = { compareContent: true, handlePermissionDenied: true, ...options };
+    const concatenatedOptions: CompareOptions = {
+      compareContent: true,
+      handlePermissionDenied: true,
+      ...options,
+    };
     // do the compare
     const res = await compare(folder1Path, folder2Path, concatenatedOptions);
 
@@ -152,7 +152,15 @@ export async function compareFolders(): Promise<CompareResult> {
         buildPath(diff, diff.permissionDeniedState === 'access-error-left' ? '1' : '2')
       );
 
-    return new CompareResult(distinct, left, right, identicals, unaccessibles, folder1Path, folder2Path);
+    return new CompareResult(
+      distinct,
+      left,
+      right,
+      identicals,
+      unaccessibles,
+      folder1Path,
+      folder2Path
+    );
   } catch (error) {
     log('error while comparing', error);
     showErrorMessage('Oops, something went wrong while comparing', error);

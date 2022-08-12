@@ -5,12 +5,12 @@ import { TreeItemCollapsibleState, Uri } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';
 import * as path from 'path';
 
-suite('Extension Test Suite', () => {
+suite('Tree Builder', () => {
 	test('Generate tree with one file', () => {
     const paths = [['/base/path/to/rootFolder/index.html', '/base/path/to/rootFolder1/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       build(paths, basePath).tree,
       {
         'index.html': [
@@ -25,7 +25,7 @@ suite('Extension Test Suite', () => {
     const paths = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       build(paths, basePath).tree,
       {
         folder1: {
@@ -48,7 +48,7 @@ suite('Extension Test Suite', () => {
 
     const { treeItems } = build(paths, basePath);
 
-    assert.deepEqual(
+    assert.deepStrictEqual(
       treeItems,
       [
         new File('folder1', 'folder', TreeItemCollapsibleState.Collapsed, undefined, [
