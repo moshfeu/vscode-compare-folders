@@ -376,7 +376,6 @@
     "dir-compare": "^3.2.0",
     "fs-extra": "8.1.0",
     "lodash": "^4.17.21",
-    "parse-gitignore": "^2.0.0",
-    "text-diff": "^1.0.1"
+    "parse-gitignore": "^2.0.0"
   }
 }
