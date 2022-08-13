@@ -14,7 +14,7 @@ import { getIncludeAndExcludePaths } from './includeExcludeFilesGetter';
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
 export async function chooseFoldersAndCompare(path?: string) {
-  const folder1Path: string = path || (await openFolder());
+  const folder1Path = path || (await openFolder());
   const folder2Path = await openFolder();
 
   if (!folder1Path || !folder2Path) {

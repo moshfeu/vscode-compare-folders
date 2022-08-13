@@ -1,6 +1,6 @@
 import { window, OpenDialogOptions } from 'vscode';
 
-export function openFolder(): Promise<string> {
+export function openFolder(): Promise<string | undefined> {
   const options: OpenDialogOptions = {
     canSelectMany: false,
     openLabel: 'Open',
@@ -12,7 +12,7 @@ export function openFolder(): Promise<string> {
       if (fileUri && fileUri[0]) {
         resolve(fileUri[0].fsPath);
       } else {
-        resolve('');
+        resolve(undefined);
       }
     });
   });
