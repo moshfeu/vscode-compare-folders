@@ -2,30 +2,28 @@ import { pathContext } from '../context/path';
 import { IncludeExcludePathsCalculation, IncludeExcludePathsResult } from '../types';
 import { showErrorMessage } from '../utils/ui';
 import { getConfiguration } from './configuration';
+import { emptyIncludeExcludePaths } from './emptyIncludeExcludePaths';
 import { readAndParseGitignore } from './gitignoreParser';
 import { log } from './logger';
 
 function getGitIgnoreFiles(): IncludeExcludePathsCalculation {
   const respectGitIgnore = getConfiguration('respectGitIgnore');
   if (!respectGitIgnore) {
-    return {
-      excludeFilter: [],
-      includeFilter: [],
-    };
+    return emptyIncludeExcludePaths;
   }
   const [folder1Path, folder2Path] = pathContext.getPaths();
   const folder1GitIgnore = readAndParseGitignore(folder1Path);
   const folder2GitIgnore = readAndParseGitignore(folder2Path);
   return {
-    excludeFilter: [...folder1GitIgnore.excludeFilter, ...folder2GitIgnore.excludeFilter],
-    includeFilter: [...folder1GitIgnore.includeFilter, ...folder2GitIgnore.includeFilter],
-  }
-};
+    excludeFilter: new Set([...folder1GitIgnore.excludeFilter, ...folder2GitIgnore.excludeFilter]),
+    includeFilter: new Set([...folder1GitIgnore.includeFilter, ...folder2GitIgnore.includeFilter]),
+  };
+}
 
 function getFilesFilterByType(type: keyof IncludeExcludePathsResult): string[] {
   const filesFilter = getConfiguration(type);
   return filesFilter ?? [];
-};
+}
 
 export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
   try {
@@ -35,7 +33,7 @@ export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
 
     return {
       excludeFilter: [...gitIgnoreFiles.excludeFilter, excludeFiles].join(','),
-      includeFilter: [...gitIgnoreFiles.includeFilter, includeFiles].join(''),
+      includeFilter: [...gitIgnoreFiles.includeFilter, includeFiles].join(','),
     };
   } catch (error) {
     showErrorMessage('Error while reading .gitignore file', error);
@@ -45,4 +43,4 @@ export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
       includeFilter: '',
     };
   }
-};
+}

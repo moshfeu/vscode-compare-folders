@@ -2,24 +2,26 @@ import { pathExistsSync, readFileSync } from 'fs-extra';
 import gitignoreParse from 'parse-gitignore';
 import { join } from 'path';
 import { IncludeExcludePathsCalculation } from '../types';
+import { emptyIncludeExcludePaths } from './emptyIncludeExcludePaths';
 
 export function readAndParseGitignore(folderPath: string): IncludeExcludePathsCalculation {
   const gitignorePath = join(folderPath, '.gitignore');
+
   if (pathExistsSync(gitignorePath)) {
     return parse(readFileSync(gitignorePath, 'utf8'));
   }
-  return { includeFilter: [], excludeFilter: [] };
+  return emptyIncludeExcludePaths;
 }
 
 function parse(gitignoreContent: string): IncludeExcludePathsCalculation {
-  const entries = gitignoreParse(gitignoreContent);
+  const { patterns } = gitignoreParse(gitignoreContent);
 
-  return entries.reduce<IncludeExcludePathsCalculation>((acc, entry) => {
+  return patterns.reduce<IncludeExcludePathsCalculation>((acc, entry) => {
     if (entry.startsWith('!')) {
-      acc.excludeFilter.push(entry.slice(1));
+      acc.includeFilter.add(entry.slice(1));
     } else {
-      acc.includeFilter.push(entry);
+      acc.excludeFilter.add(entry);
     }
     return acc;
-  }, { includeFilter: [], excludeFilter: [] });
+  }, emptyIncludeExcludePaths);
 }

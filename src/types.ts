@@ -7,5 +7,5 @@ export type CompareOptions = Options & {
 export type IncludeExcludePathsResult = Pick<Options, 'includeFilter' | 'excludeFilter'>;
 
 export type IncludeExcludePathsCalculation = {
-  [key in keyof Required<IncludeExcludePathsResult>]: string[];
+  [key in keyof Required<IncludeExcludePathsResult>]: Set<string>;
 };
