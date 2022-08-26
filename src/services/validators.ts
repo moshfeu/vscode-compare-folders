@@ -1,5 +1,5 @@
-import { promises, constants, exists } from 'fs';
-import { Uri, workspace } from 'vscode';
+import { promises, constants } from 'fs';
+import { Uri } from 'vscode';
 import { showInfoMessageWithTimeout } from '../utils/ui';
 import { resourceExists } from './fs';
 

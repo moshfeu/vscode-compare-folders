@@ -45,12 +45,13 @@ async function setup({
   settings?: Partial<IConfigurations>;
   gitignoreContent?: string;
 } = {}) {
+  const sandbox = sinon.createSandbox();
   const context = contextFactory();
 
   globalState.init(context as ExtensionContext);
   pathContext.setPaths('/', '/');
 
-  sinon.stub(workspace, 'getConfiguration').callsFake(() => {
+  sandbox.stub(workspace, 'getConfiguration').callsFake(() => {
     return {
       get: (key: string) =>
         ({
@@ -60,13 +61,14 @@ async function setup({
     } as WorkspaceConfiguration;
   });
 
+  console.log(333, gitignoreContent);
   if (gitignoreContent) {
-    sinon.stub(fs, 'pathExistsSync').returns(true);
-    sinon.stub(fs, 'readFileSync').callsFake(() => gitignoreContent);
+    sandbox.stub(fs, 'pathExistsSync').returns(true);
+    sandbox.stub(fs, 'readFileSync').callsFake(() => gitignoreContent);
   }
 
   return function cleanup() {
-    sinon.restore();
+    sandbox.restore();
   };
 }
 
@@ -92,7 +94,7 @@ suite('IncludeExcludeFilesGetter', () => {
     cleanup();
   });
 
-  test('should return combined excludeFilter from configuration and .gitignore ', async () => {
+  test.only('should return combined excludeFilter from configuration and .gitignore ', async () => {
     const cleanup = await setup({
       settings: {
         excludeFilter: ['file.ts'],
@@ -103,6 +105,23 @@ suite('IncludeExcludeFilesGetter', () => {
 
     const { excludeFilter } = getIncludeAndExcludePaths();
     assert.strictEqual(excludeFilter, 'node_modules,file.ts');
+    cleanup();
+  });
+
+  test.only('should return excludeFilter and includeFilter based on .gitignore', async () => {
+    const cleanup = await setup({
+      settings: {
+        respectGitIgnore: true,
+      },
+      gitignoreContent: `
+        src
+        !src/file.ts
+      `
+    });
+
+    const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
+    assert.strictEqual(excludeFilter, 'src');
+    assert.strictEqual(includeFilter, 'src/file.ts');
     cleanup();
   });
 });
