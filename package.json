@@ -277,8 +277,7 @@
       },
       {
         "title": "Choose Folders And Compare",
-        "command": "foldersCompare.chooseFoldersAndCompare",
-        "enablement": "false"
+        "command": "foldersCompare.chooseFoldersAndCompare"
       },
       {
         "title": "Compare Folders: Compare a folder against workspace",
