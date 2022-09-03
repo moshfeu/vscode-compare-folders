@@ -6,7 +6,7 @@ import { resourceExists } from './fs';
 const NOT_ACCESSIBLE = 'is not accessible';
 
 export async function validatePermissions(path1: string, path2: string) {
-  if (validatePath(path1)) {
+  if (await validatePath(path1)) {
     validatePath(path2);
   }
 }

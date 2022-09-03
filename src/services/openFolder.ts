@@ -12,7 +12,7 @@ export function openFolder(): Promise<string> {
       if (fileUri && fileUri[0]) {
         resolve(fileUri[0].fsPath);
       } else {
-        resolve();
+        resolve('');
       }
     });
   });

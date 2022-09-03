@@ -158,7 +158,10 @@ export async function compareFolders(): Promise<CompareResult> {
 }
 
 function buildPath(diff: Difference, side: '1' | '2') {
-  return path.join(diff[`path${side}`], diff[`name${side}`]);
+  if (!diff[`path${side}`] || !diff[`name${side}`]) {
+    throw new Error('path or name is missing');
+  }
+  return path.join(diff[`path${side}`]!, diff[`name${side}`]!);
 }
 
 export class CompareResult {
