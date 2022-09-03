@@ -2,7 +2,7 @@ import { window } from 'vscode';
 
 const logger = window.createOutputChannel('Compare Folders');
 
-export function log(...data: (object | string | undefined)[]) {
+export function log(...data: (object | string | undefined | unknown)[]) {
   data.forEach(item => {
     if (typeof item === 'string') {
       logger.appendLine(item);
