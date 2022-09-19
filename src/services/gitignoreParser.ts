@@ -1,6 +1,6 @@
-import { pathExistsSync, readFileSync } from 'fs-extra';
-import gitignoreParse from 'parse-gitignore';
 import { join } from 'path';
+import gitignoreParse from 'parse-gitignore';
+import { pathExistsSync, readFileSync } from './fs';
 import { IncludeExcludePathsCalculation } from '../types';
 import { emptyIncludeExcludePaths } from './emptyIncludeExcludePaths';
 
@@ -8,7 +8,8 @@ export function readAndParseGitignore(folderPath: string): IncludeExcludePathsCa
   const gitignorePath = join(folderPath, '.gitignore');
 
   if (pathExistsSync(gitignorePath)) {
-    return parse(readFileSync(gitignorePath, 'utf8'));
+    const gitIgnoreFileContent = readFileSync(gitignorePath, 'utf8');
+    return parse(gitIgnoreFileContent);
   }
   return emptyIncludeExcludePaths;
 }

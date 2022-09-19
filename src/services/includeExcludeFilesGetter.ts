@@ -14,7 +14,6 @@ function getGitIgnoreFiles(): IncludeExcludePathsCalculation {
   const [folder1Path, folder2Path] = pathContext.getPaths();
   const folder1GitIgnore = readAndParseGitignore(folder1Path);
   const folder2GitIgnore = readAndParseGitignore(folder2Path);
-  console.log(555, folder1GitIgnore.excludeFilter, folder2GitIgnore);
   return {
     excludeFilter: new Set([...folder1GitIgnore.excludeFilter, ...folder2GitIgnore.excludeFilter]),
     includeFilter: new Set([...folder1GitIgnore.includeFilter, ...folder2GitIgnore.includeFilter]),
