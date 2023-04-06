@@ -357,13 +357,13 @@
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.21",
     "@types/vscode": "^1.38.0",
+    "@vscode/test-electron": "^2.3.0",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
     "mocha": "^6.1.4",
     "tslint": "^5.12.1",
     "typescript": "^3.3.1",
-    "vsce": "^1.88.0",
-    "vscode-test": "^1.0.2"
+    "vsce": "^1.88.0"
   },
   "dependencies": {
     "dir-compare": "^3.2.0",
