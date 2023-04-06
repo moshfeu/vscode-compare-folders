@@ -345,10 +345,10 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
-    "deploy": "vsce publish -p",
+    "deploy": "npx vsce publish -p",
     "deploy:insider": "node scripts/deploy-insider.js",
     "deploy:openvsx": "sh scripts/deploy-openvsx.sh",
-    "package": "vsce package"
+    "package": "npx vsce package"
   },
   "devDependencies": {
     "@types/fs-extra": "8.1.0",
@@ -362,8 +362,7 @@
     "glob": "^7.1.4",
     "mocha": "^6.1.4",
     "tslint": "^5.12.1",
-    "typescript": "^3.3.1",
-    "vsce": "^1.88.0"
+    "typescript": "^3.3.1"
   },
   "dependencies": {
     "dir-compare": "^3.2.0",
