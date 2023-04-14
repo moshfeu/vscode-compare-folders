@@ -15,7 +15,7 @@
   ],
   "icon": "resources/icon.png",
   "galleryBanner": {
-    "color": "#f5f5f5",
+    "color": "#ffbe6c",
     "theme": "light"
   },
   "publisher": "moshfeu",
@@ -35,6 +35,15 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "icons": {
+      "comparefolders-icon": {
+        "description": "compare folders icon",
+        "default": {
+          "fontPath": "resources/fonts/comparefolders.woff",
+          "fontCharacter": "\\e900"
+        }
+      }
+    },
     "configuration": {
       "type": "object",
       "title": "Compare Folders Configuration",
@@ -313,7 +322,7 @@
         {
           "id": "foldersCompare",
           "title": "Compare Folders",
-          "icon": "resources/icon.svg"
+          "icon": "$(comparefolders-icon)"
         }
       ]
     },
