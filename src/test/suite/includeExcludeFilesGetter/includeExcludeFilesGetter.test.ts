@@ -4,7 +4,7 @@ import { setup } from './includeExcludeFilesGetter.testkit';
 import { getIncludeAndExcludePaths } from '../../../services/includeExcludeFilesGetter';
 
 suite('IncludeExcludeFilesGetter', () => {
-  test.only('should return empty arrays if no files are included / excluded', async () => {
+  test('should return empty arrays if no files are included / excluded', async () => {
     const cleanup = await setup();
     const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
 
@@ -25,7 +25,7 @@ suite('IncludeExcludeFilesGetter', () => {
     cleanup();
   });
 
-  test.only('should return combined excludeFilter from configuration and .gitignore ', async () => {
+  test('should return combined excludeFilter from configuration and .gitignore ', async () => {
     const cleanup = await setup({
       settings: {
         excludeFilter: ['file.ts'],

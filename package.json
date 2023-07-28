@@ -114,7 +114,7 @@
         },
         "compareFolders.respectGitIgnore": {
           "type": "boolean",
-          "description": "Exclude files that are in .gitignore",
+          "description": "Include / Exclude files based on .gitignore",
           "scope": "resource"
         },
         "compareFolders.diffViewTitle": {
@@ -368,14 +368,14 @@
     "@types/fs-extra": "8.1.0",
     "@types/glob": "^7.1.1",
     "@types/lodash": "^4.14.140",
-    "@types/mocha": "^5.2.6",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^10.12.21",
     "@types/sinon": "^10.0.13",
     "@types/vscode": "^1.38.0",
     "@vscode/test-electron": "^2.3.0",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
     "sinon": "^14.0.0",
     "tslint": "^5.12.1",
     "typescript": "^4.7.4"
@@ -383,6 +383,7 @@
   "dependencies": {
     "dir-compare": "^3.2.0",
     "fs-extra": "8.1.0",
+    "jest": "^29.6.2",
     "lodash": "^4.17.21",
     "parse-gitignore": "^2.0.0"
   }

@@ -114,13 +114,12 @@ export async function compareFolders(): Promise<CompareResult> {
     validatePermissions(folder1Path, folder2Path);
     const showIdentical = getConfiguration('showIdentical');
     const options = getOptions();
-    // compare folders by contents
     const concatenatedOptions: CompareOptions = {
       compareContent: true,
       handlePermissionDenied: true,
       ...options,
     };
-    // do the compare
+    // do the comparison
     const res = await compare(folder1Path, folder2Path, concatenatedOptions);
 
     // get the diffs

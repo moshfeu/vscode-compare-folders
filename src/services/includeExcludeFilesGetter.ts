@@ -3,13 +3,13 @@ import { pathContext } from '../context/path';
 import { showErrorMessage } from '../utils/ui';
 import { getConfiguration } from './configuration';
 import { readAndParseGitignore } from './gitignoreParser';
-import { emptyIncludeExcludePaths } from './emptyIncludeExcludePaths';
+import { createEmptyIncludeExcludePaths } from './emptyIncludeExcludePaths';
 import type { IncludeExcludePathsCalculation, IncludeExcludePathsResult } from '../types';
 
 function getGitIgnoreFiles(): IncludeExcludePathsCalculation {
   const respectGitIgnore = getConfiguration('respectGitIgnore');
   if (!respectGitIgnore) {
-    return emptyIncludeExcludePaths;
+    return createEmptyIncludeExcludePaths();
   }
   const [folder1Path, folder2Path] = pathContext.getPaths();
   const folder1GitIgnore = readAndParseGitignore(folder1Path);

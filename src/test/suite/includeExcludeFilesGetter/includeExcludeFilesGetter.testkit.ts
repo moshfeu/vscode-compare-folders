@@ -51,32 +51,40 @@ export async function setup({
 
   globalState.init(context as ExtensionContext);
   pathContext.setPaths('/', '/');
-  restore();
-  sandbox.stub(workspace, 'getConfiguration').callsFake(() => {
-    return {
-      get: (key: string) =>
-        ({
-          ...defaultSettings,
-          ...settings,
-        }[key] as unknown),
-    } as WorkspaceConfiguration;
+
+  const originalGetConfiguration = workspace.getConfiguration;
+
+  Object.assign(workspace, {
+    getConfiguration: () => {
+      return {
+        get: (key: string) =>
+          ({
+            ...defaultSettings,
+            ...settings,
+          }[key] as unknown),
+      } as WorkspaceConfiguration;
+    }
   });
 
+  const originalPathExistsSync = fs.pathExistsSync;
+  const originalReadFileSync = fs.readFileSync;
+
   if (gitignoreContent) {
-    sandbox.stub(fs, 'pathExistsSync').returns(true);
-    sandbox.stub(fs, 'readFileSync').callsFake(() => {
-      return gitignoreContent;
+    Object.assign(fs, {
+      pathExistsSync: () => true,
+      readFileSync: () => gitignoreContent,
     });
   }
 
   return function cleanup() {
-    sandbox.restore();
-  };
-}
+    Object.assign(fs, {
+      pathExistsSync: originalPathExistsSync,
+      readFileSync: originalReadFileSync,
+    });
 
-function restore() {
-  (fs.pathExistsSync as sinon.SinonStub).restore?.();
-  (fs.readFileSync as sinon.SinonStub).restore?.();
-  (workspace.getConfiguration as sinon.SinonStub).restore?.();
-  sinon.restore();
+    Object.assign(workspace, {
+      getConfiguration: originalGetConfiguration,
+    });
+
+  };
 }
