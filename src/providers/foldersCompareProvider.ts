@@ -157,7 +157,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     if (this._diffs.hasResult()) {
       this.emptyState = false;
-      this._onDidChangeTreeData.fire();
+      this._onDidChangeTreeData.fire(null);
     } else {
       this.showEmptyState();
       window.showInformationMessage(
@@ -245,7 +245,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   showEmptyState() {
     this.emptyState = true;
-    this._onDidChangeTreeData.fire();
+    this._onDidChangeTreeData.fire(null);
   }
 
   getTreeItem(element: File): TreeItem {
