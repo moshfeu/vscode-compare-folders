@@ -1,0 +1,1 @@
+export const GLOB_ROOT = '*';

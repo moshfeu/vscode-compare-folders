@@ -5,6 +5,7 @@ import { getConfiguration } from './configuration';
 import { readAndParseGitignore } from './gitignoreParser';
 import { createEmptyIncludeExcludePaths } from './emptyIncludeExcludePaths';
 import type { IncludeExcludePathsCalculation, IncludeExcludePathsResult } from '../types';
+import { GLOB_ROOT } from '../utils/consts';
 
 function getGitIgnoreFiles(): IncludeExcludePathsCalculation {
   const respectGitIgnore = getConfiguration('respectGitIgnore');
@@ -33,7 +34,8 @@ export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
 
     return {
       excludeFilter: [...gitIgnoreFiles.excludeFilter, ...excludeFiles].join(','),
-      includeFilter: [...gitIgnoreFiles.includeFilter, ...includeFiles].join(','),
+      // must have "*" otherwise dir-compare will compare only the files under "includeFilter"
+      includeFilter: [GLOB_ROOT, ...gitIgnoreFiles.includeFilter, ...includeFiles].join(','),
     };
   } catch (error) {
     showErrorMessage('Error while reading .gitignore file', error);

@@ -2,6 +2,7 @@ import * as assert from 'assert';
 
 import { setup } from './includeExcludeFilesGetter.testkit';
 import { getIncludeAndExcludePaths } from '../../../services/includeExcludeFilesGetter';
+import { GLOB_ROOT } from '../../../utils/consts';
 
 suite('IncludeExcludeFilesGetter', () => {
   test('should return empty arrays if no files are included / excluded', async () => {
@@ -9,7 +10,7 @@ suite('IncludeExcludeFilesGetter', () => {
     const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
 
     assert.deepStrictEqual(excludeFilter, '');
-    assert.deepStrictEqual(includeFilter, '');
+    assert.deepStrictEqual(includeFilter, GLOB_ROOT);
     cleanup();
   });
 
