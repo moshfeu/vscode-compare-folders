@@ -30,6 +30,8 @@ const contextFactory = (): Partial<ExtensionContext> => {
   const state: Record<string, any> = {};
   return {
     globalState: {
+      keys: () => Object.keys(state),
+      setKeysForSync: () => {},
       get: (key: string, defaultValue?: unknown) => state[key] ?? defaultValue,
       update: (key: string, value: any) => (state[key] = value),
     },
