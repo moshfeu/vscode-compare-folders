@@ -5,7 +5,7 @@ import { getConfiguration } from './configuration';
 import { readAndParseGitignore } from './gitignoreParser';
 import { createEmptyIncludeExcludePaths } from './emptyIncludeExcludePaths';
 import type { IncludeExcludePathsCalculation, IncludeExcludePathsResult } from '../types';
-import { GLOB_ROOT } from '../utils/consts';
+import { GIT_FOLDER, GLOB_ROOT } from '../utils/consts';
 
 function getGitIgnoreFiles(): IncludeExcludePathsCalculation {
   const respectGitIgnore = getConfiguration('respectGitIgnore');
@@ -16,8 +16,8 @@ function getGitIgnoreFiles(): IncludeExcludePathsCalculation {
   const folder1GitIgnore = readAndParseGitignore(folder1Path);
   const folder2GitIgnore = readAndParseGitignore(folder2Path);
   return {
-    excludeFilter: new Set([...folder1GitIgnore.excludeFilter, ...folder2GitIgnore.excludeFilter]),
-    includeFilter: new Set([...folder1GitIgnore.includeFilter, ...folder2GitIgnore.includeFilter]),
+    excludeFilter: new Set([GIT_FOLDER, ...folder1GitIgnore.excludeFilter, ...folder2GitIgnore.excludeFilter]),
+    includeFilter: new Set([GLOB_ROOT, ...folder1GitIgnore.includeFilter, ...folder2GitIgnore.includeFilter]),
   }
 };
 
@@ -35,7 +35,7 @@ export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
     return {
       excludeFilter: [...gitIgnoreFiles.excludeFilter, ...excludeFiles].join(','),
       // must have "*" otherwise dir-compare will compare only the files under "includeFilter"
-      includeFilter: [GLOB_ROOT, ...gitIgnoreFiles.includeFilter, ...includeFiles].join(','),
+      includeFilter: [...gitIgnoreFiles.includeFilter, ...includeFiles].join(','),
     };
   } catch (error) {
     showErrorMessage('Error while reading .gitignore file', error);

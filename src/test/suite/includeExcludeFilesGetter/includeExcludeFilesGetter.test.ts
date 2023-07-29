@@ -2,15 +2,15 @@ import * as assert from 'assert';
 
 import { setup } from './includeExcludeFilesGetter.testkit';
 import { getIncludeAndExcludePaths } from '../../../services/includeExcludeFilesGetter';
-import { GLOB_ROOT } from '../../../utils/consts';
+import { GIT_FOLDER } from '../../../utils/consts';
 
 suite('IncludeExcludeFilesGetter', () => {
-  test('should return empty arrays if no files are included / excluded', async () => {
+  test('should return empty pattern if no files are included / excluded', async () => {
     const cleanup = await setup();
     const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
 
     assert.deepStrictEqual(excludeFilter, '');
-    assert.deepStrictEqual(includeFilter, GLOB_ROOT);
+    assert.deepStrictEqual(includeFilter, '');
     cleanup();
   });
 
@@ -36,7 +36,7 @@ suite('IncludeExcludeFilesGetter', () => {
     });
 
     const { excludeFilter } = getIncludeAndExcludePaths();
-    assert.strictEqual(excludeFilter, 'node_modules1,file.ts');
+    assert.strictEqual(excludeFilter, `${GIT_FOLDER},node_modules1,file.ts`);
     cleanup();
   });
 });
