@@ -18,10 +18,12 @@ function parse(gitignoreContent: string): IncludeExcludePathsCalculation {
   const { patterns } = gitignoreParse(gitignoreContent);
 
   return patterns.reduce<IncludeExcludePathsCalculation>((acc, entry) => {
-    if (entry.startsWith('!')) {
+    const isNegatePattern = entry.startsWith('!');
+    if (isNegatePattern) {
       acc.includeFilter.add(entry.slice(1));
     } else {
-      acc.excludeFilter.add(entry);
+      const patternWithoutTrailSlash = entry.replace(/\/$/, '');
+      acc.excludeFilter.add(patternWithoutTrailSlash);
     }
     return acc;
   }, createEmptyIncludeExcludePaths());

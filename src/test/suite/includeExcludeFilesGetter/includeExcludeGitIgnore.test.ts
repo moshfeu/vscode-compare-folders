@@ -13,11 +13,12 @@ suite('includeExcludeGitIgnore', () => {
       gitignoreContent: `
         src
         !src/file.ts
+        anotherFolder/
       `
     });
 
     const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
-    assert.strictEqual(excludeFilter, `${GIT_FOLDER},src`);
+    assert.strictEqual(excludeFilter, `${GIT_FOLDER},src,anotherFolder`);
     assert.strictEqual(includeFilter, `${GLOB_ROOT},src/file.ts`);
     cleanup();
   });
