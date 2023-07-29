@@ -17,6 +17,7 @@ function getGitIgnoreFiles(): IncludeExcludePathsCalculation {
   const folder2GitIgnore = readAndParseGitignore(folder2Path);
   return {
     excludeFilter: new Set([GIT_FOLDER, ...folder1GitIgnore.excludeFilter, ...folder2GitIgnore.excludeFilter]),
+    // must have "*" otherwise dir-compare will compare only the files under "includeFilter"
     includeFilter: new Set([GLOB_ROOT, ...folder1GitIgnore.includeFilter, ...folder2GitIgnore.includeFilter]),
   }
 };
@@ -34,7 +35,6 @@ export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
 
     return {
       excludeFilter: [...gitIgnoreFiles.excludeFilter, ...excludeFiles].join(','),
-      // must have "*" otherwise dir-compare will compare only the files under "includeFilter"
       includeFilter: [...gitIgnoreFiles.includeFilter, ...includeFiles].join(','),
     };
   } catch (error) {
