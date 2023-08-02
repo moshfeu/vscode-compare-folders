@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.22.5",
+  "version": "0.23.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -46,7 +46,7 @@
     },
     "configuration": {
       "type": "object",
-      "title": "Compare Folders Configuration",
+      "title": "Compare Folders",
       "properties": {
         "compareFolders.folderLeft": {
           "type": "string",
@@ -110,6 +110,11 @@
         "compareFolders.excludeFilter": {
           "type": "array",
           "description": "Exclude filters",
+          "scope": "resource"
+        },
+        "compareFolders.respectGitIgnore": {
+          "type": "boolean",
+          "description": "Include / Exclude files based on .gitignore",
           "scope": "resource"
         },
         "compareFolders.diffViewTitle": {
@@ -363,19 +368,22 @@
     "@types/fs-extra": "8.1.0",
     "@types/glob": "^7.1.1",
     "@types/lodash": "^4.14.140",
-    "@types/mocha": "^5.2.6",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^10.12.21",
+    "@types/sinon": "^10.0.13",
     "@types/vscode": "^1.38.0",
     "@vscode/test-electron": "^2.3.0",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
-    "mocha": "^6.1.4",
+    "mocha": "^10.2.0",
+    "sinon": "^14.0.0",
     "tslint": "^5.12.1",
-    "typescript": "^3.3.1"
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "dir-compare": "^3.2.0",
     "fs-extra": "8.1.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "parse-gitignore": "^2.0.0"
   }
 }

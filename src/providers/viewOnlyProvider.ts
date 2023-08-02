@@ -13,7 +13,7 @@ export class ViewOnlyProvider implements TreeDataProvider<File> {
   update(diffs: string[][], rootPath: string) {
     this.diffs = diffs;
     this.rootPath = rootPath;
-    this._onDidChangeTreeData.fire();
+    this._onDidChangeTreeData.fire(null);
   }
 
   getTreeItem(element: File): TreeItem {
