@@ -386,7 +386,7 @@
     "@types/node": "^10.12.21",
     "@types/sinon": "^10.0.13",
     "@types/vscode": "^1.38.0",
-    "@vscode/test-electron": "^2.3.0",
+    "@vscode/test-electron": "^2.3.8",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
     "mocha": "^10.2.0",
