@@ -1,5 +1,13 @@
 ## Change log
 
+**0.24.0**
+
+- [#2](https://github.com/moshfeu/vscode-compare-folders/issues/2) - Allow to remove file from the diff tree
+
+**0.23.0**
+
+- [#96](https://github.com/moshfeu/vscode-compare-folders/issues/96) - Respect `.gitignore`
+
 **0.22.0**
 
 - [#71](https://github.com/moshfeu/vscode-compare-folders/issues/71) - Handle comparing unaccessible folders
