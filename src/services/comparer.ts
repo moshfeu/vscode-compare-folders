@@ -1,15 +1,16 @@
 import { commands, Uri, extensions, window } from 'vscode';
-import { compare, Difference, fileCompareHandlers } from 'dir-compare';
+import { compare, fileCompareHandlers,type Difference } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
 import { compareIgnoredExtension, compareName, validate } from './ignoreExtensionTools';
 import { CompareOptions } from '../types';
-import { log } from './logger';
+import { log, printOptions, printResult } from './logger';
 import { showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
 import { getIncludeAndExcludePaths } from './includeExcludeFilesGetter';
+import { getGitignoreFilter } from './gitignoreFilter';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
@@ -76,6 +77,7 @@ function getOptions() {
     ignoreAllWhiteSpaces,
     ignoreEmptyLines,
     ignoreLineEnding,
+    respectGitIgnore,
   } = getConfiguration(
     'compareContent',
     'ignoreFileNameCase',
@@ -84,9 +86,11 @@ function getOptions() {
     'ignoreAllWhiteSpaces',
     'ignoreEmptyLines',
     'ignoreLineEnding',
+    'respectGitIgnore',
   );
 
   const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
+  const filterHandler = respectGitIgnore ? getGitignoreFilter(...pathContext.getPaths()) : undefined;
 
   const options: CompareOptions = {
     compareContent,
@@ -98,6 +102,7 @@ function getOptions() {
     ignoreAllWhiteSpaces,
     ignoreEmptyLines,
     ignoreLineEnding,
+    filterHandler,
     compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,
   };
@@ -121,6 +126,8 @@ export async function compareFolders(): Promise<CompareResult> {
     };
     // do the comparison
     const res = await compare(folder1Path, folder2Path, concatenatedOptions);
+    printOptions(options);
+    printResult(res);
 
     // get the diffs
     const { diffSet = [] } = res;
