@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -198,6 +198,10 @@
           "when": "false"
         },
         {
+          "command": "foldersCompare.dissmissDifference",
+          "when": "false"
+        },
+        {
           "command": "foldersCompare.takeComparedFile",
           "when": "false"
         },
@@ -250,6 +254,11 @@
           "group": "1_folderCompares_actions@1"
         },
         {
+          "command": "foldersCompare.dissmissDifference",
+          "when": "view == foldersCompareAppService && viewItem == file",
+          "group": "inline"
+        },
+        {
           "command": "foldersCompare.takeComparedFile",
           "when": "view == foldersCompareAppService",
           "group": "1_folderCompares_actions@2"
@@ -280,6 +289,11 @@
       {
         "title": "Delete",
         "command": "foldersCompare.deleteFile"
+      },
+      {
+        "title": "Dissmiss Difference",
+        "command": "foldersCompare.dissmissDifference",
+        "icon": "$(close)"
       },
       {
         "title": "Take my file",
@@ -372,7 +386,7 @@
     "@types/node": "^10.12.21",
     "@types/sinon": "^10.0.13",
     "@types/vscode": "^1.38.0",
-    "@vscode/test-electron": "^2.3.0",
+    "@vscode/test-electron": "^2.3.8",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
     "mocha": "^10.2.0",

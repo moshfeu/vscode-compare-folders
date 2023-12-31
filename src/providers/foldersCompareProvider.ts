@@ -10,6 +10,7 @@ import {
   ProgressLocation,
   commands,
   Uri,
+  Command,
 } from 'vscode';
 import * as path from 'path';
 import { copySync, removeSync } from 'fs-extra';
@@ -41,6 +42,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _diffs: CompareResult | null = null;
 
   private workspaceRoot: string;
+  private ignoreDifferencesList: Set<string> = new Set();
 
   constructor(
     private onlyInA: ViewOnlyProvider,
@@ -70,6 +72,16 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     return this.handleDiffResult(await compareFolders());
   };
 
+  dismissDifference = async (e: TreeItem) => {
+    const {path} = e.resourceUri || {};
+    if (!path) {
+      return;
+    }
+    this.ignoreDifferencesList.add(path);
+    this.filterIgnoredFromDiffs();
+    await this.updateUI();
+  }
+
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
     await window.withProgress(
       {
@@ -87,6 +99,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   };
 
   async handleDiffResult(diffs?: CompareResult) {
+    this.ignoreDifferencesList.clear();
     if (!diffs) {
       return;
     }
@@ -169,9 +182,21 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     this.identicals.update(this._diffs.identicals, this._diffs.leftPath);
   }
 
-  refresh = async () => {
+  private filterIgnoredFromDiffs() {
+    this._diffs!.distinct = this._diffs!.distinct
+      .filter(diff => {
+        return !this.ignoreDifferencesList.has(diff[0]) &&
+               !this.ignoreDifferencesList.has(diff[1]);
+      });
+  }
+
+  refresh = async (resetIgnoredFiles = true) => {
+    if (resetIgnoredFiles) {
+      this.ignoreDifferencesList.clear();
+    }
     try {
-      this._diffs = await compareFolders();
+      this._diffs = (await compareFolders());
+      this.filterIgnoredFromDiffs();
       if (this._diffs.hasResult()) {
         showInfoMessageWithTimeout('Source Refreshed');
       }
@@ -183,7 +208,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   swap = () => {
     pathContext.swap();
-    this.refresh();
+    this.refresh(false);
   };
 
   copyToCompared = (e: TreeItem) => {
@@ -212,7 +237,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
     if (shouldDelete) {
       removeSync(e.resourceUri!.fsPath);
-      this.refresh();
+      this.refresh(false);
     }
   };
 
@@ -237,7 +262,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       const fromPath = path.join(from, fileCopiedRelativePath);
       const toPath = path.join(to, fileCopiedRelativePath);
       copySync(fromPath, toPath);
-      this.refresh();
+      this.refresh(false);
     } catch (error) {
       log(error);
     }
@@ -258,20 +283,25 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   getChildren(element?: File): File[] {
-    if (element && element.children) {
-      return element.children;
+    try {
+      if (element && element.children) {
+        return element.children;
+      }
+
+      const children = [openFolderChild(!!this.workspaceRoot)];
+
+      if (this.emptyState) {
+        children.push(emptyStateChild);
+      } else if (this._diffs) {
+        const tree = build(this._diffs.distinct, pathContext.mainPath);
+        children.push(...tree.treeItems);
+      }
+
+      return children;
+    } catch (error) {
+      log(error);
+      return [];
     }
-
-    const children = [openFolderChild(!!this.workspaceRoot)];
-
-    if (this.emptyState) {
-      children.push(emptyStateChild);
-    } else if (this._diffs) {
-      const tree = build(this._diffs.distinct, pathContext.mainPath);
-      children.push(...tree.treeItems);
-    }
-
-    return children;
   }
 }
 
