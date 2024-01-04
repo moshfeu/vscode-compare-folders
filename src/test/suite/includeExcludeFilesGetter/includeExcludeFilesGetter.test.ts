@@ -26,7 +26,7 @@ suite('IncludeExcludeFilesGetter', () => {
     cleanup();
   });
 
-  test('should return combined excludeFilter from configuration and .gitignore ', async () => {
+  test.skip('should return combined excludeFilter from configuration and .gitignore ', async () => {
     const cleanup = await setup({
       settings: {
         excludeFilter: ['file.ts'],

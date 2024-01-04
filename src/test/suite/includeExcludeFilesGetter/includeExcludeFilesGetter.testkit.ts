@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { ExtensionContext, workspace, WorkspaceConfiguration } from 'vscode';
 
 import { IConfigurations } from '../../../services/configuration';
@@ -46,7 +45,6 @@ export async function setup({
   settings?: Partial<IConfigurations>;
   gitignoreContent?: string;
 } = {}) {
-  const sandbox = sinon.createSandbox();
   const context = contextFactory();
 
   globalState.init(context as ExtensionContext);
