@@ -23,7 +23,7 @@ export function getGitignoreFilter(pathLeft: string, pathRight: string): FilterH
     if (entry.name === '.git') {
       return false
     }
-    console.log(2222, entry.absolutePath, isIgnored(entry.absolutePath))
+
     // Use globby to evaluate the current path
     if (isIgnored(entry.absolutePath)) {
       return false
