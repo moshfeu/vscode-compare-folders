@@ -256,9 +256,9 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       const [folder1Path, folder2Path] = pathContext.getPaths();
       const [from, to] =
         direction === 'to-compared' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
-      const { root, dir, name } = path.parse(from);
+      const { root, dir, base } = path.parse(from);
       const pathWithoutSchema = dir.replace(root, '');
-      const fileCopiedRelativePath = uri.fsPath.replace(pathWithoutSchema, '').replace(name, '');
+      const fileCopiedRelativePath = uri.fsPath.replace(pathWithoutSchema, '').replace(base, '');
       const fromPath = path.join(from, fileCopiedRelativePath);
       const toPath = path.join(to, fileCopiedRelativePath);
       copySync(fromPath, toPath);
