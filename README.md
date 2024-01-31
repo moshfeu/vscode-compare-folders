@@ -50,7 +50,6 @@ There are several ways to choose folders to compare:
   "**/.git"
 ]
 ```
-- `compareContent` - boolean - Compares files by content
 - `diffViewTitle` - One of the options: "name only", "compared path", "full path"
 - `ignoreFileNameCase` - boolean - Compare files with the same name but different case
 - `diffLayout` - One of the options: "local <> compared" or "compared <> local"
@@ -63,6 +62,7 @@ There are several ways to choose folders to compare:
 - `ignoreAllWhiteSpaces` - boolean - ignore all white space differences (similar to `diff -w`)
 - `ignoreEmptyLines` - boolean - ignore differences caused by empty lines (similar to `diff -B`)
 - `respectGitIgnore` - boolean - include / exclude files based on .gitignore - this option works together with `includeFilter` and `excludeFilter` options. ⚠️ The extension supports the main basic gitignore rules. For instance, it supports negation (`!`), but it doesn't support .gitignore files in subfolders. If there is an important use case that is not supported, please open an issue.
+- `compareStrategy` - One of the options: "content", "size", "date"` - The strategy to use while comparing files. Comparing by `content`, `size` or `date` (last modified time). Default is `content`.
 
 ***Example***
 ```json

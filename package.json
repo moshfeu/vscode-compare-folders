@@ -61,12 +61,6 @@
           "default": "",
           "scope": "resource"
         },
-        "compareFolders.compareContent": {
-          "type": "boolean",
-          "default": true,
-          "description": "Compare content",
-          "scope": "resource"
-        },
         "compareFolders.ignoreLineEnding": {
           "type": "boolean",
           "default": false,
@@ -164,6 +158,22 @@
           "type": "boolean",
           "default": "true",
           "description": "Show a warning message before deleting files",
+          "scope": "resource"
+        },
+        "compareFolders.compareStrategy": {
+          "type": "string",
+          "default": "content",
+          "enum": [
+            "content",
+            "size",
+            "date"
+          ],
+          "enumDescriptions": [
+            "Compare files by content",
+            "Compare files by size",
+            "Compare files by date"
+          ],
+          "description": "Compare strategy",
           "scope": "resource"
         }
       }
