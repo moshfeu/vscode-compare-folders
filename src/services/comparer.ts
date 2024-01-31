@@ -70,7 +70,6 @@ export async function showFile(file: string) {
 
 function getOptions() {
   const {
-    compareContent,
     ignoreFileNameCase,
     ignoreExtension,
     ignoreWhiteSpaces,
@@ -78,8 +77,8 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     respectGitIgnore,
+    compareStrategy,
   } = getConfiguration(
-    'compareContent',
     'ignoreFileNameCase',
     'ignoreExtension',
     'ignoreWhiteSpaces',
@@ -87,13 +86,13 @@ function getOptions() {
     'ignoreEmptyLines',
     'ignoreLineEnding',
     'respectGitIgnore',
+    'compareStrategy'
   );
 
   const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
   const filterHandler = respectGitIgnore ? getGitignoreFilter(...pathContext.getPaths()) : undefined;
 
   const options: CompareOptions = {
-    compareContent,
     excludeFilter,
     includeFilter,
     ignoreCase: ignoreFileNameCase,
@@ -105,6 +104,9 @@ function getOptions() {
     filterHandler,
     compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,
+    compareContent: compareStrategy === 'content',
+    compareSize: compareStrategy === 'size',
+    compareDate: compareStrategy === 'date',
   };
   return options;
 }
@@ -119,8 +121,8 @@ export async function compareFolders(): Promise<CompareResult> {
     validatePermissions(folder1Path, folder2Path);
     const showIdentical = getConfiguration('showIdentical');
     const options = getOptions();
+
     const concatenatedOptions: CompareOptions = {
-      compareContent: true,
       handlePermissionDenied: true,
       ...options,
     };

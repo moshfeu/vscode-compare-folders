@@ -6,7 +6,6 @@ import { pathContext } from '../../../context/path';
 import { globalState } from '../../../services/globalState';
 
 const defaultSettings: Partial<IConfigurations> = {
-  compareContent: true,
   excludeFilter: [],
   includeFilter: [],
   diffViewTitle: 'name only',
@@ -23,6 +22,7 @@ const defaultSettings: Partial<IConfigurations> = {
   ignoreEmptyLines: false,
   ignoreLineEnding: false,
   respectGitIgnore: false,
+  compareStrategy: 'content',
 };
 
 const contextFactory = (): Partial<ExtensionContext> => {
