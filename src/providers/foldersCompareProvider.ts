@@ -73,9 +73,13 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   };
 
   dismissDifference = async (e: TreeItem) => {
-    const {path} = e.resourceUri || {};
+    const isWindows = process.platform === 'win32';
+    let {path} = e.resourceUri || {};
     if (!path) {
       return;
+    }
+    if(isWindows && e.resourceUri?.scheme){
+      path = `${e.resourceUri?.scheme}:${path}`;
     }
     this.ignoreDifferencesList.add(path);
     this.filterIgnoredFromDiffs();
@@ -183,8 +187,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   private filterIgnoredFromDiffs() {
+    //console.log("hello! :)");
+    //console.log("this._diffs",this._diffs)
+    //console.log("this._diffs!",this._diffs!)
+    //console.log("this._diffs!.distinct ",this._diffs!.distinct)
     this._diffs!.distinct = this._diffs!.distinct
       .filter(diff => {
+        //console.log("hello again! :)");
+        //console.log(diff);
+        //console.log("this.ignoreDifferencesList",this.ignoreDifferencesList);
+        //console.log("diff[0]",diff[0]);
+        //console.log("diff[1]",diff[1]);
         return !this.ignoreDifferencesList.has(diff[0]) &&
                !this.ignoreDifferencesList.has(diff[1]);
       });
