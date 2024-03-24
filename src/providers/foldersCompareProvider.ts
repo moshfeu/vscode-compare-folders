@@ -187,17 +187,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   private filterIgnoredFromDiffs() {
-    //console.log("hello! :)");
-    //console.log("this._diffs",this._diffs)
-    //console.log("this._diffs!",this._diffs!)
-    //console.log("this._diffs!.distinct ",this._diffs!.distinct)
     this._diffs!.distinct = this._diffs!.distinct
       .filter(diff => {
-        //console.log("hello again! :)");
-        //console.log(diff);
-        //console.log("this.ignoreDifferencesList",this.ignoreDifferencesList);
-        //console.log("diff[0]",diff[0]);
-        //console.log("diff[1]",diff[1]);
         return !this.ignoreDifferencesList.has(diff[0]) &&
                !this.ignoreDifferencesList.has(diff[1]);
       });
