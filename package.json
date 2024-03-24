@@ -199,7 +199,7 @@
           "when": "false"
         },
         {
-          "command": "foldersCompare.dissmissDifference",
+          "command": "foldersCompare.dismissDifference",
           "when": "false"
         },
         {
@@ -255,7 +255,7 @@
           "group": "1_folderCompares_actions@1"
         },
         {
-          "command": "foldersCompare.dissmissDifference",
+          "command": "foldersCompare.dismissDifference",
           "when": "view == foldersCompareAppService && viewItem == file",
           "group": "inline"
         },
@@ -292,8 +292,8 @@
         "command": "foldersCompare.deleteFile"
       },
       {
-        "title": "Dissmiss Difference",
-        "command": "foldersCompare.dissmissDifference",
+        "title": "Dismiss Difference",
+        "command": "foldersCompare.dismissDifference",
         "icon": "$(close)"
       },
       {
