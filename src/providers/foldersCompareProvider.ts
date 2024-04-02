@@ -73,9 +73,13 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   };
 
   dismissDifference = async (e: TreeItem) => {
-    const {path} = e.resourceUri || {};
+    const isWindows = process.platform === 'win32';
+    let {path} = e.resourceUri || {};
     if (!path) {
       return;
+    }
+    if(isWindows && e.resourceUri?.scheme){
+      path = `${e.resourceUri?.scheme}:${path}`;
     }
     this.ignoreDifferencesList.add(path);
     this.filterIgnoredFromDiffs();
