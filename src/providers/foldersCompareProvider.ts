@@ -25,7 +25,7 @@ import {
 import { File } from '../models/file';
 import { build } from '../services/treeBuilder';
 import { pathContext } from '../context/path';
-import { getRelativePath } from '../utils/path';
+import { getLocalPath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
 import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
@@ -33,6 +33,7 @@ import { HAS_FOLDERS } from '../constants/contextKeys';
 import { log } from '../services/logger';
 import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
+import { uiContext, type FilesViewMode } from '../context/ui';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -195,14 +196,14 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       });
   }
 
-  refresh = async (resetIgnoredFiles = true) => {
+  refresh = async (resetIgnoredFiles = true, shouldShowInfoMessage = true) => {
     if (resetIgnoredFiles) {
       this.ignoreDifferencesList.clear();
     }
     try {
       this._diffs = (await compareFolders());
       this.filterIgnoredFromDiffs();
-      if (this._diffs.hasResult()) {
+      if (shouldShowInfoMessage && this._diffs.hasResult()) {
         showInfoMessageWithTimeout('Source Refreshed');
       }
       this.updateUI();
@@ -215,6 +216,11 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     pathContext.swap();
     this.refresh(false);
   };
+
+  viewAs = (mode: FilesViewMode) => () => {
+    uiContext.filesViewMode = mode;
+    this.refresh(false, false);
+  }
 
   copyToCompared = (e: TreeItem) => {
     this.copyToFolder(e.resourceUri!, 'to-compared');
@@ -284,7 +290,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   getFolderName(filePath: string, basePath: string) {
     const base = basePath ? `${this.workspaceRoot}/${basePath}` : this.workspaceRoot;
-    return path.basename(path.dirname(getRelativePath(filePath, base)));
+    return path.basename(path.dirname(getLocalPath(filePath, base)));
   }
 
   getChildren(element?: File): File[] {

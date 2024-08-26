@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.24.3",
+  "version": "0.25.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -223,6 +223,16 @@
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
         },
         {
+          "command": "foldersCompare.viewAsList",
+          "group": "navigation@1",
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders && foldersCompare.filesViewMode == 'tree'"
+        },
+        {
+          "command": "foldersCompare.viewAsTree",
+          "group": "navigation@1",
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders && foldersCompare.filesViewMode == 'list'"
+        },
+        {
           "command": "foldersCompare.pickFromRecentCompares",
           "group": "navigation@3",
           "when": "view == foldersCompareAppService"
@@ -331,6 +341,16 @@
           "light": "resources/light/swap.svg",
           "dark": "resources/dark/swap.svg"
         }
+      },
+      {
+        "title": "View as list",
+        "command": "foldersCompare.viewAsList",
+        "icon": "$(list-selection)"
+      },
+      {
+        "title": "View as tree",
+        "command": "foldersCompare.viewAsTree",
+        "icon": "$(list-tree)"
       },
       {
         "command": "foldersCompare.compareSelectedFolders",

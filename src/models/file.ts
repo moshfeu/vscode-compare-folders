@@ -16,7 +16,8 @@ export class File extends TreeItem {
 		public readonly collapsibleState?: TreeItemCollapsibleState,
     public readonly command?: TreeItemCommand,
     public readonly children?: File[],
-    public resourceUri?: Uri
+    public resourceUri?: Uri,
+    public readonly description?: TreeItem['description'],
 	) {
 		super(label, collapsibleState);
 

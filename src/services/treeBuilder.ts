@@ -4,14 +4,23 @@ import get from 'lodash/get';
 import { COMPARE_FILES } from '../constants/commands';
 import { File } from '../models/file';
 import * as path from 'path';
-import { log } from 'util';
+import { uiContext } from '../context/ui';
+import type { DiffPaths, ViewOnlyPath } from '../types';
+import { log } from './logger';
 
 type TreeNode = {
   path: string;
   [key: string]: TreeNode | [[string, string], string] | string;
 };
 
-export function build(paths: string[][], basePath: string) {
+export function build(paths: DiffPaths | ViewOnlyPath, basePath: string) {
+  if (uiContext.filesViewMode === 'list') {
+    return {
+      tree: {},
+      treeItems: createList(paths, basePath),
+    }
+  }
+
   const tree = {} as TreeNode;
   try {
     paths.forEach((filePath) => {
@@ -36,6 +45,31 @@ export function build(paths: string[][], basePath: string) {
   } finally {
     const treeItems = createHierarchy(tree);
     return { tree, treeItems };
+  }
+}
+
+function createList(paths: DiffPaths | ViewOnlyPath, basePath: string): File[] {
+  try {
+    return paths.map(([path1, path2]) => {
+      const relativePath = path.relative(basePath, path1);
+      const fileName = path.basename(path1);
+      return new File(
+        fileName,
+        'file',
+        TreeItemCollapsibleState.None,
+        {
+          title: path1,
+          command: COMPARE_FILES,
+          arguments: [[path1, path2 || ''], relativePath],
+        },
+        undefined,
+        Uri.file(path1),
+        true,
+      )
+    });
+  } catch (error) {
+    log(`can't create list`, error);
+    return [];
   }
 }
 

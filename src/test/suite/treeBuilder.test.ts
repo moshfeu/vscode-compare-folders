@@ -4,10 +4,11 @@ import { File } from '../../models/file';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';
 import * as path from 'path';
+import type { DiffPaths } from '../../types';
 
 suite('Tree Builder', () => {
 	test('Generate tree with one file', () => {
-    const paths = [['/base/path/to/rootFolder/index.html', '/base/path/to/rootFolder1/index.html']];
+    const paths: DiffPaths = [['/base/path/to/rootFolder/index.html', '/base/path/to/rootFolder1/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
     assert.deepStrictEqual(
@@ -22,7 +23,7 @@ suite('Tree Builder', () => {
   });
 
 	test('Generate tree with deep hierarchy', () => {
-    const paths = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
+    const paths: DiffPaths = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
     assert.deepStrictEqual(
@@ -43,7 +44,7 @@ suite('Tree Builder', () => {
   });
 
 	test('Generte list of TreeView\'s', () => {
-    const paths = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
+    const paths: DiffPaths = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
     const { treeItems } = build(paths, basePath);

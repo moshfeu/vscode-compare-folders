@@ -1,3 +1,3 @@
-export function getRelativePath(path: string, basePath: string): string {
+export function getLocalPath(path: string, basePath: string): string {
   return path.replace(basePath, '');
 }
