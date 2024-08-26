@@ -5,6 +5,7 @@ import { TreeItemCollapsibleState, Uri } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';
 import * as path from 'path';
 import type { DiffPaths } from '../../types';
+import { uiContext } from '../../context/ui';
 
 suite('Tree Builder', () => {
 	test('Generate tree with one file', () => {
@@ -61,6 +62,35 @@ suite('Tree Builder', () => {
             }, undefined, undefined)
           ], Uri.parse(path.join(basePath, 'folder1', 'folder2')))
         ], Uri.parse(path.join(basePath, 'folder1')))
+      ]
+    );
+  });
+
+	test('Generte diffs as list', () => {
+    const paths: DiffPaths = [['/base/path/to/rootFolder/folder1/subfolder/index.html', '/base/path/to/rootFolder/folder2/subfolder/index.html']];
+    const [path1, path2] = paths[0];
+    const basePath = '/base/path/to/rootFolder';
+
+    uiContext.filesViewMode = 'list';
+    const {tree, treeItems} = build(paths, basePath);
+
+    assert.deepStrictEqual(tree, {});
+    assert.deepStrictEqual<File[]>(
+      treeItems,
+      [
+        new File(
+          'index.html',
+          'file',
+          TreeItemCollapsibleState.None,
+          {
+            title: path1,
+            command: COMPARE_FILES,
+            arguments: [[path1, path2], 'folder1/subfolder/index.html'],
+          },
+          undefined,
+          Uri.parse(path1),
+          true
+        ),
       ]
     );
   });
