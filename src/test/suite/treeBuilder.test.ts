@@ -4,12 +4,12 @@ import { File } from '../../models/file';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';
 import * as path from 'path';
-import type { DiffPaths } from '../../types';
+import type { DiffPathss } from '../../types';
 import { uiContext } from '../../context/ui';
 
 suite('Tree Builder', () => {
 	test('Generate tree with one file', () => {
-    const paths: DiffPaths = [['/base/path/to/rootFolder/index.html', '/base/path/to/rootFolder1/index.html']];
+    const paths: DiffPathss = [['/base/path/to/rootFolder/index.html', '/base/path/to/rootFolder1/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
     assert.deepStrictEqual(
@@ -24,7 +24,7 @@ suite('Tree Builder', () => {
   });
 
 	test('Generate tree with deep hierarchy', () => {
-    const paths: DiffPaths = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
+    const paths: DiffPathss = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
     assert.deepStrictEqual(
@@ -45,7 +45,7 @@ suite('Tree Builder', () => {
   });
 
 	test('Generte list of TreeView\'s', () => {
-    const paths: DiffPaths = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
+    const paths: DiffPathss = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
     const { treeItems } = build(paths, basePath);
@@ -67,11 +67,11 @@ suite('Tree Builder', () => {
   });
 
 	test('Generte diffs as list', () => {
-    const paths: DiffPaths = [['/base/path/to/rootFolder/folder1/subfolder/index.html', '/base/path/to/rootFolder/folder2/subfolder/index.html']];
+    const paths: DiffPathss = [['/base/path/to/rootFolder/folder1/subfolder/index.html', '/base/path/to/rootFolder/folder2/subfolder/index.html']];
     const [path1, path2] = paths[0];
     const basePath = '/base/path/to/rootFolder';
 
-    uiContext.filesViewMode = 'list';
+    uiContext.diffViewMode = 'list';
     const {tree, treeItems} = build(paths, basePath);
 
     assert.deepStrictEqual(tree, {});

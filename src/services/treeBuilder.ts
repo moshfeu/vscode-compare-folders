@@ -5,7 +5,7 @@ import { COMPARE_FILES } from '../constants/commands';
 import { File } from '../models/file';
 import * as path from 'path';
 import { uiContext } from '../context/ui';
-import type { DiffPaths, ViewOnlyPath } from '../types';
+import type { DiffPaths, DiffPathss, ViewOnlyPaths } from '../types';
 import { log } from './logger';
 
 type TreeNode = {
@@ -13,8 +13,8 @@ type TreeNode = {
   [key: string]: TreeNode | [[string, string], string] | string;
 };
 
-export function build(paths: DiffPaths | ViewOnlyPath, basePath: string) {
-  if (uiContext.filesViewMode === 'list') {
+export function build(paths: DiffPathss | ViewOnlyPaths, basePath: string) {
+  if (uiContext.diffViewMode === 'list') {
     return {
       tree: {},
       treeItems: createList(paths, basePath),
@@ -48,7 +48,7 @@ export function build(paths: DiffPaths | ViewOnlyPath, basePath: string) {
   }
 }
 
-function createList(paths: DiffPaths | ViewOnlyPath, basePath: string): File[] {
+function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[] {
   try {
     return paths.map(([path1, path2]) => {
       const relativePath = path.relative(basePath, path1);
@@ -90,13 +90,20 @@ function createHierarchy(src: TreeNode): File[] {
           )
         );
       } else {
-        const [paths, relativePath] = (childrenOrFileData as unknown) as [[string, string], string];
+        const [paths, relativePath] = (childrenOrFileData as unknown) as [DiffPaths, string];
         prev.push(
-          new File(key, 'file', TreeItemCollapsibleState.None, {
-            title: key,
-            command: COMPARE_FILES,
-            arguments: [paths, relativePath],
-          })
+          new File(
+            key,
+            'file',
+            TreeItemCollapsibleState.None,
+            {
+              title: key,
+              command: COMPARE_FILES,
+              arguments: [paths, relativePath],
+            },
+            undefined,
+            Uri.file(paths[0])
+          )
         );
       }
       return prev;

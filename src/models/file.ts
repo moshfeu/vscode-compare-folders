@@ -18,11 +18,12 @@ export class File extends TreeItem {
     public readonly children?: File[],
     public resourceUri?: Uri,
     public readonly description?: TreeItem['description'],
+    public readonly tooltip?: string,
 	) {
 		super(label, collapsibleState);
 
     try {
-      this.tooltip = this.label;
+      this.tooltip ??= this.resourceUri?.fsPath || this.label;
       this.resourceUri = this.resourceUri || (
         this.hasIcon ?
           undefined :

@@ -33,7 +33,7 @@ import { HAS_FOLDERS } from '../constants/contextKeys';
 import { log } from '../services/logger';
 import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
-import { uiContext, type FilesViewMode } from '../context/ui';
+import { uiContext, type DiffViewMode } from '../context/ui';
 
 export class CompareFoldersProvider implements TreeDataProvider<File> {
   private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
@@ -217,8 +217,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     this.refresh(false);
   };
 
-  viewAs = (mode: FilesViewMode) => () => {
-    uiContext.filesViewMode = mode;
+  viewAs = (mode: DiffViewMode) => () => {
+    uiContext.diffViewMode = mode;
     this.refresh(false, false);
   }
 

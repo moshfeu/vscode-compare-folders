@@ -5,7 +5,7 @@ import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
 import { compareIgnoredExtension, compareName, validate } from './ignoreExtensionTools';
-import { CompareOptions, type DiffPaths, type ViewOnlyPath } from '../types';
+import { CompareOptions, type DiffPathss, type ViewOnlyPaths } from '../types';
 import { log, printOptions, printResult } from './logger';
 import { showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
@@ -133,20 +133,20 @@ export async function compareFolders(): Promise<CompareResult> {
     const { diffSet = [] } = res;
 
     // diffSet contains all the files and filter only the not equals files and map them to pairs of Uris
-    const distinct: DiffPaths = diffSet
+    const distinct: DiffPathss = diffSet
       .filter((diff) => diff.state === 'distinct')
       .map((diff) => [path.join(diff.path1!, diff.name1!), path.join(diff.path2!, diff.name2!)]);
 
     // readable 👍 performance 👎
-    const left: ViewOnlyPath = diffSet
+    const left: ViewOnlyPaths = diffSet
       .filter((diff) => diff.state === 'left' && diff.type1 === 'file')
       .map((diff) => [buildPath(diff, '1')]);
 
-    const right: ViewOnlyPath = diffSet
+    const right: ViewOnlyPaths = diffSet
       .filter((diff) => diff.state === 'right' && diff.type2 === 'file')
       .map((diff) => [buildPath(diff, '2')]);
 
-    const identicals: ViewOnlyPath = showIdentical
+    const identicals: ViewOnlyPaths = showIdentical
       ? diffSet
           .filter((diff) => diff.state === 'equal' && diff.type1 === 'file')
           .map((diff) => [buildPath(diff, '1')])
@@ -183,10 +183,10 @@ function buildPath(diff: Difference, side: '1' | '2') {
 
 export class CompareResult {
   constructor(
-    public distinct: DiffPaths,
-    public left: ViewOnlyPath,
-    public right: ViewOnlyPath,
-    public identicals: ViewOnlyPath,
+    public distinct: DiffPathss,
+    public left: ViewOnlyPaths,
+    public right: ViewOnlyPaths,
+    public identicals: ViewOnlyPaths,
     public unaccessibles: string[],
     public leftPath: string,
     public rightPath: string

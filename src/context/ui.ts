@@ -1,17 +1,30 @@
+import { getConfiguration } from '../services/configuration';
 import { setContext } from './global';
 
-export type FilesViewMode = 'tree' | 'list';
+export type DiffViewMode = 'tree' | 'list';
 
 class UIContext {
-  private _filesViewMode: FilesViewMode = 'tree';
+  private _diffViewMode?: DiffViewMode;
 
-  set filesViewMode(mode: FilesViewMode) {
-    setContext('foldersCompare.filesViewMode', mode);
-    this._filesViewMode = mode;
+  init() {
+    this.updateFromConfiguration();
   }
 
-  get filesViewMode(): FilesViewMode {
-    return this._filesViewMode || 'tree';
+  updateFromConfiguration() {
+    // don't update from configuration if diffViewMode is already set
+    if (this._diffViewMode) {
+      return;
+    }
+    this.diffViewMode = getConfiguration('defaultDiffViewMode');
+  }
+
+  set diffViewMode(mode: DiffViewMode) {
+    setContext('foldersCompare.diffViewMode', mode);
+    this._diffViewMode = mode;
+  }
+
+  get diffViewMode(): DiffViewMode {
+    return this._diffViewMode || getConfiguration('defaultDiffViewMode');
   }
 }
 

@@ -7,9 +7,11 @@ import { pickFromRecents } from './services/pickFromRecentCompares';
 import { getConfiguration } from './services/configuration';
 import { showDoneableInfo } from './utils/ui';
 import { validate } from './services/ignoreExtensionTools';
+import { uiContext } from './context/ui';
 
 export async function activate(context: ExtensionContext) {
   globalState.init(context);
+  uiContext.init();
   const onlyInA = new ViewOnlyProvider();
   const onlyInB = new ViewOnlyProvider();
   const identicals = new ViewOnlyProvider(false);
