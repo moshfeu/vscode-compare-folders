@@ -107,6 +107,38 @@ COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2
         </div>
       </a>
     </td>
+    <td>
+      <a href="https://github.com/md2perpe" target="_blank">
+        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/543239?v=4" alt="md2perpe">
+        <div>
+          Per Persson
+        </div>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/orellabac" target="_blank">
+        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/4247006?v=4" alt="orellabac">
+        <div>
+          orellabac
+        </div>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/niccolomineo" target="_blank">
+        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/5409469?v=4" alt="Niccolò Mineo">
+        <div>
+          Niccolò Mineo
+        </div>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/sampellino" target="_blank">
+        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/5458241?v=4" alt="Sam Pellino">
+        <div>
+          Sam Pellino
+        </div>
+      </a>
+    </td>
   </tr>
 </table>
 
