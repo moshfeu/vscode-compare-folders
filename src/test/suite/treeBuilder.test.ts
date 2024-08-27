@@ -59,7 +59,7 @@ suite('Tree Builder', () => {
               title: 'index.html',
               command: COMPARE_FILES,
               arguments: [paths[0], path.join('folder1/folder2/index.html')]
-            }, undefined, undefined)
+            }, undefined, Uri.parse(paths[0][0]))
           ], Uri.parse(path.join(basePath, 'folder1', 'folder2')))
         ], Uri.parse(path.join(basePath, 'folder1')))
       ]
