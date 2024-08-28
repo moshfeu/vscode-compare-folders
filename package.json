@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.24.3",
+  "version": "0.25.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -148,6 +148,19 @@
           "markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
           "scope": "window"
         },
+        "compareFolders.defaultDiffViewMode": {
+          "type": "string",
+          "default": "tree",
+          "enum": [
+            "tree",
+            "list"
+          ],
+          "enumDescriptions": [
+            "Presents files and folders in a hierarchical tree structure, allowing for a more organized and nested view",
+            "Displays files and folders in a simple, flat list format"
+          ],
+          "scope": "window"
+        },
         "compareFolders.showIdentical": {
           "type": "boolean",
           "default": false,
@@ -213,18 +226,28 @@
       ],
       "view/title": [
         {
+          "command": "foldersCompare.viewAsList",
+          "group": "navigation@1",
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders && foldersCompare.diffViewMode == 'tree'"
+        },
+        {
+          "command": "foldersCompare.viewAsTree",
+          "group": "navigation@1",
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders && foldersCompare.diffViewMode == 'list'"
+        },
+        {
           "command": "foldersCompare.refresh",
           "group": "navigation@2",
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
         },
         {
           "command": "foldersCompare.swap",
-          "group": "navigation@1",
+          "group": "navigation@3",
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
         },
         {
           "command": "foldersCompare.pickFromRecentCompares",
-          "group": "navigation@3",
+          "group": "navigation@4",
           "when": "view == foldersCompareAppService"
         }
       ],
@@ -268,12 +291,13 @@
     },
     "commands": [
       {
-        "title": "Compare Folders: Pick from recent compares",
+        "title": "Pick from recent compares",
         "command": "foldersCompare.pickFromRecentCompares",
         "icon": {
           "dark": "resources/dark/history.svg",
           "light": "resources/light/history.svg"
-        }
+        },
+        "category": "CompareFolders"
       },
       {
         "title": "Compare Folders: Clear recent compares",
@@ -322,7 +346,8 @@
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
-        }
+        },
+        "category": "CompareFolders"
       },
       {
         "title": "Swap Sides",
@@ -330,7 +355,20 @@
         "icon": {
           "light": "resources/light/swap.svg",
           "dark": "resources/dark/swap.svg"
-        }
+        },
+        "category": "CompareFolders"
+      },
+      {
+        "title": "View as list",
+        "command": "foldersCompare.viewAsList",
+        "icon": "$(list-selection)",
+        "category": "CompareFolders"
+      },
+      {
+        "title": "View as tree",
+        "command": "foldersCompare.viewAsTree",
+        "icon": "$(list-tree)",
+        "category": "CompareFolders"
       },
       {
         "command": "foldersCompare.compareSelectedFolders",

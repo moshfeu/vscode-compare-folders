@@ -1,4 +1,5 @@
 import { workspace } from 'vscode';
+import type { DiffViewMode } from '../context/ui';
 
 export type DiffViewTitle = 'name only' | 'compared path' | 'full path';
 
@@ -20,6 +21,7 @@ export interface IConfigurations {
   ignoreEmptyLines: boolean;
   ignoreLineEnding: boolean;
   respectGitIgnore: boolean;
+  defaultDiffViewMode: DiffViewMode;
 }
 
 type ConfigurationItem = keyof IConfigurations;

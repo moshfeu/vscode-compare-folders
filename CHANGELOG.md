@@ -1,5 +1,9 @@
 ## Change log
 
+**0.25.0**
+
+- [#151](https://github.com/moshfeu/vscode-compare-folders/issues/151) - View as list like source control (Thanks [@michaelmesser](https://github.com/michaelmesser))
+
 **0.24.0**
 
 - [#2](https://github.com/moshfeu/vscode-compare-folders/issues/2) - Allow to remove file from the diff tree

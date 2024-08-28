@@ -4,14 +4,23 @@ import get from 'lodash/get';
 import { COMPARE_FILES } from '../constants/commands';
 import { File } from '../models/file';
 import * as path from 'path';
-import { log } from 'util';
+import { uiContext } from '../context/ui';
+import type { DiffPaths, DiffPathss, ViewOnlyPaths } from '../types';
+import { log } from './logger';
 
 type TreeNode = {
   path: string;
   [key: string]: TreeNode | [[string, string], string] | string;
 };
 
-export function build(paths: string[][], basePath: string) {
+export function build(paths: DiffPathss | ViewOnlyPaths, basePath: string) {
+  if (uiContext.diffViewMode === 'list') {
+    return {
+      tree: {},
+      treeItems: createList(paths, basePath),
+    }
+  }
+
   const tree = {} as TreeNode;
   try {
     paths.forEach((filePath) => {
@@ -39,6 +48,31 @@ export function build(paths: string[][], basePath: string) {
   }
 }
 
+function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[] {
+  try {
+    return paths.map(([path1, path2]) => {
+      const relativePath = path.relative(basePath, path1);
+      const fileName = path.basename(path1);
+      return new File(
+        fileName,
+        'file',
+        TreeItemCollapsibleState.None,
+        {
+          title: path1,
+          command: COMPARE_FILES,
+          arguments: [[path1, path2 || ''], relativePath],
+        },
+        undefined,
+        Uri.file(path1),
+        true,
+      )
+    });
+  } catch (error) {
+    log(`can't create list`, error);
+    return [];
+  }
+}
+
 function createHierarchy(src: TreeNode): File[] {
   const children = (Object.entries(src) as Array<[string, TreeNode]>).reduce(
     (prev, [key, childrenOrFileData]) => {
@@ -56,13 +90,20 @@ function createHierarchy(src: TreeNode): File[] {
           )
         );
       } else {
-        const [paths, relativePath] = (childrenOrFileData as unknown) as [[string, string], string];
+        const [paths, relativePath] = (childrenOrFileData as unknown) as [DiffPaths, string];
         prev.push(
-          new File(key, 'file', TreeItemCollapsibleState.None, {
-            title: key,
-            command: COMPARE_FILES,
-            arguments: [paths, relativePath],
-          })
+          new File(
+            key,
+            'file',
+            TreeItemCollapsibleState.None,
+            {
+              title: key,
+              command: COMPARE_FILES,
+              arguments: [paths, relativePath],
+            },
+            undefined,
+            Uri.file(paths[0])
+          )
         );
       }
       return prev;

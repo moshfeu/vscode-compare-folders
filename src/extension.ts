@@ -1,15 +1,17 @@
 import { window, commands, ExtensionContext, workspace, Uri, version} from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
-import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES, DISMISS_DIFFERENCE } from './constants/commands';
+import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES, DISMISS_DIFFERENCE, VIEW_AS_LIST, VIEW_AS_TREE } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
 import { globalState } from './services/globalState';
 import { pickFromRecents } from './services/pickFromRecentCompares';
 import { getConfiguration } from './services/configuration';
 import { showDoneableInfo } from './utils/ui';
 import { validate } from './services/ignoreExtensionTools';
+import { uiContext } from './context/ui';
 
 export async function activate(context: ExtensionContext) {
   globalState.init(context);
+  uiContext.init();
   const onlyInA = new ViewOnlyProvider();
   const onlyInB = new ViewOnlyProvider();
   const identicals = new ViewOnlyProvider(false);
@@ -27,6 +29,8 @@ export async function activate(context: ExtensionContext) {
       commands.registerCommand(DISMISS_DIFFERENCE, foldersCompareProvider.dismissDifference),
       commands.registerCommand(REFRESH, foldersCompareProvider.refresh),
       commands.registerCommand(SWAP, foldersCompareProvider.swap),
+      commands.registerCommand(VIEW_AS_LIST, foldersCompareProvider.viewAs('list')),
+      commands.registerCommand(VIEW_AS_TREE, foldersCompareProvider.viewAs('tree')),
       commands.registerCommand(COPY_TO_COMPARED, foldersCompareProvider.copyToCompared),
       commands.registerCommand(COPY_TO_MY, foldersCompareProvider.copyToMy),
       commands.registerCommand(TAKE_MY_FILE, foldersCompareProvider.takeMyFile),

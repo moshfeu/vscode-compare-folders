@@ -1,5 +1,9 @@
 import type { Options } from 'dir-compare';
 
+export type DiffPaths = [path1: string, path2: string];
+export type DiffPathss = DiffPaths[];
+export type ViewOnlyPaths = [path: string][];
+
 export type CompareOptions = Options & {
   ignoreExtension?: [[string, string]];
 };
