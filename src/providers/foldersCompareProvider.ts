@@ -29,7 +29,7 @@ import { getLocalPath } from '../utils/path';
 import { ViewOnlyProvider } from './viewOnlyProvider';
 import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
-import { HAS_FOLDERS } from '../constants/contextKeys';
+import { EMPTY_STATE, HAS_FOLDERS } from '../constants/contextKeys';
 import { log } from '../services/logger';
 import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
@@ -175,7 +175,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       this.emptyState = false;
       this._onDidChangeTreeData.fire(null);
     } else {
-      this.showEmptyState();
+      // this.showEmptyState();
+      setContext(EMPTY_STATE, true);
       window.showInformationMessage(
         '[Compare Folders] There are no differences in any file at the same path.'
       );
@@ -299,7 +300,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
         return element.children;
       }
 
-      const children = [openFolderChild(!!this.workspaceRoot)];
+      // const children = [openFolderChild(!!this.workspaceRoot)];
+      const children = [];
 
       if (this.emptyState) {
         children.push(emptyStateChild);

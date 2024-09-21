@@ -36,6 +36,23 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsWelcome": [
+      {
+        "view": "foldersCompareAppService",
+        "contents": "Welcome to Compare Folders! \n[Select Folders to Compare](command:foldersCompare.chooseFoldersAndCompare)",
+        "when": "workbenchState == 'empty' && !foldersCompareContext.hasFolders"
+      },
+      {
+        "view": "foldersCompareAppService",
+        "contents": "Welcome to Compare Folders! \n[Select Folder to Compare](command:foldersCompare.chooseFoldersAndCompare)",
+        "when": "workbenchState != 'empty' && !foldersCompareContext.hasFolders"
+      },
+      {
+        "view": "foldersCompareAppService",
+        "contents": "😄 The compared folders match perfectly!",
+        "when": "foldersCompareContext.emptyState"
+      }
+    ],
     "icons": {
       "comparefolders-icon": {
         "description": "compare folders icon",
@@ -226,6 +243,11 @@
       ],
       "view/title": [
         {
+          "command": "foldersCompare.chooseFoldersAndCompare",
+          "group": "navigation@1",
+          "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders"
+        },
+        {
           "command": "foldersCompare.viewAsList",
           "group": "navigation@1",
           "when": "view == foldersCompareAppService && foldersCompareContext.hasFolders && foldersCompare.diffViewMode == 'tree'"
@@ -335,7 +357,8 @@
       {
         "title": "Choose Folders and Compare",
         "command": "foldersCompare.chooseFoldersAndCompare",
-        "category": "CompareFolders"
+        "category": "CompareFolders",
+        "icon": "$(comparefolders-icon)"
       },
       {
         "title": "Compare a Folder Against Workspace",
