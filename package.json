@@ -260,17 +260,17 @@
       "view/item/context": [
         {
           "command": "foldersCompare.copyToCompared",
-          "when": "view == foldersCompareAppServiceOnlyA",
+          "when": "view == foldersCompareAppServiceOnlyA && viewItem != root",
           "group": "inline"
         },
         {
           "command": "foldersCompare.copyToMy",
-          "when": "view == foldersCompareAppServiceOnlyB",
+          "when": "view == foldersCompareAppServiceOnlyB && viewItem != root",
           "group": "inline"
         },
         {
           "command": "foldersCompare.deleteFile",
-          "when": "view == foldersCompareAppServiceOnlyA || view == foldersCompareAppServiceOnlyB",
+          "when": "(view == foldersCompareAppServiceOnlyA || view == foldersCompareAppServiceOnlyB) && viewItem != root",
           "group": "inline"
         },
         {
