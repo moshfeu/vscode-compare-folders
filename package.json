@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.25.0",
+  "version": "0.25.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -260,26 +260,26 @@
       "view/item/context": [
         {
           "command": "foldersCompare.copyToCompared",
-          "when": "view == foldersCompareAppServiceOnlyA",
+          "when": "view == foldersCompareAppServiceOnlyA && viewItem != root",
           "group": "inline"
         },
         {
           "command": "foldersCompare.copyToMy",
-          "when": "view == foldersCompareAppServiceOnlyB",
+          "when": "view == foldersCompareAppServiceOnlyB && viewItem != root",
           "group": "inline"
         },
         {
           "command": "foldersCompare.deleteFile",
-          "when": "view == foldersCompareAppServiceOnlyA || view == foldersCompareAppServiceOnlyB",
+          "when": "(view == foldersCompareAppServiceOnlyA || view == foldersCompareAppServiceOnlyB) && viewItem != root",
           "group": "inline"
         },
         {
-          "command": "foldersCompare.takeComparedFile",
+          "command": "foldersCompare.takeMyFile",
           "when": "view == foldersCompareAppService && viewItem == file",
           "group": "inline@1"
         },
         {
-          "command": "foldersCompare.takeMyFile",
+          "command": "foldersCompare.takeComparedFile",
           "when": "view == foldersCompareAppService && viewItem == file",
           "group": "inline@2"
         },
@@ -325,12 +325,12 @@
       {
         "title": "Take My File",
         "command": "foldersCompare.takeMyFile",
-        "icon": "$(debug-step-back)"
+        "icon": "$(debug-step-over)"
       },
       {
         "title": "Take Compared File",
         "command": "foldersCompare.takeComparedFile",
-        "icon": "$(debug-step-over)"
+        "icon": "$(debug-step-back)"
       },
       {
         "title": "Choose Folders and Compare",
