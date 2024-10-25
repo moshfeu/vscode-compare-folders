@@ -26,7 +26,10 @@ const defaultSettings: Partial<IConfigurations> = {
 };
 
 const contextFactory = (): Partial<ExtensionContext> => {
-  const state: Record<string, any> = {};
+  const state: Record<string, any> = {
+    'compareFolders.paths': [],
+    'compareFolders.version': '1.0.0',
+  };
   return {
     globalState: {
       keys: () => Object.keys(state),
