@@ -1,4 +1,4 @@
-import { ExtensionContext, workspace, WorkspaceConfiguration } from 'vscode';
+import { ExtensionContext, Uri, workspace, WorkspaceConfiguration } from 'vscode';
 
 import { IConfigurations } from '../../../services/configuration';
 import * as fs from '../../../services/fs';
@@ -28,6 +28,18 @@ const defaultSettings: Partial<IConfigurations> = {
 const contextFactory = (): Partial<ExtensionContext> => {
   const state: Record<string, any> = {};
   return {
+    extension: {
+      id: 'test',
+      extensionPath: '/',
+      extensionKind: 1,
+      extensionUri: Uri.parse('/'),
+      isActive: true,
+      activate: () => Promise.resolve(),
+      exports: {},
+      packageJSON: {
+        version: '1.0.0',
+      },
+    },
     globalState: {
       keys: () => Object.keys(state),
       setKeysForSync: () => {},
