@@ -3,10 +3,16 @@ import { log } from './logger';
 
 class GlobalState {
   private readonly KEY = 'compareFolders.paths';
+  private readonly VERSION_KEY = 'compareFolders.version';
   private globalState?: Memento;
 
   init(context: ExtensionContext) {
     this.globalState = context.globalState;
+    this.globalState.update(this.VERSION_KEY, context.extension.packageJSON.version);
+  }
+
+  get extensionVersion() {
+    return this.globalState?.get<string>(this.VERSION_KEY);
   }
 
   updatePaths(path1: string, path2: string) {

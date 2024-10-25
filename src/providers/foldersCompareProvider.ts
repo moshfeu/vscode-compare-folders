@@ -10,7 +10,6 @@ import {
   ProgressLocation,
   commands,
   Uri,
-  Command,
 } from 'vscode';
 import * as path from 'path';
 import { copySync, removeSync } from 'fs-extra';
@@ -30,8 +29,8 @@ import { ViewOnlyProvider } from './viewOnlyProvider';
 import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
-import { log } from '../services/logger';
-import { showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
+import * as logger from '../services/logger';
+import { showErrorMessage, showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
 import { uiContext, type DiffViewMode } from '../context/ui';
 
@@ -208,7 +207,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       }
       this.updateUI();
     } catch (error) {
-      log(error);
+      logger.error(error);
     }
   };
 
@@ -267,15 +266,13 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       const [folder1Path, folder2Path] = pathContext.getPaths();
       const [from, to] =
         direction === 'to-compared' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
-      const { root, dir, base } = path.parse(from);
-      const pathWithoutSchema = dir.replace(root, '');
-      const fileCopiedRelativePath = uri.fsPath.replace(pathWithoutSchema, '').replace(base, '');
-      const fromPath = path.join(from, fileCopiedRelativePath);
-      const toPath = path.join(to, fileCopiedRelativePath);
+      const fromPath = uri.fsPath;
+      const toPath = path.join(to, path.relative(from, fromPath));
       copySync(fromPath, toPath);
       this.refresh(false);
     } catch (error) {
-      log(error);
+      showErrorMessage('Failed to copy file', error);
+      logger.error(error);
     }
   }
 
@@ -310,7 +307,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
       return children;
     } catch (error) {
-      log(error);
+      logger.error(error);
       return [];
     }
   }

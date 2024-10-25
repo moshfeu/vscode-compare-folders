@@ -4,7 +4,7 @@ import { type CompareOptions } from '../types';
 
 const logger = window.createOutputChannel('Compare Folders');
 
-export function log(...data: (object | string | undefined | unknown)[]) {
+function printData(...data: (object | string | undefined | unknown)[]) {
   data.forEach(item => {
     if (typeof item === 'string') {
       logger.appendLine(item);
@@ -12,6 +12,17 @@ export function log(...data: (object | string | undefined | unknown)[]) {
       logger.appendLine(JSON.stringify(item, null, 2));
     }
   });
+}
+
+export function error(...data: (object | string | undefined | unknown)[]) {
+  logger.appendLine('====error====');
+  printData(...data);
+  console.error(...data);
+  logger.appendLine('===============');
+}
+
+export function log(...data: (object | string | undefined | unknown)[]) {
+  printData(...data);
   console.log(...data);
 }
 
