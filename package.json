@@ -417,7 +417,8 @@
     "deploy": "npx vsce publish -p",
     "deploy:insider": "node scripts/deploy-insider.js",
     "deploy:openvsx": "sh scripts/deploy-openvsx.sh",
-    "package": "npx vsce package"
+    "package": "npx vsce package",
+    "package:test": "sh scripts/package-test.sh"
   },
   "devDependencies": {
     "@types/fs-extra": "8.1.0",
