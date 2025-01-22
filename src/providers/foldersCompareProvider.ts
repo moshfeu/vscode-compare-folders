@@ -17,9 +17,9 @@ import { CHOOSE_FOLDERS_AND_COMPARE } from '../constants/commands';
 import {
   chooseFoldersAndCompare,
   showDiffs,
-  compareFolders,
   CompareResult,
   showFile,
+  compareFoldersWithLoader,
 } from '../services/comparer';
 import { File } from '../models/file';
 import { build } from '../services/treeBuilder';
@@ -69,7 +69,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
-    return this.handleDiffResult(await compareFolders());
+    return this.handleDiffResult(await compareFoldersWithLoader());
   };
 
   dismissDifference = async (e: TreeItem) => {
@@ -85,18 +85,10 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: `Compare folders...`,
-      },
-      async () => {
-        this.handleDiffResult(
-          await chooseFoldersAndCompare(
-            ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
-          )
-        );
-      }
+    this.handleDiffResult(
+      await chooseFoldersAndCompare(
+        ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
+      )
     );
   };
 
@@ -200,7 +192,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       this.ignoreDifferencesList.clear();
     }
     try {
-      this._diffs = (await compareFolders());
+      this._diffs = (await compareFoldersWithLoader());
       this.filterIgnoredFromDiffs();
       if (shouldShowInfoMessage && this._diffs.hasResult()) {
         showInfoMessageWithTimeout('Source Refreshed');
@@ -266,8 +258,11 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       const [folder1Path, folder2Path] = pathContext.getPaths();
       const [from, to] =
         direction === 'to-compared' ? [folder1Path, folder2Path] : [folder2Path, folder1Path];
-      const fromPath = uri.fsPath;
-      const toPath = path.join(to, path.relative(from, fromPath));
+      const {root, dir, name} = path.parse(from);
+      const pathWithoutSchema = dir.replace(root, '');
+      const fileCopiedRelativePath = uri.fsPath.replace(pathWithoutSchema, '').replace(name, '');
+      const fromPath = path.join(from, fileCopiedRelativePath);
+      const toPath = path.join(to, fileCopiedRelativePath);
       copySync(fromPath, toPath);
       this.refresh(false);
     } catch (error) {
