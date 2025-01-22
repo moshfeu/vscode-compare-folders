@@ -44,7 +44,7 @@ export async function showErrorMessage(message: string, error: any) {
 **System Info**
 Editor version: ${version}
 Extension version: ${globalState.extensionVersion}
-OS: ${os.platform()} ${os.release()}
+OS: ${os.platform()} ${process.arch} ${os.release()}
 
 **Stack**
 ${error.stack || error.message || error}
