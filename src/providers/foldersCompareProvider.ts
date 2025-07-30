@@ -253,12 +253,12 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   takeMyFile = (e: TreeItem) => {
     const [[filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.parse(filePath), 'to-compared');
+    this.copyToFolder(Uri.file(filePath), 'to-compared');
   };
 
   takeComparedFile = (e: TreeItem) => {
     const [[, filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.parse(filePath), 'to-me');
+    this.copyToFolder(Uri.file(filePath), 'to-me');
   };
 
   copyToFolder(uri: Uri, direction: 'to-compared' | 'to-me') {
