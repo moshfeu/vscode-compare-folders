@@ -59,9 +59,9 @@ suite('Tree Builder', () => {
               title: 'index.html',
               command: COMPARE_FILES,
               arguments: [paths[0], path.join('folder1/folder2/index.html')]
-            }, undefined, Uri.parse(paths[0][0]))
-          ], Uri.parse(path.join(basePath, 'folder1', 'folder2')))
-        ], Uri.parse(path.join(basePath, 'folder1')))
+            }, undefined, Uri.file(paths[0][0]))
+          ], Uri.file(path.join(basePath, 'folder1', 'folder2')))
+        ], Uri.file(path.join(basePath, 'folder1')))
       ]
     );
   });
@@ -88,7 +88,7 @@ suite('Tree Builder', () => {
             arguments: [[path1, path2], path.join('folder1', 'subfolder', 'index.html')],
           },
           undefined,
-          Uri.parse(path1),
+          Uri.file(path1),
           true
         ),
       ]

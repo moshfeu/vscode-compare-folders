@@ -187,8 +187,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private filterIgnoredFromDiffs() {
     this._diffs!.distinct = this._diffs!.distinct
       .filter(diff => {
-        const { path: path1 } = Uri.parse(diff[0]);
-        const { path: path2 } = Uri.parse(diff[1]);
+        const path1 = diff[0];
+        const path2 = diff[1];
 
         return !this.ignoreDifferencesList.has(path1) &&
           !this.ignoreDifferencesList.has(path2);

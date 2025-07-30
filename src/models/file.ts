@@ -27,7 +27,7 @@ export class File extends TreeItem {
       this.resourceUri = this.resourceUri || (
         this.hasIcon ?
           undefined :
-          Uri.parse(this.command?.arguments![0][0] || '')
+          Uri.file(this.command?.arguments![0][0] || '')
       );
     } catch (error) {
       log(`can't set resourceUri: ${error}`);

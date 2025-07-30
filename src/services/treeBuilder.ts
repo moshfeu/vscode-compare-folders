@@ -86,7 +86,7 @@ function createHierarchy(src: TreeNode): File[] {
             TreeItemCollapsibleState.Collapsed,
             undefined,
             createHierarchy(children as TreeNode),
-            Uri.parse(path)
+            Uri.file(path)
           )
         );
       } else {
