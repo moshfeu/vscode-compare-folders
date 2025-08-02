@@ -33,7 +33,7 @@ async function hasPermissionDenied(entryPath: string) {
 }
 
 export async function foldersNotExist({fsPath: uri1}: Uri, {fsPath: uri2}: Uri) {
-  const existsAsync = (await Promise.all([Uri.parse(uri1), Uri.parse(uri2)]
+  const existsAsync = (await Promise.all([Uri.file(uri1), Uri.file(uri2)]
     .map(resourceExists)));
   const notExist = existsAsync
     .some(exists => !exists);

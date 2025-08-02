@@ -187,8 +187,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   private filterIgnoredFromDiffs() {
     this._diffs!.distinct = this._diffs!.distinct
       .filter(diff => {
-        const { path: path1 } = Uri.parse(diff[0]);
-        const { path: path2 } = Uri.parse(diff[1]);
+        const path1 = diff[0];
+        const path2 = diff[1];
 
         return !this.ignoreDifferencesList.has(path1) &&
           !this.ignoreDifferencesList.has(path2);
@@ -253,12 +253,12 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   takeMyFile = (e: TreeItem) => {
     const [[filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.parse(filePath), 'to-compared');
+    this.copyToFolder(Uri.file(filePath), 'to-compared');
   };
 
   takeComparedFile = (e: TreeItem) => {
     const [[, filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.parse(filePath), 'to-me');
+    this.copyToFolder(Uri.file(filePath), 'to-me');
   };
 
   copyToFolder(uri: Uri, direction: 'to-compared' | 'to-me') {
