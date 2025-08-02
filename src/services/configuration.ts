@@ -14,6 +14,7 @@ export interface IConfigurations {
   showIdentical: boolean;
   useDiffMerge: boolean;
   warnBeforeDelete: boolean;
+  warnBeforeTake: boolean;
   folderLeft: string;
   folderRight: string;
   ignoreWhiteSpaces: boolean;

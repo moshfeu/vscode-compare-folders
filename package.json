@@ -178,6 +178,12 @@
           "default": "true",
           "description": "Show a warning message before deleting files",
           "scope": "resource"
+        },
+        "compareFolders.warnBeforeTake": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a warning message before taking/replacing files",
+          "scope": "resource"
         }
       }
     },

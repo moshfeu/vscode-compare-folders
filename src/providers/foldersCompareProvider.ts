@@ -251,14 +251,48 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   };
 
-  takeMyFile = (e: TreeItem) => {
-    const [[filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.file(filePath), 'to-compared');
+  takeMyFile = async (e: TreeItem) => {
+    const yesMessage = `Yes. I know what I'm doing`;
+    let shouldTake = true;
+
+    if (getConfiguration('warnBeforeTake')) {
+      shouldTake =
+        yesMessage ===
+        (await window.showInformationMessage(
+          'Are you sure you want to replace the compared file with your file?',
+          {
+            modal: true,
+          },
+          yesMessage
+        ));
+    }
+
+    if (shouldTake) {
+      const [[filePath]] = e.command!.arguments!;
+      this.copyToFolder(Uri.file(filePath), 'to-compared');
+    }
   };
 
-  takeComparedFile = (e: TreeItem) => {
-    const [[, filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.file(filePath), 'to-me');
+  takeComparedFile = async (e: TreeItem) => {
+    const yesMessage = `Yes. I know what I'm doing`;
+    let shouldTake = true;
+
+    if (getConfiguration('warnBeforeTake')) {
+      shouldTake =
+        yesMessage ===
+        (await window.showInformationMessage(
+          'Are you sure you want to replace your file with the compared file?',
+          {
+            modal: true,
+          },
+          yesMessage
+        ));
+    }
+
+    if (shouldTake) {
+      const [[, filePath]] = e.command!.arguments!;
+      this.copyToFolder(Uri.file(filePath), 'to-me');
+    }
   };
 
   copyToFolder(uri: Uri, direction: 'to-compared' | 'to-me') {

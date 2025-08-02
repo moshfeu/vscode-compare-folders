@@ -16,6 +16,7 @@ const defaultSettings: Partial<IConfigurations> = {
   showIdentical: false,
   useDiffMerge: false,
   warnBeforeDelete: false,
+  warnBeforeTake: false,
   folderLeft: undefined,
   folderRight: undefined,
   ignoreWhiteSpaces: false,
