@@ -39,8 +39,8 @@ export class File extends TreeItem {
   }
 
 	iconPath = this.hasIcon ? {
-		light: join(__filename, '..', '..', '..', 'resources', 'light', `${this.type}.svg`),
-		dark: join(__filename, '..', '..', '..', 'resources', 'dark', `${this.type}.svg`),
+		light: Uri.file(join(__filename, '..', '..', '..', 'resources', 'light', `${this.type}.svg`)),
+		dark: Uri.file(join(__filename, '..', '..', '..', 'resources', 'dark', `${this.type}.svg`)),
 	} : undefined;
 
 	contextValue = this.type;
