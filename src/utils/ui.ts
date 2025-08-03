@@ -2,6 +2,8 @@ import { window, ProgressLocation, env, Uri, version } from 'vscode';
 import os from 'os';
 import * as logger from '../services/logger';
 import { globalState } from '../services/globalState';
+import { getConfiguration } from '../services/configuration';
+import { YES_MESSAGE } from '../utils/consts';
 
 export function showInfoMessageWithTimeout(message: string, timeout: number = 3000) {
   const upTo = timeout / 10;
@@ -49,9 +51,8 @@ OS: ${os.platform()} ${os.release()}
 **Stack**
 ${error.stack || error.message || error}
 `;
-      const url = `https://github.com/moshfeu/vscode-compare-folders/issues/new?title=[error] ${
-        error.message || error
-      }&body=${body}`;
+      const url = `https://github.com/moshfeu/vscode-compare-folders/issues/new?title=[error] ${error.message || error
+        }&body=${body}`;
 
       const uri = Uri.parse(url);
       env.openExternal(uri);
@@ -67,4 +68,19 @@ export async function showErrorMessageWithMoreInfo(message: string, link: string
   if (result === moreInfo) {
     env.openExternal(Uri.parse(link));
   }
+}
+
+export const warnBefore = async (message: string) => {
+  if (getConfiguration('warnBeforeTake')) {
+    return YES_MESSAGE ===
+      (await window.showInformationMessage(
+        message,
+        {
+          modal: true,
+        },
+        YES_MESSAGE
+      ));
+  }
+
+  return true;
 }
