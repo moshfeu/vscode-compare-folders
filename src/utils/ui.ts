@@ -38,10 +38,11 @@ export async function showDoneableInfo(title: string, callback: () => Promise<vo
   );
 }
 
-export async function showErrorMessage(message: string, error: any) {
-  if ((await window.showErrorMessage(message, 'Report')) === 'Report') {
-    try {
-      const body = `**Original message**: ${message}
+export async function showErrorMessage(message: string, error: any, allowReporting: boolean = true) {
+  if (allowReporting) {
+    if ((await window.showErrorMessage(message, 'Report')) === 'Report') {
+      try {
+        const body = `**Original message**: ${message}
 
 **System Info**
 Editor version: ${version}
@@ -51,14 +52,17 @@ OS: ${os.platform()} ${os.release()}
 **Stack**
 ${error.stack || error.message || error}
 `;
-      const url = `https://github.com/moshfeu/vscode-compare-folders/issues/new?title=[error] ${error.message || error
-        }&body=${body}`;
+        const url = `https://github.com/moshfeu/vscode-compare-folders/issues/new?title=[error] ${error.message || error
+          }&body=${body}`;
 
-      const uri = Uri.parse(url);
-      env.openExternal(uri);
-    } catch (error) {
-      logger.log(error);
+        const uri = Uri.parse(url);
+        env.openExternal(uri);
+      } catch (error) {
+        logger.log(error);
+      }
     }
+  } else {
+    window.showErrorMessage(message);
   }
 }
 

@@ -174,7 +174,8 @@ export async function compareFolders(): Promise<CompareResult> {
     if (error && error.code === 'EACCES') {
       showErrorMessage(
         'Permission denied while comparing folders. Some files or directories cannot be accessed due to insufficient permissions.',
-        error
+        error,
+        false // Don't show report button for permission errors
       );
     } else {
       showErrorMessage('Oops, something went wrong while comparing', error);
