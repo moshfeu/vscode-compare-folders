@@ -1,6 +1,6 @@
 import { window, commands, ExtensionContext, workspace, Uri, version} from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
-import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES, DISMISS_DIFFERENCE, VIEW_AS_LIST, VIEW_AS_TREE } from './constants/commands';
+import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_TWO_FOLDERS_BY_PATH, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES, DISMISS_DIFFERENCE, VIEW_AS_LIST, VIEW_AS_TREE } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
 import { globalState } from './services/globalState';
 import { pickFromRecents } from './services/pickFromRecentCompares';
@@ -25,6 +25,7 @@ export async function activate(context: ExtensionContext) {
       commands.registerCommand(CHOOSE_FOLDERS_AND_COMPARE, foldersCompareProvider.chooseFoldersAndCompare),
       commands.registerCommand(COMPARE_FOLDERS_AGAINST_EACH_OTHER, foldersCompareProvider.compareFoldersAgainstEachOther),
       commands.registerCommand(COMPARE_FOLDERS_AGAINST_WORKSPACE, foldersCompareProvider.chooseFoldersAndCompare),
+    commands.registerCommand(COMPARE_TWO_FOLDERS_BY_PATH, foldersCompareProvider.compareTwoFoldersByPath),
       commands.registerCommand(COMPARE_SELECTED_FOLDERS, foldersCompareProvider.compareSelectedFolders),
       commands.registerCommand(DISMISS_DIFFERENCE, foldersCompareProvider.dismissDifference),
       commands.registerCommand(REFRESH, foldersCompareProvider.refresh),

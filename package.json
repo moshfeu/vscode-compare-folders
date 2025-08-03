@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.25.2",
+  "version": "0.26.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -345,6 +345,11 @@
       {
         "title": "Choose 2 Folders and Compare",
         "command": "foldersCompare.compareFoldersAgainstEachOther",
+        "category": "CompareFolders"
+      },
+      {
+        "title": "Compare Two Folders by Path (AI)",
+        "command": "foldersCompare.compareTwoFoldersByPath",
         "category": "CompareFolders"
       },
       {

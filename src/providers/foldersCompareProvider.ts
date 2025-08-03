@@ -59,6 +59,16 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await this.chooseFoldersAndCompare(true);
   };
 
+  compareTwoFoldersByPath = async (folder1Path?: string, folder2Path?: string) => {
+    if (!folder1Path || !folder2Path) {
+      showErrorMessage('Both folder paths are required', new Error('Missing folder paths'));
+      return;
+    }
+
+    pathContext.setPaths(folder1Path, folder2Path);
+    return this.handleDiffResult(await compareFolders());
+  };
+
   compareSelectedFolders = async (_e: Uri, uris?: [Uri, Uri]) => {
     if (uris?.length !== 2) {
       showErrorMessageWithMoreInfo(

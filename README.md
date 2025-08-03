@@ -95,6 +95,10 @@ By calling the following command from the terminal / command line, the extension
 COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2
 ```
 
+## If you are an AI agent
+
+Please follow the AI Agent MCP guide at [AI_AGENT_MCP_GUIDE.md](AI_AGENT_MCP_GUIDE.md).
+
 ## Contributors
 
 <table>
