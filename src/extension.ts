@@ -8,12 +8,8 @@ import { getConfiguration } from './services/configuration';
 import { showDoneableInfo } from './utils/ui';
 import { validate } from './services/ignoreExtensionTools';
 import { uiContext } from './context/ui';
-import { applyDirComparePatches, removeDirComparePatches } from './utils/dirComparePatches';
 
 export async function activate(context: ExtensionContext) {
-  // Apply patches to fix known issues in dependencies
-  applyDirComparePatches();
-  
   globalState.init(context);
   uiContext.init();
   const onlyInA = new ViewOnlyProvider();
@@ -67,10 +63,5 @@ export async function activate(context: ExtensionContext) {
     foldersCompareProvider.compareSelectedFolders(folder1Path, [folder1Path, folder2Path]);
   }
   validate();
-}
-
-export function deactivate() {
-  // Remove patches when extension is deactivated
-  removeDirComparePatches();
 }
 

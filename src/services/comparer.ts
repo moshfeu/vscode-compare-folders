@@ -11,6 +11,7 @@ import { showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
 import { getIncludeAndExcludePaths } from './includeExcludeFilesGetter';
 import { getGitignoreFilter } from './gitignoreFilter';
+import { safeFileCompareAsync } from './safeFileCompare';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
@@ -103,7 +104,7 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     filterHandler,
-    compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
+    compareFileAsync: safeFileCompareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,
   };
   return options;
