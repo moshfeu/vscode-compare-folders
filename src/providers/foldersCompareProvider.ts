@@ -30,7 +30,7 @@ import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
 import * as logger from '../services/logger';
-import { showErrorMessage, showErrorMessageWithMoreInfo, showInfoMessageWithTimeout } from '../utils/ui';
+import { showErrorMessage, showErrorMessageWithMoreInfo, showInfoMessageWithTimeout, warnBefore } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
 import { uiContext, type DiffViewMode } from '../context/ui';
 
@@ -230,20 +230,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   };
 
   deleteFile = async (e: TreeItem) => {
-    const yesMessage = `Yes. I know what I'm doing`;
-    let shouldDelete = true;
-
-    if (getConfiguration('warnBeforeDelete')) {
-      shouldDelete =
-        yesMessage ===
-        (await window.showInformationMessage(
-          'Are you sure you want to delete this file?',
-          {
-            modal: true,
-          },
-          yesMessage
-        ));
-    }
+    const shouldDelete = await warnBefore('Are you sure you want to delete this file?');
 
     if (shouldDelete) {
       removeSync(e.resourceUri!.fsPath);
@@ -251,14 +238,22 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   };
 
-  takeMyFile = (e: TreeItem) => {
-    const [[filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.file(filePath), 'to-compared');
+  takeMyFile = async (e: TreeItem) => {
+    const shouldTake = await warnBefore('Are you sure you want to take my file?');
+
+    if (shouldTake) {
+      const [[filePath]] = e.command!.arguments!;
+      this.copyToFolder(Uri.file(filePath), 'to-compared');
+    }
   };
 
-  takeComparedFile = (e: TreeItem) => {
-    const [[, filePath]] = e.command!.arguments!;
-    this.copyToFolder(Uri.file(filePath), 'to-me');
+  takeComparedFile = async (e: TreeItem) => {
+    const shouldTake = await warnBefore('Are you sure you want to take the compared file?');
+
+    if (shouldTake) {
+      const [[, filePath]] = e.command!.arguments!;
+      this.copyToFolder(Uri.file(filePath), 'to-me');
+    }
   };
 
   copyToFolder(uri: Uri, direction: 'to-compared' | 'to-me') {
