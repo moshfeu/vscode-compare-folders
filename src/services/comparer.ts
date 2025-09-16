@@ -1,18 +1,45 @@
-import { commands, Uri, extensions, window } from 'vscode';
+import { commands, Uri } from 'vscode';
 import { compare, fileCompareHandlers,type Difference } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
 import { pathContext } from '../context/path';
-import { compareIgnoredExtension, compareName, validate } from './ignoreExtensionTools';
+import { compareName, validate } from './ignoreExtensionTools';
 import { CompareOptions, type DiffPathss, type ViewOnlyPaths } from '../types';
 import { log, printOptions, printResult } from './logger';
 import { showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
 import { getIncludeAndExcludePaths } from './includeExcludeFilesGetter';
 import { getGitignoreFilter } from './gitignoreFilter';
+import { FileParserService } from './fileParser';
+import { ParsedDiffViewer } from './parsedDiffViewer';
 
-const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
+let fileParserService: FileParserService | null = null;
+let parsedDiffViewer: ParsedDiffViewer | null = null;
+
+function getFileParserService(): FileParserService {
+  if (!fileParserService) {
+    fileParserService = new FileParserService();
+  }
+  return fileParserService;
+}
+
+function getParsedDiffViewer(): ParsedDiffViewer {
+  if (!parsedDiffViewer) {
+    parsedDiffViewer = new ParsedDiffViewer(getFileParserService());
+  }
+  return parsedDiffViewer;
+}
+
+/**
+ * Clean up resources when the extension is deactivated
+ */
+export async function cleanup(): Promise<void> {
+  if (parsedDiffViewer) {
+    await parsedDiffViewer.cleanup();
+  }
+}
+
 
 export async function chooseFoldersAndCompare(path?: string) {
   const folder1Path = path || (await openFolder());
@@ -26,42 +53,10 @@ export async function chooseFoldersAndCompare(path?: string) {
   return compareFolders();
 }
 
-function getTitle(
-  path: string,
-  relativePath: string,
-  titleFormat: DiffViewTitle = getConfiguration('diffViewTitle')
-): string {
-  switch (titleFormat) {
-    case 'name only':
-      return relativePath;
-    case 'compared path':
-      return `${path} ↔ ${relativePath}`;
-    default:
-      return '';
-  }
-}
-
 export async function showDiffs([file1, file2]: [string, string], relativePath: string) {
-  if (getConfiguration('useDiffMerge')) {
-    if (diffMergeExtension) {
-      commands.executeCommand('diffMerge.compareSelected', Uri.file(file1), [
-        Uri.file(file1),
-        Uri.file(file2),
-      ]);
-    } else {
-      window.showErrorMessage(
-        'In order to use "Diff & Merge" extension you should install / enable it'
-      );
-    }
-    return;
-  } else {
-    commands.executeCommand(
-      'vscode.diff',
-      Uri.file(file1),
-      Uri.file(file2),
-      getTitle(file1, relativePath, compareIgnoredExtension(file1, file2) ? 'full path' : undefined)
-    );
-  }
+  // Use shared ParsedDiffViewer instance - it handles both parsing and fallback to original diff
+  const viewer = getParsedDiffViewer();
+  await viewer.showDiffs([file1, file2], relativePath);
 }
 
 export async function showFile(file: string) {
@@ -78,6 +73,7 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     respectGitIgnore,
+    fileParsingRules,
   } = getConfiguration(
     'compareContent',
     'ignoreFileNameCase',
@@ -87,6 +83,7 @@ function getOptions() {
     'ignoreEmptyLines',
     'ignoreLineEnding',
     'respectGitIgnore',
+    'fileParsingRules',
   );
 
   const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
