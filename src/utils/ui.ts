@@ -38,6 +38,26 @@ export async function showDoneableInfo(title: string, callback: () => Promise<vo
   );
 }
 
+export async function showProgressNotification<T>(
+  title: string,
+  callback: (progressReporter: (message: string) => void) => Promise<T>
+): Promise<T> {
+  return await window.withProgress(
+    {
+      location: ProgressLocation.Notification,
+      title,
+      cancellable: false,
+    },
+    async (progress) => {
+      const progressReporter = (message: string) => {
+        progress.report({ message });
+      };
+      
+      return await callback(progressReporter);
+    }
+  );
+}
+
 export async function showErrorMessage(message: string, error: any) {
   if ((await window.showErrorMessage(message, 'Report')) === 'Report') {
     try {

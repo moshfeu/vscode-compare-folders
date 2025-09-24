@@ -7,7 +7,6 @@ import {
   workspace,
   window,
   WorkspaceFolder,
-  ProgressLocation,
   commands,
   Uri,
 } from 'vscode';
@@ -30,7 +29,7 @@ import { getConfiguration } from '../services/configuration';
 import { setContext } from '../context/global';
 import { HAS_FOLDERS } from '../constants/contextKeys';
 import * as logger from '../services/logger';
-import { showErrorMessage, showErrorMessageWithMoreInfo, showInfoMessageWithTimeout, warnBefore } from '../utils/ui';
+import { showErrorMessage, showErrorMessageWithMoreInfo, showInfoMessageWithTimeout, warnBefore, showProgressNotification } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
 import { uiContext, type DiffViewMode } from '../context/ui';
 
@@ -69,7 +68,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
-    return this.handleDiffResult(await compareFolders());
+    
+    return await showProgressNotification(
+      'Comparing folders',
+      async (progressReporter) => {
+        progressReporter('Starting comparison...');
+        const result = await compareFolders(progressReporter);
+        progressReporter('Comparison complete!');
+        
+        return this.handleDiffResult(result);
+      }
+    );
   };
 
   dismissDifference = async (e: TreeItem) => {
@@ -85,17 +94,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: `Compare folders...`,
-      },
-      async () => {
-        this.handleDiffResult(
-          await chooseFoldersAndCompare(
-            ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
-          )
+    await showProgressNotification(
+      'Compare folders',
+      async (progressReporter) => {
+        progressReporter('Selecting folders...');
+        
+        const result = await chooseFoldersAndCompare(
+          ignoreWorkspace ? undefined : await this.getWorkspaceFolder(),
+          progressReporter
         );
+        
+        this.handleDiffResult(result);
       }
     );
   };
@@ -200,9 +209,17 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       this.ignoreDifferencesList.clear();
     }
     try {
-      this._diffs = (await compareFolders());
-      this.filterIgnoredFromDiffs();
-      if (shouldShowInfoMessage && this._diffs.hasResult()) {
+      await showProgressNotification(
+        'Refreshing comparison',
+        async (progressReporter) => {
+          progressReporter('Refreshing...');
+          this._diffs = (await compareFolders(progressReporter));
+          this.filterIgnoredFromDiffs();
+          progressReporter('Refresh complete!');
+        }
+      );
+      
+      if (shouldShowInfoMessage && this._diffs?.hasResult()) {
         showInfoMessageWithTimeout('Source Refreshed');
       }
       this.updateUI();
@@ -219,7 +236,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   viewAs = (mode: DiffViewMode) => () => {
     uiContext.diffViewMode = mode;
     this.refresh(false, false);
-  }
+  };
 
   copyToCompared = (e: TreeItem) => {
     this.copyToFolder(e.resourceUri!, 'to-compared');

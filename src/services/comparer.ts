@@ -14,7 +14,7 @@ import { getGitignoreFilter } from './gitignoreFilter';
 
 const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
 
-export async function chooseFoldersAndCompare(path?: string) {
+export async function chooseFoldersAndCompare(path?: string, progressReporter?: (message: string) => void) {
   const folder1Path = path || (await openFolder());
   const folder2Path = await openFolder();
 
@@ -23,7 +23,7 @@ export async function chooseFoldersAndCompare(path?: string) {
   }
 
   pathContext.setPaths(folder1Path, folder2Path);
-  return compareFolders();
+  return compareFolders(progressReporter);
 }
 
 function getTitle(
@@ -109,7 +109,7 @@ function getOptions() {
   return options;
 }
 
-export async function compareFolders(): Promise<CompareResult> {
+export async function compareFolders(progressReporter?: (message: string) => void): Promise<CompareResult> {
   const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], [], '', ''));
   try {
     if (!validate()) {
@@ -124,13 +124,21 @@ export async function compareFolders(): Promise<CompareResult> {
       handlePermissionDenied: true,
       ...options,
     };
+    
+    progressReporter?.('Analyzing folder structure...');
+    
     // do the comparison
     const res = await compare(folder1Path, folder2Path, concatenatedOptions);
+    
+    progressReporter?.('Processing comparison results...');
+    
     printOptions(options);
     printResult(res);
 
     // get the diffs
     const { diffSet = [] } = res;
+
+    progressReporter?.('Organizing comparison results...');
 
     // diffSet contains all the files and filter only the not equals files and map them to pairs of Uris
     const distinct: DiffPathss = diffSet
@@ -157,6 +165,8 @@ export async function compareFolders(): Promise<CompareResult> {
       .map((diff) =>
         buildPath(diff, diff.permissionDeniedState === 'access-error-left' ? '1' : '2')
       );
+
+    progressReporter?.('Finalizing results...');
 
     return new CompareResult(
       distinct,
