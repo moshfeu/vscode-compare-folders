@@ -167,9 +167,20 @@ export async function compareFolders(): Promise<CompareResult> {
       folder1Path,
       folder2Path
     );
-  } catch (error) {
+  } catch (error: any) {
     log('error while comparing', error);
-    showErrorMessage('Oops, something went wrong while comparing', error);
+    
+    // Handle permission denied errors specifically
+    if (error && error.code === 'EACCES') {
+      showErrorMessage(
+        'Permission denied while comparing folders. Some files or directories cannot be accessed due to insufficient permissions.',
+        error,
+        false // Don't show report button for permission errors
+      );
+    } else {
+      showErrorMessage('Oops, something went wrong while comparing', error);
+    }
+    
     return emptyResponse();
   }
 }
