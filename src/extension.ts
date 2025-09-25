@@ -8,6 +8,7 @@ import { getConfiguration } from './services/configuration';
 import { showDoneableInfo } from './utils/ui';
 import { validate } from './services/ignoreExtensionTools';
 import { uiContext } from './context/ui';
+import { cleanup } from './services/comparer';
 
 export async function activate(context: ExtensionContext) {
   globalState.init(context);
@@ -63,5 +64,9 @@ export async function activate(context: ExtensionContext) {
     foldersCompareProvider.compareSelectedFolders(folder1Path, [folder1Path, folder2Path]);
   }
   validate();
+}
+
+export async function deactivate() {
+  await cleanup();
 }
 

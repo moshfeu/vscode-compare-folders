@@ -23,6 +23,16 @@ export interface IConfigurations {
   ignoreLineEnding: boolean;
   respectGitIgnore: boolean;
   defaultDiffViewMode: DiffViewMode;
+  fileParsingRules: FileParsingRule[];
+}
+
+export interface FileParsingRule {
+  pattern: string;
+  command: string;
+  args: string[];
+  workingDirectory?: string;
+  timeout?: number;
+  env?: { [key: string]: string };
 }
 
 type ConfigurationItem = keyof IConfigurations;
