@@ -103,6 +103,12 @@
           "description": "Pairs of extensions to to considered the same file (.e.g [index.js, index.ts]). Each extension can appear **only once**",
           "scope": "resource"
         },
+        "compareFolders.skipSymlinks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Ignore symbolic links during comparison. Enable this if you encounter errors with circular symlinks",
+          "scope": "resource"
+        },
         "compareFolders.includeFilter": {
           "type": "array",
           "description": "Include filters",

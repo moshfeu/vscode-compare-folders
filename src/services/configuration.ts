@@ -23,6 +23,7 @@ export interface IConfigurations {
   ignoreLineEnding: boolean;
   respectGitIgnore: boolean;
   defaultDiffViewMode: DiffViewMode;
+  skipSymlinks: boolean;
 }
 
 type ConfigurationItem = keyof IConfigurations;

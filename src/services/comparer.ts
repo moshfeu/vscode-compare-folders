@@ -78,6 +78,7 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     respectGitIgnore,
+    skipSymlinks,
   } = getConfiguration(
     'compareContent',
     'ignoreFileNameCase',
@@ -87,6 +88,7 @@ function getOptions() {
     'ignoreEmptyLines',
     'ignoreLineEnding',
     'respectGitIgnore',
+    'skipSymlinks',
   );
 
   const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
@@ -102,6 +104,7 @@ function getOptions() {
     ignoreAllWhiteSpaces,
     ignoreEmptyLines,
     ignoreLineEnding,
+    skipSymlinks,
     filterHandler,
     compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,
@@ -167,9 +170,16 @@ export async function compareFolders(): Promise<CompareResult> {
       folder1Path,
       folder2Path
     );
-  } catch (error) {
+  } catch (error: any) {
     log('error while comparing', error);
-    showErrorMessage('Oops, something went wrong while comparing', error);
+    if (error?.code === 'ELOOP') {
+      showErrorMessage(
+        'Circular symbolic link detected. Enable "Skip Symbolic Links" in settings to skip symlinks during comparison',
+        error
+      );
+    } else {
+      showErrorMessage('Oops, something went wrong while comparing', error);
+    }
     return emptyResponse();
   }
 }
