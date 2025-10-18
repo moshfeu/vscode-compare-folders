@@ -174,7 +174,7 @@ export async function compareFolders(): Promise<CompareResult> {
     log('error while comparing', error);
     if (error?.code === 'ELOOP') {
       showErrorMessage(
-        'Circular symbolic link detected. Enable "Skip Symbolic Links" in settings to skip symlinks during comparison',
+        'Circular symbolic link detected. Please remove or fix the circular symlink before comparing. Path: ' + (error.path || 'unknown'),
         error
       );
     } else {

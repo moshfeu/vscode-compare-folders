@@ -106,7 +106,7 @@
         "compareFolders.skipSymlinks": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore symbolic links during comparison. Enable this if you encounter errors with circular symlinks",
+          "description": "Ignore symbolic links during comparison. This can help avoid issues with symlinks, though circular symlinks may still need to be fixed manually",
           "scope": "resource"
         },
         "compareFolders.includeFilter": {
