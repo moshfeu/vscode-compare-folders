@@ -195,7 +195,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       });
   }
 
-  refresh = async (resetIgnoredFiles = true, shouldShowInfoMessage = true) => {
+  refresh = async (resetIgnoredFiles = true, shouldShowInfoMessage = true, shouldCompareFolders = true) => {
     if (resetIgnoredFiles) {
       this.ignoreDifferencesList.clear();
     }
@@ -206,6 +206,14 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
         showInfoMessageWithTimeout('Source Refreshed');
       }
       this.updateUI();
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  refreshTreeView = () => {
+    try {
+      this.refresh(false, false, false);
     } catch (error) {
       logger.error(error);
     }
@@ -236,6 +244,13 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       removeSync(e.resourceUri!.fsPath);
       this.refresh(false);
     }
+  };
+
+  viewParsedDiff = (e: TreeItem) => {
+    // Extract the paths and relativePath from the tree item's command arguments
+    const [paths, relativePath] = e.command!.arguments!;
+    // Show diff with parsed content (files are parsed according to fileParsingRules)
+    this.onFileClicked(paths, relativePath);
   };
 
   takeMyFile = async (e: TreeItem) => {

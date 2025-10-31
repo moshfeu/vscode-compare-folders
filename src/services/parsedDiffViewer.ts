@@ -1,18 +1,20 @@
-import { commands, Uri, window, workspace, extensions } from 'vscode';
+import { commands, Uri, window, extensions } from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as os from 'os';
 import { FileParserService } from './fileParser';
 import { DiffViewTitle, getConfiguration } from './configuration';
 import { log } from './logger';
 import { compareIgnoredExtension } from './ignoreExtensionTools';
+import { ReadonlyContentProvider } from '../providers/readonlyContentProvider';
+import { READONLY_SCHEME } from '../utils/consts';
 
 export class ParsedDiffViewer {
   private fileParser: FileParserService;
-  private tempFiles = new Set<string>();
+  private contentProvider: ReadonlyContentProvider;
 
   constructor(fileParser: FileParserService) {
     this.fileParser = fileParser;
+    this.contentProvider = new ReadonlyContentProvider(READONLY_SCHEME);
   }
 
   /**
@@ -26,102 +28,82 @@ export class ParsedDiffViewer {
 
       if (!shouldParse1 && !shouldParse2) {
         // No parsing needed, use original files
-        await this.showOriginalDiff(file1, file2, relativePath);
+        const uri1 = Uri.file(file1);
+        const uri2 = Uri.file(file2);
+        const title = this.getTitle(file1, relativePath, compareIgnoredExtension(file1, file2) ? 'full path' : undefined);
+        await this.showDiff(uri1, uri2, title);
         return;
       }
 
-      // Parse files and create temporary files for diff view
+      // Parse files and get content
       const [parsed1, parsed2] = await Promise.all([
         shouldParse1 ? this.fileParser.parseFile(file1) : null,
         shouldParse2 ? this.fileParser.parseFile(file2) : null
       ]);
 
-      // Create temporary files for diff view
-      const tempFile1 = await this.createTempFile(file1, parsed1);
-      const tempFile2 = await this.createTempFile(file2, parsed2);
+      // Get content for both files (parsed or original)
+      const [content1, content2] = await Promise.all([
+        this.getFileContent(file1, parsed1),
+        this.getFileContent(file2, parsed2)
+      ]);
 
-      // Show diff with temporary files
-      await this.showTempDiff(tempFile1, tempFile2, relativePath, {
-        original1: file1,
-        original2: file2,
-        parsed1: !!parsed1,
-        parsed2: !!parsed2
+      // Create readonly URIs with in-memory content
+      const fileName1 = path.basename(file1);
+      const fileName2 = path.basename(file2);
+      const [uri1, uri2] = this.contentProvider.createReadonlyUris(content1, content2, fileName1, fileName2);
+
+      // Show diff with parsed content
+      const title = this.getParsedTitle(relativePath, {
+        parsed1: !!parsed1 && !parsed1.error,
+        parsed2: !!parsed2 && !parsed2.error
       });
+      await this.showDiff(uri1, uri2, title);
 
     } catch (error) {
       log(`Error in parsed diff viewer: ${error}`);
       // Fall back to original diff on error
-      await this.showOriginalDiff(file1, file2, relativePath);
+      const uri1 = Uri.file(file1);
+      const uri2 = Uri.file(file2);
+      const title = this.getTitle(file1, relativePath, compareIgnoredExtension(file1, file2) ? 'full path' : undefined);
+      await this.showDiff(uri1, uri2, title);
     }
   }
 
   /**
-   * Show diff between two files using either DiffMerge or default VSCode diff
+   * Show diff between two URIs using either DiffMerge or default VSCode diff
    */
-  private async showDiff(file1: string, file2: string, title: string): Promise<void> {
+  private async showDiff(uri1: Uri, uri2: Uri, title: string): Promise<void> {
     if (getConfiguration('useDiffMerge')) {
       const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
       if (diffMergeExtension) {
-        commands.executeCommand('diffMerge.compareSelected', Uri.file(file1), [
-          Uri.file(file1),
-          Uri.file(file2),
-        ]);
+        commands.executeCommand('diffMerge.compareSelected', uri1, [uri1, uri2]);
       } else {
         window.showErrorMessage(
           'In order to use "Diff & Merge" extension you should install / enable it'
         );
       }
       return;
-    } else {
-      commands.executeCommand(
-        'vscode.diff',
-        Uri.file(file1),
-        Uri.file(file2),
-        title
-      );
     }
-  }
 
-  private async showOriginalDiff(file1: string, file2: string, relativePath: string): Promise<void> {
-    const title = this.getTitle(file1, relativePath, compareIgnoredExtension(file1, file2) ? 'full path' : undefined)
-    await this.showDiff(file1, file2, title);
+    commands.executeCommand('vscode.diff', uri1, uri2, title);
   }
 
   /**
-   * Show diff with temporary files
+   * Get file content (parsed or original)
    */
-  private async showTempDiff(tempFile1: string, tempFile2: string, relativePath: string, metadata: any): Promise<void> {
-    const title = this.getParsedTitle(relativePath, metadata);
-    await this.showDiff(tempFile1, tempFile2, title);
-  }
-
-  /**
-   * Create temporary file with parsed content
-   */
-  private async createTempFile(originalPath: string, parsedResult: any): Promise<string> {
-    const tempDir = os.tmpdir();
-    const fileName = path.basename(originalPath);
-    const tempFile = path.join(tempDir, `compare-folders-${Date.now()}-${fileName}`);
-    
-    let content: string;
+  private async getFileContent(filePath: string, parsedResult: any): Promise<string> {
     if (parsedResult && !parsedResult.error) {
-      content = parsedResult.parsedContent;
-    } else {
-      // Fall back to original content
-      content = await fs.promises.readFile(originalPath, 'utf8');
+      return parsedResult.parsedContent;
     }
-
-    await fs.promises.writeFile(tempFile, content, 'utf8');
-    this.tempFiles.add(tempFile);
-    
-    return tempFile;
+    // Fall back to original content
+    return await fs.promises.readFile(filePath, 'utf8');
   }
 
   /**
    * Get title for parsed diff view
    */
-  private getParsedTitle(relativePath: string, metadata: any): string {
-    const { original1, original2, parsed1, parsed2 } = metadata;
+  private getParsedTitle(relativePath: string, metadata: { parsed1: boolean; parsed2: boolean }): string {
+    const { parsed1, parsed2 } = metadata;
     
     if (parsed1 && parsed2) {
       return `${relativePath} (parsed)`;
@@ -149,18 +131,12 @@ export class ParsedDiffViewer {
     }
   }
 
-  /**
-   * Clean up temporary files
-   */
   async cleanup(): Promise<void> {
-    for (const tempFile of this.tempFiles) {
-      try {
-        await fs.promises.unlink(tempFile);
-      } catch (error) {
-        log(`Error cleaning up temp file ${tempFile}: ${error}`);
-      }
-    }
-    this.tempFiles.clear();
+    this.contentProvider.clear();
+  }
+
+  dispose(): void {
+    this.contentProvider.dispose();
   }
 
 }

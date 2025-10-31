@@ -7,11 +7,14 @@ import * as path from 'path';
 import { uiContext } from '../context/ui';
 import type { DiffPaths, DiffPathss, ViewOnlyPaths } from '../types';
 import { log } from './logger';
+import { FileParserService } from './fileParser';
 
 type TreeNode = {
   path: string;
   [key: string]: TreeNode | [[string, string], string] | string;
 };
+
+const fileParserService = new FileParserService();
 
 export function build(paths: DiffPathss | ViewOnlyPaths, basePath: string) {
   if (uiContext.diffViewMode === 'list') {
@@ -53,6 +56,8 @@ function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[]
     return paths.map(([path1, path2]) => {
       const relativePath = path.relative(basePath, path1);
       const fileName = path.basename(path1);
+      const hasParsableContent = fileParserService.shouldParseFile(path1) || 
+                                  (!!path2 && fileParserService.shouldParseFile(path2));
       return new File(
         fileName,
         'file',
@@ -65,6 +70,8 @@ function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[]
         undefined,
         Uri.file(path1),
         true,
+        undefined,
+        hasParsableContent,
       )
     });
   } catch (error) {
@@ -91,6 +98,8 @@ function createHierarchy(src: TreeNode): File[] {
         );
       } else {
         const [paths, relativePath] = (childrenOrFileData as unknown) as [DiffPaths, string];
+        const hasParsableContent = fileParserService.shouldParseFile(paths[0]) || 
+                                    (!!paths[1] && fileParserService.shouldParseFile(paths[1]));
         prev.push(
           new File(
             key,
@@ -102,7 +111,10 @@ function createHierarchy(src: TreeNode): File[] {
               arguments: [paths, relativePath],
             },
             undefined,
-            Uri.file(paths[0])
+            Uri.file(paths[0]),
+            undefined,
+            undefined,
+            hasParsableContent,
           )
         );
       }

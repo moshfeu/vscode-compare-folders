@@ -35,7 +35,7 @@ export interface FileParsingRule {
   env?: { [key: string]: string };
 }
 
-type ConfigurationItem = keyof IConfigurations;
+export type ConfigurationItem = keyof IConfigurations;
 
 function get() {
   return workspace.getConfiguration('compareFolders');
