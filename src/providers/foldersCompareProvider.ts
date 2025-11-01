@@ -150,21 +150,31 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   };
 
-  onFileClicked([path1, path2]: [string, string], relativePath: string) {
+  private openDiff([path1, path2]: [string, string], relativePath: string, allowParsedDiff: boolean) {
+    let diffs: [string, string] = [path2, path1];
+    if (getConfiguration('diffLayout') === 'local <> compared') {
+      diffs = [path1, path2];
+    }
+
+    showDiffs(diffs, relativePath, allowParsedDiff);
+  }
+
+  onFileClicked = ([path1, path2]: [string, string], relativePath: string) => {
     try {
       if (path2) {
-        let diffs: [string, string] = [path2, path1];
-        if (getConfiguration('diffLayout') === 'local <> compared') {
-          diffs = [path1, path2];
-        }
-        showDiffs(diffs, relativePath);
+        this.openDiff([path1, path2], relativePath, false);
       } else {
         showFile(path1);
       }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
+
+  onViewParsedDiffClicked = (e: TreeItem) => {
+    const [paths, relativePath] = e.command!.arguments!;
+    this.openDiff(paths, relativePath, true);
+  };
 
   async updateUI() {
     if (!this._diffs) {
@@ -244,13 +254,6 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       removeSync(e.resourceUri!.fsPath);
       this.refresh(false);
     }
-  };
-
-  viewParsedDiff = (e: TreeItem) => {
-    // Extract the paths and relativePath from the tree item's command arguments
-    const [paths, relativePath] = e.command!.arguments!;
-    // Show diff with parsed content (files are parsed according to fileParsingRules)
-    this.onFileClicked(paths, relativePath);
   };
 
   takeMyFile = async (e: TreeItem) => {

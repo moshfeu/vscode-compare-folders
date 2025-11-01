@@ -188,7 +188,7 @@
         "compareFolders.fileParsingRules": {
           "type": "array",
           "default": [],
-          "description": "Rules for parsing specific file patterns with external tools before comparison",
+          "description": "Rules for parsing specific file patterns with external tools",
           "items": {
             "type": "object",
             "properties": {

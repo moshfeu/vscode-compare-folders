@@ -20,7 +20,7 @@ export async function activate(context: ExtensionContext) {
   const onlyInB = new ViewOnlyProvider();
   const identicals = new ViewOnlyProvider(false);
   const foldersCompareProvider = new CompareFoldersProvider(onlyInA, onlyInB, identicals);
-  
+
   // Register callback to refresh tree view when fileParsingRules configuration changes
   configurationContext.setRefreshCallback(() => {
     foldersCompareProvider.refreshTreeView();
@@ -43,7 +43,7 @@ export async function activate(context: ExtensionContext) {
       commands.registerCommand(VIEW_AS_TREE, foldersCompareProvider.viewAs('tree')),
       commands.registerCommand(COPY_TO_COMPARED, foldersCompareProvider.copyToCompared),
       commands.registerCommand(COPY_TO_MY, foldersCompareProvider.copyToMy),
-      commands.registerCommand(VIEW_PARSED_DIFF, foldersCompareProvider.viewParsedDiff),
+      commands.registerCommand(VIEW_PARSED_DIFF, foldersCompareProvider.onViewParsedDiffClicked),
       commands.registerCommand(TAKE_MY_FILE, foldersCompareProvider.takeMyFile),
       commands.registerCommand(TAKE_COMPARED_FILE, foldersCompareProvider.takeComparedFile),
       commands.registerCommand(DELETE_FILE, foldersCompareProvider.deleteFile),

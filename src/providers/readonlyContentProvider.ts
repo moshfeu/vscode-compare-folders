@@ -1,6 +1,7 @@
 import { TextDocumentContentProvider, Uri, CancellationToken, ProviderResult, workspace, Disposable } from 'vscode';
+import { READONLY_SCHEME } from '../utils/consts';
 
-export class ReadonlyContentProvider implements TextDocumentContentProvider {
+class ReadonlyContentProvider implements TextDocumentContentProvider {
   private contents = new Map<string, string>();
   private disposable: Disposable;
 
@@ -12,15 +13,14 @@ export class ReadonlyContentProvider implements TextDocumentContentProvider {
     return this.contents.get(uri.toString());
   }
 
-  createReadonlyUris(content1: string, content2: string, fileName1: string, fileName2: string): [Uri, Uri] {
-    // Clear old content before creating new URIs to prevent memory leaks
+  createReadonlyUris(fileName1: string, content1: string, fileName2: string, content2: string): [Uri, Uri] {
     this.clear();
-    
+
     const timestamp = Date.now();
-    
-    const uri1 = Uri.parse(`${this.scheme}:${fileName1}?${timestamp}-1`);
-    const uri2 = Uri.parse(`${this.scheme}:${fileName2}?${timestamp}-2`);
-    
+
+    const uri1 = Uri.parse(`${this.scheme}://${timestamp}-1/${fileName1}`);
+    const uri2 = Uri.parse(`${this.scheme}://${timestamp}-2/${fileName2}`);
+
     this.setContent(uri1, content1);
     this.setContent(uri2, content2);
 
@@ -38,5 +38,16 @@ export class ReadonlyContentProvider implements TextDocumentContentProvider {
   dispose(): void {
     this.disposable.dispose();
     this.clear();
+  }
+}
+
+export class ReadonlyContentProviderSingleton {
+  private static instance: ReadonlyContentProvider | null = null;
+
+  static getInstance(): ReadonlyContentProvider {
+    if (!ReadonlyContentProviderSingleton.instance) {
+      ReadonlyContentProviderSingleton.instance = new ReadonlyContentProvider(READONLY_SCHEME);
+    }
+    return ReadonlyContentProviderSingleton.instance;
   }
 }
