@@ -21,7 +21,6 @@ export async function activate(context: ExtensionContext) {
   const identicals = new ViewOnlyProvider(false);
   const foldersCompareProvider = new CompareFoldersProvider(onlyInA, onlyInB, identicals);
 
-  // Register callback to refresh tree view when fileParsingRules configuration changes
   configurationContext.setRefreshCallback(() => {
     foldersCompareProvider.refreshTreeView();
   });

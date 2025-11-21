@@ -2,7 +2,7 @@ import { TreeItem, TreeItemCollapsibleState, Command, Uri } from 'vscode';
 import { join } from 'path';
 import { log } from '../services/logger';
 
-type FileType = 'file' | 'open' | 'folder' | 'empty' | 'root';
+type FileType = 'file' | 'file-parsable' | 'open' | 'folder' | 'empty' | 'root';
 
 export type TreeItemCommand = Command & {
   arguments?: [paths: string[], relativePath: string];
@@ -19,7 +19,6 @@ export class File extends TreeItem {
     public resourceUri?: Uri,
     public readonly description?: TreeItem['description'],
     public readonly tooltip?: string,
-    public readonly hasParsableContent?: boolean,
 	) {
 		super(label, collapsibleState);
 
@@ -44,5 +43,5 @@ export class File extends TreeItem {
 		dark: Uri.file(join(__filename, '..', '..', '..', 'resources', 'dark', `${this.type}.svg`)),
 	} : undefined;
 
-	contextValue = this.type === 'file' && this.hasParsableContent ? 'file-parsable' : this.type;
+	contextValue = this.type;
 }

@@ -86,7 +86,7 @@ There are several ways to choose folders to compare:
     },
     "args": ["--sort-keys", "'.'", "{file}"],
   }
-]q
+]
 ```
 - `ignoreExtension` - Set groups of extensions so while comparing, pairs of files considered the same file if both of the files extension are in the same group. **Note:** each extension can show **only once** it this list
 ***Example***

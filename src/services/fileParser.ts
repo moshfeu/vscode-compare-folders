@@ -58,7 +58,7 @@ async function executeParsingCommand(filePath: string, rule: FileParsingRule): P
 
   const command = `${rule.command} ${args.join(' ')}`;
   const workingDirectory = rule.workingDirectory || process.cwd();
-  const timeout = rule.timeout || 30000;
+  const timeout = rule.timeout;
   const env = { ...process.env, ...rule.env };
 
   log(`Executing parsing command: ${command} in ${workingDirectory}`);
@@ -68,7 +68,7 @@ async function executeParsingCommand(filePath: string, rule: FileParsingRule): P
 
   // Set maxBuffer to twice the workbench.editorLargeFileConfirmation value
   const largeFileConfirmation = workspace.getConfiguration('workbench').get<number>('editorLargeFileConfirmation') || 50; // Default 50MB if not set
-  const maxBuffer = largeFileConfirmation * 2 * 1024 * 1024; // Convert MB to bytes and double it
+  const maxBuffer = Math.min(largeFileConfirmation * 2 * 1024 * 1024, 1e9); // Convert MB to bytes and double it, capped at 1GB
   try {
     const { stdout, stderr } = await execAsync(command, {
       cwd: workingDirectory,

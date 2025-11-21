@@ -58,7 +58,7 @@ function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[]
                                   (!!path2 && shouldParseFile(path2));
       return new File(
         fileName,
-        'file',
+        hasParsableContent ? 'file-parsable' : 'file',
         TreeItemCollapsibleState.None,
         {
           title: path1,
@@ -69,7 +69,6 @@ function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[]
         Uri.file(path1),
         true,
         undefined,
-        hasParsableContent,
       )
     });
   } catch (error) {
@@ -101,7 +100,7 @@ function createHierarchy(src: TreeNode): File[] {
         prev.push(
           new File(
             key,
-            'file',
+            hasParsableContent ? 'file-parsable' : 'file',
             TreeItemCollapsibleState.None,
             {
               title: key,
@@ -112,7 +111,6 @@ function createHierarchy(src: TreeNode): File[] {
             Uri.file(paths[0]),
             undefined,
             undefined,
-            hasParsableContent,
           )
         );
       }

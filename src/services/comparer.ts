@@ -31,7 +31,7 @@ export async function chooseFoldersAndCompare(path?: string) {
   return compareFolders();
 }
 
-async function showDiff(uri1: Uri, uri2: Uri, title: string): Promise<void> {
+async function showDiffView(uri1: Uri, uri2: Uri, title: string): Promise<void> {
   if (getConfiguration('useDiffMerge')) {
     const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
     if (diffMergeExtension) {
@@ -77,7 +77,7 @@ export async function showDiffs([file1, file2]: [string, string], relativePath: 
     ? await prepareParsedDiff([file1, file2], relativePath)
     : prepareRawDiff([file1, file2], relativePath);
 
-  await showDiff(uri1, uri2, title);
+  await showDiffView(uri1, uri2, title);
 }
 
 export async function showFile(file: string) {

@@ -213,7 +213,8 @@
               },
               "timeout": {
                 "type": "number",
-                "description": "Timeout in milliseconds (default: 30000)"
+                "default": 30000,
+                "description": "Parsing timeout in milliseconds (default: 30000)"
               },
               "env": {
                 "type": "object",
