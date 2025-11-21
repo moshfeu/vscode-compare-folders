@@ -84,7 +84,7 @@ There are several ways to choose folders to compare:
     "env": {
       "SOME_ENV_VAR": "SOME_ENV_VALUE"
     },
-    "args": ["--sort-keys", "'.'", "{file}"],
+    "args": ["--sort-keys", ".", "{file}"],
   }
 ]
 ```

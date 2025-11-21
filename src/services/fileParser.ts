@@ -1,11 +1,11 @@
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { promisify } from 'util';
 import minimatch from 'minimatch';
 import { workspace } from 'vscode';
 import { FileParsingRule, getConfiguration } from './configuration';
 import { log } from './logger';
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 export interface ParsedFileResult {
   originalPath: string;
@@ -56,12 +56,11 @@ async function executeParsingCommand(filePath: string, rule: FileParsingRule): P
     arg.replace('{file}', filePath)
   );
 
-  const command = `${rule.command} ${args.join(' ')}`;
   const workingDirectory = rule.workingDirectory || process.cwd();
   const timeout = rule.timeout;
   const env = { ...process.env, ...rule.env };
 
-  log(`Executing parsing command: ${command} in ${workingDirectory}`);
+  log(`Executing parsing command: ${rule.command} ${args.join(' ')} in ${workingDirectory}`);
   if (rule.env && Object.keys(rule.env).length > 0) {
     log(`With environment variables: ${JSON.stringify(rule.env)}`);
   }
@@ -70,7 +69,7 @@ async function executeParsingCommand(filePath: string, rule: FileParsingRule): P
   const largeFileConfirmation = workspace.getConfiguration('workbench').get<number>('editorLargeFileConfirmation') || 50; // Default 50MB if not set
   const maxBuffer = Math.min(largeFileConfirmation * 2 * 1024 * 1024, 1e9); // Convert MB to bytes and double it, capped at 1GB
   try {
-    const { stdout, stderr } = await execAsync(command, {
+    const { stdout, stderr } = await execFileAsync(rule.command, args, {
       cwd: workingDirectory,
       timeout,
       env,
@@ -84,8 +83,9 @@ async function executeParsingCommand(filePath: string, rule: FileParsingRule): P
     return stdout;
   } catch (error) {
     if (error instanceof Error) {
+      const commandDisplay = `${rule.command} ${args.join(' ')}`;
       if (error.message.includes('timeout')) {
-        throw new Error(`Command timed out after ${timeout}ms: ${command}`);
+        throw new Error(`Command timed out after ${timeout}ms: ${commandDisplay}`);
       }
       if (error.message.includes('maxBuffer')) {
         throw new Error(`Output too large for file ${filePath}. Consider using a different parsing approach or increasing buffer size.`);
