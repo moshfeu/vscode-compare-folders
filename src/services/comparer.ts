@@ -14,8 +14,8 @@ import { getGitignoreFilter } from './gitignoreFilter';
 import { shouldParseFile } from './fileParser';
 import { prepareParsedDiff, cleanup as cleanupParsedDiff } from './parsedDiffViewer';
 
-export async function cleanup(): Promise<void> {
-  await cleanupParsedDiff();
+export function cleanup(): void {
+  cleanupParsedDiff();
 }
 
 

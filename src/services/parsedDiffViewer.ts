@@ -28,7 +28,7 @@ function getParsedTitle(relativePath: string): string {
   return `${relativePath} (parsed)`;
 }
 
-export async function cleanup(): Promise<void> {
+export function cleanup(): void {
   const contentProvider = ReadonlyContentProviderSingleton.getInstance();
   contentProvider.clear();
 }
