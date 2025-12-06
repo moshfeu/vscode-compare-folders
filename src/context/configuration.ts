@@ -1,5 +1,5 @@
-import { commands, workspace, Disposable, ExtensionContext } from 'vscode';
-import { ConfigurationItem, getConfiguration } from '../services/configuration';
+import { workspace, Disposable, ExtensionContext } from 'vscode';
+import { ConfigurationItem } from '../services/configuration';
 
 const configurationToWatch: ConfigurationItem[] = [
   'fileParsingRules'

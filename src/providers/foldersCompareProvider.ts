@@ -226,7 +226,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   refreshTreeView = () => {
     try {
-      this.refresh(false, false, false);
+      this.updateUI();
     } catch (error) {
       logger.error(error);
     }

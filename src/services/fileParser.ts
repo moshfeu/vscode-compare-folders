@@ -57,7 +57,7 @@ async function executeParsingCommand(filePath: string, rule: FileParsingRule): P
   );
 
   const workingDirectory = rule.workingDirectory || process.cwd();
-  const timeout = rule.timeout;
+  const timeout = rule.timeout || 30000;
   const env = { ...process.env, ...rule.env };
 
   log(`Executing parsing command: ${rule.command} ${args.join(' ')} in ${workingDirectory}`);
