@@ -150,30 +150,36 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   };
 
-  private openDiff([path1, path2]: [string, string], relativePath: string, allowParsedDiff: boolean) {
+  private async openDiff([path1, path2]: [string, string], relativePath: string, allowParsedDiff: boolean) {
     let diffs: [string, string] = [path2, path1];
     if (getConfiguration('diffLayout') === 'local <> compared') {
       diffs = [path1, path2];
     }
 
-    showDiffs(diffs, relativePath, allowParsedDiff);
+    await showDiffs(diffs, relativePath, allowParsedDiff);
   }
 
-  onFileClicked = ([path1, path2]: [string, string], relativePath: string) => {
+  onFileClicked = async ([path1, path2]: [string, string], relativePath: string) => {
     try {
       if (path2) {
-        this.openDiff([path1, path2], relativePath, false);
+        await this.openDiff([path1, path2], relativePath, false);
       } else {
-        showFile(path1);
+        await showFile(path1);
       }
     } catch (error) {
       console.error(error);
+      showErrorMessage(`Failed to open diff: ${error instanceof Error ? error.message : 'unknown error'}`, error);
     }
   };
 
-  onViewParsedDiffClicked = (e: TreeItem) => {
-    const [paths, relativePath] = e.command!.arguments!;
-    this.openDiff(paths, relativePath, true);
+  onViewParsedDiffClicked = async (e: TreeItem) => {
+    try {
+      const [paths, relativePath] = e.command!.arguments!;
+      await this.openDiff(paths, relativePath, true);
+    } catch (error) {
+      console.error(error);
+      showErrorMessage(`Failed to view parsed diff: ${error instanceof Error ? error.message : 'unknown error'}`, error);
+    }
   };
 
   async updateUI() {
