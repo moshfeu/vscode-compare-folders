@@ -23,6 +23,10 @@ export function shouldParseFile(filePath: string): boolean {
   );
 }
 
+export function hasParsableContent(path1: string, path2?: string): boolean {
+  return shouldParseFile(path1) || (!!path2 && shouldParseFile(path2));
+}
+
 function getParsingRule(filePath: string): FileParsingRule | undefined {
   const parsingRules = getParsingRules();
   return parsingRules.find(rule =>

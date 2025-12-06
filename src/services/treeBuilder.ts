@@ -7,7 +7,7 @@ import * as path from 'path';
 import { uiContext } from '../context/ui';
 import type { DiffPaths, DiffPathss, ViewOnlyPaths } from '../types';
 import { log } from './logger';
-import { shouldParseFile } from './fileParser';
+import { hasParsableContent } from './fileParser';
 
 type TreeNode = {
   path: string;
@@ -54,11 +54,9 @@ function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[]
     return paths.map(([path1, path2]) => {
       const relativePath = path.relative(basePath, path1);
       const fileName = path.basename(path1);
-      const hasParsableContent = shouldParseFile(path1) || 
-                                  (!!path2 && shouldParseFile(path2));
       return new File(
         fileName,
-        hasParsableContent ? 'file-parsable' : 'file',
+        hasParsableContent(path1, path2) ? 'file-parsable' : 'file',
         TreeItemCollapsibleState.None,
         {
           title: path1,
@@ -95,12 +93,10 @@ function createHierarchy(src: TreeNode): File[] {
         );
       } else {
         const [paths, relativePath] = (childrenOrFileData as unknown) as [DiffPaths, string];
-        const hasParsableContent = shouldParseFile(paths[0]) || 
-                                    (!!paths[1] && shouldParseFile(paths[1]));
         prev.push(
           new File(
             key,
-            hasParsableContent ? 'file-parsable' : 'file',
+            hasParsableContent(paths[0], paths[1]) ? 'file-parsable' : 'file',
             TreeItemCollapsibleState.None,
             {
               title: key,

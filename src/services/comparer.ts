@@ -94,7 +94,6 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     respectGitIgnore,
-    fileParsingRules,
   } = getConfiguration(
     'compareContent',
     'ignoreFileNameCase',
@@ -104,7 +103,6 @@ function getOptions() {
     'ignoreEmptyLines',
     'ignoreLineEnding',
     'respectGitIgnore',
-    'fileParsingRules',
   );
 
   const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
