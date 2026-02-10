@@ -166,7 +166,7 @@ COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2
     </td>
     <td>
       <a href="https://github.com/koby08" target="_blank">
-        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/16529951?v=4" alt="koby08">
+        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/33871889?v=4" alt="koby08">
         <div>
           koby08
         </div>
