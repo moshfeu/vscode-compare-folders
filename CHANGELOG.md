@@ -1,5 +1,10 @@
 ## Change log
 
+**0.26.0**
+
+- [#222](https://github.com/moshfeu/vscode-compare-folders/issues/222) - Allow to set custom file parsing rules for specific file patterns (e.g. parse JSON files with `jq` or XML files with `xmllint`) under configuration (Thanks [@koby08](https://github.com/koby08))
+
+
 **0.25.0**
 
 - [#151](https://github.com/moshfeu/vscode-compare-folders/issues/151) - View as list like source control (Thanks [@michaelmesser](https://github.com/michaelmesser))
