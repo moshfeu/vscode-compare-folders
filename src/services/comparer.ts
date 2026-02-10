@@ -1,4 +1,4 @@
-import { commands, Uri, extensions, window } from 'vscode';
+import { commands, Uri, window, extensions } from 'vscode';
 import { compare, fileCompareHandlers,type Difference } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
@@ -11,8 +11,13 @@ import { showErrorMessage } from '../utils/ui';
 import { validatePermissions } from './validators';
 import { getIncludeAndExcludePaths } from './includeExcludeFilesGetter';
 import { getGitignoreFilter } from './gitignoreFilter';
+import { shouldParseFile } from './fileParser';
+import { prepareParsedDiff, cleanup as cleanupParsedDiff } from './parsedDiffViewer';
 
-const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
+export function cleanup(): void {
+  cleanupParsedDiff();
+}
+
 
 export async function chooseFoldersAndCompare(path?: string) {
   const folder1Path = path || (await openFolder());
@@ -24,6 +29,22 @@ export async function chooseFoldersAndCompare(path?: string) {
 
   pathContext.setPaths(folder1Path, folder2Path);
   return compareFolders();
+}
+
+async function showDiffView(uri1: Uri, uri2: Uri, title: string): Promise<void> {
+  if (getConfiguration('useDiffMerge')) {
+    const diffMergeExtension = extensions.getExtension('moshfeu.diff-merge');
+    if (diffMergeExtension) {
+      commands.executeCommand('diffMerge.compareSelected', uri1, [uri1, uri2]);
+    } else {
+      window.showErrorMessage(
+        'In order to use "Diff & Merge" extension you should install / enable it'
+      );
+    }
+    return;
+  }
+
+  commands.executeCommand('vscode.diff', uri1, uri2, title);
 }
 
 function getTitle(
@@ -41,27 +62,22 @@ function getTitle(
   }
 }
 
-export async function showDiffs([file1, file2]: [string, string], relativePath: string) {
-  if (getConfiguration('useDiffMerge')) {
-    if (diffMergeExtension) {
-      commands.executeCommand('diffMerge.compareSelected', Uri.file(file1), [
-        Uri.file(file1),
-        Uri.file(file2),
-      ]);
-    } else {
-      window.showErrorMessage(
-        'In order to use "Diff & Merge" extension you should install / enable it'
-      );
-    }
-    return;
-  } else {
-    commands.executeCommand(
-      'vscode.diff',
-      Uri.file(file1),
-      Uri.file(file2),
-      getTitle(file1, relativePath, compareIgnoredExtension(file1, file2) ? 'full path' : undefined)
-    );
-  }
+function prepareRawDiff([file1, file2]: [string, string], relativePath: string): { uri1: Uri; uri2: Uri; title: string } {
+  const uri1 = Uri.file(file1);
+  const uri2 = Uri.file(file2);
+  const title = getTitle(file1, relativePath, compareIgnoredExtension(file1, file2) ? 'full path' : undefined);
+
+  return { uri1, uri2, title };
+}
+
+export async function showDiffs([file1, file2]: [string, string], relativePath: string, allowParsedDiff: boolean = false) {
+  const shouldParse = allowParsedDiff && shouldParseFile(file1);
+
+  const { uri1, uri2, title } = shouldParse
+    ? await prepareParsedDiff([file1, file2], relativePath)
+    : prepareRawDiff([file1, file2], relativePath);
+
+  await showDiffView(uri1, uri2, title);
 }
 
 export async function showFile(file: string) {

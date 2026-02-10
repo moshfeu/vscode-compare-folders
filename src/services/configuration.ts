@@ -23,9 +23,19 @@ export interface IConfigurations {
   ignoreLineEnding: boolean;
   respectGitIgnore: boolean;
   defaultDiffViewMode: DiffViewMode;
+  fileParsingRules: FileParsingRule[];
 }
 
-type ConfigurationItem = keyof IConfigurations;
+export interface FileParsingRule {
+  pattern: string;
+  command: string;
+  args: string[];
+  workingDirectory?: string;
+  timeout?: number;
+  env?: { [key: string]: string };
+}
+
+export type ConfigurationItem = keyof IConfigurations;
 
 function get() {
   return workspace.getConfiguration('compareFolders');

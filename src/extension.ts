@@ -1,6 +1,6 @@
 import { window, commands, ExtensionContext, workspace, Uri, version} from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
-import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES, DISMISS_DIFFERENCE, VIEW_AS_LIST, VIEW_AS_TREE } from './constants/commands';
+import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, VIEW_PARSED_DIFF, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES, DISMISS_DIFFERENCE, VIEW_AS_LIST, VIEW_AS_TREE } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
 import { globalState } from './services/globalState';
 import { pickFromRecents } from './services/pickFromRecentCompares';
@@ -8,14 +8,23 @@ import { getConfiguration } from './services/configuration';
 import { showDoneableInfo } from './utils/ui';
 import { validate } from './services/ignoreExtensionTools';
 import { uiContext } from './context/ui';
+import { cleanup } from './services/comparer';
+import { configurationContext } from './context/configuration';
 
 export async function activate(context: ExtensionContext) {
+  configurationContext.init(context);
   globalState.init(context);
   uiContext.init();
+
   const onlyInA = new ViewOnlyProvider();
   const onlyInB = new ViewOnlyProvider();
   const identicals = new ViewOnlyProvider(false);
   const foldersCompareProvider = new CompareFoldersProvider(onlyInA, onlyInB, identicals);
+
+  configurationContext.setRefreshCallback(() => {
+    foldersCompareProvider.refreshTreeView();
+  });
+
   context.subscriptions.push(
       window.registerTreeDataProvider('foldersCompareAppService', foldersCompareProvider),
       window.registerTreeDataProvider('foldersCompareAppServiceOnlyA', onlyInA),
@@ -33,6 +42,7 @@ export async function activate(context: ExtensionContext) {
       commands.registerCommand(VIEW_AS_TREE, foldersCompareProvider.viewAs('tree')),
       commands.registerCommand(COPY_TO_COMPARED, foldersCompareProvider.copyToCompared),
       commands.registerCommand(COPY_TO_MY, foldersCompareProvider.copyToMy),
+      commands.registerCommand(VIEW_PARSED_DIFF, foldersCompareProvider.onViewParsedDiffClicked),
       commands.registerCommand(TAKE_MY_FILE, foldersCompareProvider.takeMyFile),
       commands.registerCommand(TAKE_COMPARED_FILE, foldersCompareProvider.takeComparedFile),
       commands.registerCommand(DELETE_FILE, foldersCompareProvider.deleteFile),
@@ -65,3 +75,6 @@ export async function activate(context: ExtensionContext) {
   validate();
 }
 
+export async function deactivate() {
+  cleanup();
+}

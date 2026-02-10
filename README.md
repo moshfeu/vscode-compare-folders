@@ -73,6 +73,21 @@ There are several ways to choose folders to compare:
 - `showIdentical` - boolean - Whether or not show the identical files panel
 - `useDiffMerge` - boolean - Whether or not using [`Diff & Merge`](https://marketplace.visualstudio.com/items?itemName=moshfeu.diff-merge) extension as the Diff viewer. In order to use this option, you should install the extension
 - `folderLeft` + `folderRight` - strings - paths of 2 folders, compare them on the extension load.
+- `fileParsingRules` - Array of rules for parsing specific file patterns with external tools when viewing diffs. Files are parsed on-demand only when you select "View Parsed Diff" button, which will show up next to files which match a parsing rule.
+
+***Example***
+```json
+"compareFolders.fileParsingRules": [
+  {
+    "pattern": "*.json",
+    "command": "jq",
+    "env": {
+      "SOME_ENV_VAR": "SOME_ENV_VALUE"
+    },
+    "args": ["--sort-keys", ".", "{file}"]
+  }
+]
+```
 - `ignoreExtension` - Set groups of extensions so while comparing, pairs of files considered the same file if both of the files extension are in the same group. **Note:** each extension can show **only once** it this list
 ***Example***
 ```json

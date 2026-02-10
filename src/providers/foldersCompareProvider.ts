@@ -150,21 +150,37 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
   };
 
-  onFileClicked([path1, path2]: [string, string], relativePath: string) {
+  private async openDiff([path1, path2]: [string, string], relativePath: string, allowParsedDiff: boolean) {
+    let diffs: [string, string] = [path2, path1];
+    if (getConfiguration('diffLayout') === 'local <> compared') {
+      diffs = [path1, path2];
+    }
+
+    await showDiffs(diffs, relativePath, allowParsedDiff);
+  }
+
+  onFileClicked = async ([path1, path2]: [string, string], relativePath: string) => {
     try {
       if (path2) {
-        let diffs: [string, string] = [path2, path1];
-        if (getConfiguration('diffLayout') === 'local <> compared') {
-          diffs = [path1, path2];
-        }
-        showDiffs(diffs, relativePath);
+        await this.openDiff([path1, path2], relativePath, false);
       } else {
-        showFile(path1);
+        await showFile(path1);
       }
     } catch (error) {
       console.error(error);
+      showErrorMessage(`Failed to open diff: ${error instanceof Error ? error.message : 'unknown error'}`, error);
     }
-  }
+  };
+
+  onViewParsedDiffClicked = async (e: TreeItem) => {
+    try {
+      const [paths, relativePath] = e.command!.arguments!;
+      await this.openDiff(paths, relativePath, true);
+    } catch (error) {
+      console.error(error);
+      showErrorMessage(`Failed to view parsed diff: ${error instanceof Error ? error.message : 'unknown error'}`, error);
+    }
+  };
 
   async updateUI() {
     if (!this._diffs) {
@@ -195,16 +211,27 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       });
   }
 
-  refresh = async (resetIgnoredFiles = true, shouldShowInfoMessage = true) => {
+  refresh = async (resetIgnoredFiles = true, shouldShowInfoMessage = true, shouldCompareFolders = true) => {
     if (resetIgnoredFiles) {
       this.ignoreDifferencesList.clear();
     }
     try {
-      this._diffs = (await compareFolders());
-      this.filterIgnoredFromDiffs();
-      if (shouldShowInfoMessage && this._diffs.hasResult()) {
-        showInfoMessageWithTimeout('Source Refreshed');
+      if (shouldCompareFolders) {
+        this._diffs = (await compareFolders());
+
+        this.filterIgnoredFromDiffs();
+        if (shouldShowInfoMessage && this._diffs.hasResult()) {
+          showInfoMessageWithTimeout('Source Refreshed');
+        }
       }
+      this.updateUI();
+    } catch (error) {
+      logger.error(error);
+    }
+  };
+
+  refreshTreeView = () => {
+    try {
       this.updateUI();
     } catch (error) {
       logger.error(error);

@@ -2,7 +2,7 @@ import { TreeItem, TreeItemCollapsibleState, Command, Uri } from 'vscode';
 import { join } from 'path';
 import { log } from '../services/logger';
 
-type FileType = 'file' | 'open' | 'folder' | 'empty' | 'root';
+type FileType = 'file' | 'file-parsable' | 'open' | 'folder' | 'empty' | 'root';
 
 export type TreeItemCommand = Command & {
   arguments?: [paths: string[], relativePath: string];

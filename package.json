@@ -184,6 +184,49 @@
           "default": true,
           "description": "Show a warning message before taking/replacing files",
           "scope": "resource"
+        },
+        "compareFolders.fileParsingRules": {
+          "type": "array",
+          "default": [],
+          "description": "Rules for parsing specific file patterns with external tools",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Glob pattern to match files (e.g., '*.json', '**/*.xml')"
+              },
+              "command": {
+                "type": "string",
+                "description": "Command to execute for parsing files"
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Arguments to pass to the command. Use '{file}' as placeholder for the file path"
+              },
+              "workingDirectory": {
+                "type": "string",
+                "description": "Working directory for the command (optional)"
+              },
+              "timeout": {
+                "type": "number",
+                "default": 30000,
+                "description": "Parsing timeout in milliseconds (default: 30000)"
+              },
+              "env": {
+                "type": "object",
+                "description": "Environment variables to set for the command (optional)",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["pattern", "command", "args"]
+          },
+          "scope": "resource"
         }
       }
     },
@@ -280,18 +323,23 @@
           "group": "inline"
         },
         {
+          "command": "foldersCompare.viewParsedDiff",
+          "when": "view == foldersCompareAppService && viewItem == file-parsable",
+          "group": "inline"
+        },
+        {
           "command": "foldersCompare.takeMyFile",
-          "when": "view == foldersCompareAppService && viewItem == file",
+          "when": "view == foldersCompareAppService && (viewItem == file || viewItem == file-parsable)",
           "group": "inline@1"
         },
         {
           "command": "foldersCompare.takeComparedFile",
-          "when": "view == foldersCompareAppService && viewItem == file",
+          "when": "view == foldersCompareAppService && (viewItem == file || viewItem == file-parsable)",
           "group": "inline@2"
         },
         {
           "command": "foldersCompare.dismissDifference",
-          "when": "view == foldersCompareAppService && viewItem == file",
+          "when": "view == foldersCompareAppService && (viewItem == file || viewItem == file-parsable)",
           "group": "inline@3"
         }
       ]
@@ -327,6 +375,12 @@
         "title": "Dismiss Difference",
         "command": "foldersCompare.dismissDifference",
         "icon": "$(close)"
+      },
+      {
+        "title": "View Parsed Diff",
+        "command": "foldersCompare.viewParsedDiff",
+        "icon": "$(code)",
+        "category": "CompareFolders"
       },
       {
         "title": "Take My File",
