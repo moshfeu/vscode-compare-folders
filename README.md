@@ -101,7 +101,7 @@ There are several ways to choose folders to compare:
 - `ignoreEmptyLines` - boolean - ignore differences caused by empty lines (similar to `diff -B`)
 - `respectGitIgnore` - boolean - include / exclude files based on .gitignore - this option works together with `includeFilter` and `excludeFilter` options. ⚠️ The extension supports the main basic gitignore rules. For instance, it supports negation (`!`), but it doesn't support .gitignore files in subfolders. If there is an important use case that is not supported, please open an issue.
 - `warnBeforeDelete` - boolean - Show a warning message before deleting files
-- `warnBeforeTake` - boolean - Show a warning message before taking/replacing files  
+- `warnBeforeTake` - boolean - Show a warning message before taking/replacing files
 - `defaultDiffViewMode` - One of the options: "tree" or "list". The default view mode when vscode is opened. Later it can be toggled by the "View as list / View as tree" button
 
 ## CLI
@@ -153,6 +153,22 @@ COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2
         <img width="40" height="40" src="https://avatars.githubusercontent.com/u/5458241?v=4" alt="Sam Pellino">
         <div>
           Sam Pellino
+        </div>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/michaelmesser" target="_blank">
+        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/16529951?v=4" alt="Michael Messer">
+        <div>
+          Michael Messer
+        </div>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/koby08" target="_blank">
+        <img width="40" height="40" src="https://avatars.githubusercontent.com/u/16529951?v=4" alt="koby08">
+        <div>
+          koby08
         </div>
       </a>
     </td>
