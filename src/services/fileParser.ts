@@ -4,6 +4,7 @@ import minimatch from 'minimatch';
 import { workspace } from 'vscode';
 import { FileParsingRule, getConfiguration } from './configuration';
 import { log } from './logger';
+import { PARSING_RULE_EXECUTION_TIMEOUT } from '../utils/consts';
 
 const execFileAsync = promisify(execFile);
 
@@ -57,7 +58,7 @@ async function executeParsingCommand(filePath: string, rule: FileParsingRule): P
   );
 
   const workingDirectory = rule.workingDirectory || process.cwd();
-  const timeout = rule.timeout;
+  const timeout = rule.timeout || PARSING_RULE_EXECUTION_TIMEOUT;
   const env = { ...process.env, ...rule.env };
 
   log(`Executing parsing command: ${rule.command} ${args.join(' ')} in ${workingDirectory}`);
