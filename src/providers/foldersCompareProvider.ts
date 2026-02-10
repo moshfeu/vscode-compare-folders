@@ -199,16 +199,24 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     if (resetIgnoredFiles) {
       this.ignoreDifferencesList.clear();
     }
-    try {
-      this._diffs = (await compareFolders());
-      this.filterIgnoredFromDiffs();
-      if (shouldShowInfoMessage && this._diffs.hasResult()) {
-        showInfoMessageWithTimeout('Source Refreshed');
+    await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: 'Refreshing comparison...',
+      },
+      async () => {
+        try {
+          this._diffs = (await compareFolders());
+          this.filterIgnoredFromDiffs();
+          if (shouldShowInfoMessage && this._diffs.hasResult()) {
+            showInfoMessageWithTimeout('Source Refreshed');
+          }
+          this.updateUI();
+        } catch (error) {
+          logger.error(error);
+        }
       }
-      this.updateUI();
-    } catch (error) {
-      logger.error(error);
-    }
+    );
   };
 
   swap = () => {
