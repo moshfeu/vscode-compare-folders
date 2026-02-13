@@ -69,10 +69,10 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
-    await window.withProgress(
+    return await window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: `Compare folders...`,
+        title: 'Compare folders...',
       },
       async () => {
         return this.handleDiffResult(await compareFolders());
@@ -96,7 +96,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: `Compare folders...`,
+        title: 'Compare folders...',
       },
       async () => {
         this.handleDiffResult(
@@ -228,7 +228,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
         await window.withProgress(
           {
             location: ProgressLocation.Notification,
-            title: `Compare folders...`,
+            title: 'Compare folders...',
           },
           async () => {
             this._diffs = (await compareFolders());
