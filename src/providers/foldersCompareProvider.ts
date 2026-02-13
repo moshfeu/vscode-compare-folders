@@ -69,7 +69,15 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
-    return this.handleDiffResult(await compareFolders());
+    await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: `Compare folders...`,
+      },
+      async () => {
+        return this.handleDiffResult(await compareFolders());
+      }
+    );
   };
 
   dismissDifference = async (e: TreeItem) => {
@@ -217,10 +225,18 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     try {
       if (shouldCompareFolders) {
-        this._diffs = (await compareFolders());
+        await window.withProgress(
+          {
+            location: ProgressLocation.Notification,
+            title: `Compare folders...`,
+          },
+          async () => {
+            this._diffs = (await compareFolders());
+          }
+        );
 
         this.filterIgnoredFromDiffs();
-        if (shouldShowInfoMessage && this._diffs.hasResult()) {
+        if (shouldShowInfoMessage && this._diffs?.hasResult()) {
           showInfoMessageWithTimeout('Source Refreshed');
         }
       }
