@@ -92,7 +92,18 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
 
     const [leftPath, rightPath] = pathContext.getPaths();
-    const basePath = leftPath;
+    
+    // Determine which comparison side the file belongs to
+    let basePath: string;
+    if (fullPath.startsWith(leftPath)) {
+      basePath = leftPath;
+    } else if (fullPath.startsWith(rightPath)) {
+      basePath = rightPath;
+    } else {
+      showErrorMessage(`File path does not belong to either comparison folder`, new Error(`Path: ${fullPath}`));
+      return;
+    }
+    
     const relativePath = path.relative(basePath, fullPath).replace(/\\/g, '/');
     
     let pattern: string;
@@ -113,7 +124,9 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     const updatedExcludeFilter = [...currentExcludeFilter, pattern];
     
     try {
-      await config.update('excludeFilter', updatedExcludeFilter, workspace.workspaceFolders?.length ? undefined : true);
+      // Use workspace scope if workspace folders exist, otherwise use global scope
+      const configTarget = workspace.workspaceFolders?.length ? undefined : true;
+      await config.update('excludeFilter', updatedExcludeFilter, configTarget);
       window.showInformationMessage(`Added "${pattern}" to excludeFilter`);
       await this.refresh();
     } catch (error) {
