@@ -84,6 +84,43 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await this.updateUI();
   }
 
+  excludeFromComparison = async (e: File) => {
+    const { path: fullPath } = e.resourceUri || {};
+
+    if (!fullPath) {
+      return;
+    }
+
+    const [leftPath, rightPath] = pathContext.getPaths();
+    const basePath = leftPath;
+    const relativePath = path.relative(basePath, fullPath);
+    
+    let pattern: string;
+    if (e.type === 'folder') {
+      pattern = `**/${relativePath}/**`;
+    } else {
+      pattern = `**/${relativePath}`;
+    }
+
+    const config = workspace.getConfiguration('compareFolders');
+    const currentExcludeFilter = config.get<string[]>('excludeFilter') || [];
+    
+    if (currentExcludeFilter.includes(pattern)) {
+      window.showInformationMessage(`Pattern "${pattern}" is already in excludeFilter`);
+      return;
+    }
+
+    const updatedExcludeFilter = [...currentExcludeFilter, pattern];
+    
+    try {
+      await config.update('excludeFilter', updatedExcludeFilter, workspace.workspaceFolders?.length ? undefined : true);
+      window.showInformationMessage(`Added "${pattern}" to excludeFilter`);
+      await this.refresh();
+    } catch (error) {
+      showErrorMessage(`Failed to update excludeFilter: ${error instanceof Error ? error.message : 'unknown error'}`, error);
+    }
+  }
+
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
     await window.withProgress(
       {

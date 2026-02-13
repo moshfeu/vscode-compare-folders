@@ -341,6 +341,11 @@
           "command": "foldersCompare.dismissDifference",
           "when": "view == foldersCompareAppService && (viewItem == file || viewItem == file-parsable)",
           "group": "inline@3"
+        },
+        {
+          "command": "foldersCompare.excludeFromComparison",
+          "when": "view == foldersCompareAppService && (viewItem == file || viewItem == file-parsable || viewItem == folder)",
+          "group": "inline@4"
         }
       ]
     },
@@ -375,6 +380,11 @@
         "title": "Dismiss Difference",
         "command": "foldersCompare.dismissDifference",
         "icon": "$(close)"
+      },
+      {
+        "title": "Exclude from Comparison",
+        "command": "foldersCompare.excludeFromComparison",
+        "icon": "$(exclude)"
       },
       {
         "title": "View Parsed Diff",
