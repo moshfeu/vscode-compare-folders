@@ -69,7 +69,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
-    return await window.withProgress(
+    return window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: 'Compare folders...',
