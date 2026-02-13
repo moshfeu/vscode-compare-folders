@@ -1,5 +1,5 @@
-import { commands, Uri, window, extensions } from 'vscode';
-import { compare, fileCompareHandlers,type Difference } from 'dir-compare';
+import { commands, Uri, window, extensions, Progress } from 'vscode';
+import { compare, fileCompareHandlers,type Difference, type Entry, type DifferenceState, type Reason, type PermissionDeniedState, type DiffSet, type InitialStatistics } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
@@ -14,12 +14,14 @@ import { getGitignoreFilter } from './gitignoreFilter';
 import { shouldParseFile } from './fileParser';
 import { prepareParsedDiff, cleanup as cleanupParsedDiff } from './parsedDiffViewer';
 
+export type ProgressCallback = (current: string, processed: number) => void;
+
 export function cleanup(): void {
   cleanupParsedDiff();
 }
 
 
-export async function chooseFoldersAndCompare(path?: string) {
+export async function chooseFoldersAndCompare(path?: string, onProgress?: ProgressCallback) {
   const folder1Path = path || (await openFolder());
   const folder2Path = await openFolder();
 
@@ -28,7 +30,7 @@ export async function chooseFoldersAndCompare(path?: string) {
   }
 
   pathContext.setPaths(folder1Path, folder2Path);
-  return compareFolders();
+  return compareFolders(onProgress);
 }
 
 async function showDiffView(uri1: Uri, uri2: Uri, title: string): Promise<void> {
@@ -125,7 +127,7 @@ function getOptions() {
   return options;
 }
 
-export async function compareFolders(): Promise<CompareResult> {
+export async function compareFolders(onProgress?: ProgressCallback): Promise<CompareResult> {
   const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], [], '', ''));
   try {
     if (!validate()) {
@@ -135,10 +137,57 @@ export async function compareFolders(): Promise<CompareResult> {
     validatePermissions(folder1Path, folder2Path);
     const showIdentical = getConfiguration('showIdentical');
     const options = getOptions();
+    
+    let processedCount = 0;
+    
+    // Create a custom result builder to track progress
+    const progressTrackingBuilder = (
+      entry1: Entry | undefined,
+      entry2: Entry | undefined,
+      state: DifferenceState,
+      level: number,
+      relativePath: string,
+      options: CompareOptions,
+      statistics: InitialStatistics,
+      diffSet: DiffSet | undefined,
+      reason: Reason | undefined,
+      permissionDeniedState: PermissionDeniedState
+    ) => {
+      processedCount++;
+      
+      // Report progress if callback is provided
+      if (onProgress) {
+        const currentPath = relativePath || '/';
+        onProgress(currentPath, processedCount);
+      }
+      
+      // Call default result builder behavior - add to diffSet if not disabled
+      if (!options.noDiffSet && diffSet) {
+        diffSet.push({
+          path1: entry1 ? path.dirname(entry1.path) : undefined,
+          path2: entry2 ? path.dirname(entry2.path) : undefined,
+          relativePath: relativePath,
+          name1: entry1 ? entry1.name : undefined,
+          name2: entry2 ? entry2.name : undefined,
+          state: state,
+          type1: entry1 ? (entry1.isBrokenLink ? 'broken-link' : entry1.isDirectory ? 'directory' : 'file') : 'missing',
+          type2: entry2 ? (entry2.isBrokenLink ? 'broken-link' : entry2.isDirectory ? 'directory' : 'file') : 'missing',
+          level: level,
+          size1: entry1 ? entry1.stat.size : undefined,
+          size2: entry2 ? entry2.stat.size : undefined,
+          date1: entry1 ? entry1.stat.mtime : undefined,
+          date2: entry2 ? entry2.stat.mtime : undefined,
+          reason: reason,
+          permissionDeniedState: permissionDeniedState
+        });
+      }
+    };
+    
     const concatenatedOptions: CompareOptions = {
       compareContent: true,
       handlePermissionDenied: true,
       ...options,
+      resultBuilder: onProgress ? progressTrackingBuilder : undefined,
     };
     // do the comparison
     const res = await compare(folder1Path, folder2Path, concatenatedOptions);

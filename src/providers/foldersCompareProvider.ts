@@ -72,10 +72,15 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     return window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: 'Compare folders...',
+        title: 'Comparing folders...',
+        cancellable: false,
       },
-      async () => {
-        return this.handleDiffResult(await compareFolders());
+      async (progress) => {
+        return this.handleDiffResult(await compareFolders((currentPath, processed) => {
+          progress.report({
+            message: `${processed} entries - ${currentPath}`,
+          });
+        }));
       }
     );
   };
@@ -96,12 +101,18 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: 'Compare folders...',
+        title: 'Comparing folders...',
+        cancellable: false,
       },
-      async () => {
+      async (progress) => {
         this.handleDiffResult(
           await chooseFoldersAndCompare(
-            ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
+            ignoreWorkspace ? undefined : await this.getWorkspaceFolder(),
+            (currentPath, processed) => {
+              progress.report({
+                message: `${processed} entries - ${currentPath}`,
+              });
+            }
           )
         );
       }
@@ -228,10 +239,15 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
         await window.withProgress(
           {
             location: ProgressLocation.Notification,
-            title: 'Compare folders...',
+            title: 'Comparing folders...',
+            cancellable: false,
           },
-          async () => {
-            this._diffs = (await compareFolders());
+          async (progress) => {
+            this._diffs = (await compareFolders((currentPath, processed) => {
+              progress.report({
+                message: `${processed} entries - ${currentPath}`,
+              });
+            }));
           }
         );
 
