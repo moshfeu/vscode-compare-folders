@@ -1,5 +1,5 @@
 import { commands, Uri, window, extensions, Progress } from 'vscode';
-import { compare, fileCompareHandlers,type Difference, type Entry, type DifferenceState, type Reason, type PermissionDeniedState, type DiffSet, type InitialStatistics } from 'dir-compare';
+import { compare, fileCompareHandlers, type Difference, type Entry, type DifferenceState, type Reason, type PermissionDeniedState, type DiffSet, type InitialStatistics } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
 import { DiffViewTitle, getConfiguration } from './configuration';
@@ -187,7 +187,7 @@ export async function compareFolders(onProgress?: ProgressCallback): Promise<Com
       compareContent: true,
       handlePermissionDenied: true,
       ...options,
-      resultBuilder: onProgress ? progressTrackingBuilder : undefined,
+      resultBuilder: progressTrackingBuilder,
     };
     // do the comparison
     const res = await compare(folder1Path, folder2Path, concatenatedOptions);
