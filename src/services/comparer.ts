@@ -144,6 +144,21 @@ export async function compareFolders(): Promise<CompareResult> {
         const showIdentical = getConfiguration('showIdentical');
         const options = getOptions();
         
+        // First, do a quick scan to count total entries for percentage calculation
+        progress.report({ message: 'Counting entries...' });
+        let totalEntries = 0;
+        const countingBuilder = () => {
+          totalEntries++;
+        };
+        
+        await compare(folder1Path, folder2Path, {
+          compareContent: false, // Fast scan without content comparison
+          compareSize: false,
+          noDiffSet: true, // Don't build diff set for counting
+          resultBuilder: countingBuilder,
+        });
+        
+        // Now do the actual comparison with progress tracking
         let processedCount = 0;
         
         // Create a custom result builder to track progress
@@ -161,10 +176,14 @@ export async function compareFolders(): Promise<CompareResult> {
         ) => {
           processedCount++;
           
-          // Report progress to VS Code UI
+          // Calculate percentage
+          const percentage = totalEntries > 0 ? Math.floor((processedCount / totalEntries) * 100) : 0;
+          
+          // Report progress to VS Code UI with count and percentage
           const currentPath = relativePath || '/';
           progress.report({
-            message: `${processedCount} entries - ${currentPath}`,
+            message: `${processedCount}/${totalEntries} (${percentage}%) - ${currentPath}`,
+            increment: totalEntries > 0 ? (100 / totalEntries) : 0,
           });
           
           // Call default result builder behavior - add to diffSet if not disabled
