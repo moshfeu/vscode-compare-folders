@@ -45,6 +45,7 @@ There are several ways to choose folders to compare:
 - Files
   - `Dismiss`: Remove the file from the list of compared items.
   - `Take My File / Take Compared File`: Replace the file with the one from the other side.
+  - `Exclude from Comparison`: Add the file or folder to the `excludeFilter` setting to permanently exclude it from comparisons.
 
 ### Only in My Folder / Only in Compared Folder
 - Files

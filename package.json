@@ -346,6 +346,10 @@
           "command": "foldersCompare.excludeFromComparison",
           "when": "view == foldersCompareAppService && (viewItem == file || viewItem == file-parsable || viewItem == folder)",
           "group": "inline@4"
+        },
+        {
+          "command": "foldersCompare.excludeFromComparison",
+          "when": "view == foldersCompareAppService && (viewItem == file || viewItem == file-parsable || viewItem == folder)"
         }
       ]
     },
