@@ -151,12 +151,18 @@ export async function compareFolders(): Promise<CompareResult> {
           totalEntries++;
         };
         
-        await compare(folder1Path, folder2Path, {
-          compareContent: false, // Fast scan without content comparison
-          compareSize: false,
-          noDiffSet: true, // Don't build diff set for counting
-          resultBuilder: countingBuilder,
-        });
+        try {
+          await compare(folder1Path, folder2Path, {
+            compareContent: false, // Fast scan without content comparison
+            compareSize: false,
+            noDiffSet: true, // Don't build diff set for counting
+            resultBuilder: countingBuilder,
+          });
+          progress.report({ message: `Found ${totalEntries} entries, comparing...` });
+        } catch (error) {
+          log('Warning: Failed to count entries, proceeding without percentage', error);
+          totalEntries = 0; // Fallback to showing count without total
+        }
         
         // Now do the actual comparison with progress tracking
         let processedCount = 0;
@@ -181,10 +187,16 @@ export async function compareFolders(): Promise<CompareResult> {
           
           // Report progress to VS Code UI with count and percentage
           const currentPath = relativePath || '/';
-          progress.report({
-            message: `${processedCount}/${totalEntries} (${percentage}%) - ${currentPath}`,
-            increment: totalEntries > 0 ? (100 / totalEntries) : 0,
-          });
+          if (totalEntries > 0) {
+            progress.report({
+              message: `${processedCount}/${totalEntries} (${percentage}%) - ${currentPath}`,
+            });
+          } else {
+            // Fallback when total is unknown (counting failed)
+            progress.report({
+              message: `${processedCount} entries - ${currentPath}`,
+            });
+          }
           
           // Call default result builder behavior - add to diffSet if not disabled
           if (!options.noDiffSet && diffSet) {
