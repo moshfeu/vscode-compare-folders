@@ -93,7 +93,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
     const [leftPath, rightPath] = pathContext.getPaths();
     const basePath = leftPath;
-    const relativePath = path.relative(basePath, fullPath);
+    const relativePath = path.relative(basePath, fullPath).replace(/\\/g, '/');
     
     let pattern: string;
     if (e.type === 'folder') {
