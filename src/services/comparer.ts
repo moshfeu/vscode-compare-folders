@@ -1,4 +1,4 @@
-import { commands, Uri, window, extensions, Progress } from 'vscode';
+import { commands, Uri, window, extensions, ProgressLocation } from 'vscode';
 import { compare, fileCompareHandlers, type Difference, type Entry, type DifferenceState, type Reason, type PermissionDeniedState, type DiffSet, type InitialStatistics } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
@@ -14,14 +14,12 @@ import { getGitignoreFilter } from './gitignoreFilter';
 import { shouldParseFile } from './fileParser';
 import { prepareParsedDiff, cleanup as cleanupParsedDiff } from './parsedDiffViewer';
 
-export type ProgressCallback = (current: string, processed: number) => void;
-
 export function cleanup(): void {
   cleanupParsedDiff();
 }
 
 
-export async function chooseFoldersAndCompare(path?: string, onProgress?: ProgressCallback) {
+export async function chooseFoldersAndCompare(path?: string) {
   const folder1Path = path || (await openFolder());
   const folder2Path = await openFolder();
 
@@ -30,7 +28,7 @@ export async function chooseFoldersAndCompare(path?: string, onProgress?: Progre
   }
 
   pathContext.setPaths(folder1Path, folder2Path);
-  return compareFolders(onProgress);
+  return compareFolders();
 }
 
 async function showDiffView(uri1: Uri, uri2: Uri, title: string): Promise<void> {
@@ -127,116 +125,126 @@ function getOptions() {
   return options;
 }
 
-export async function compareFolders(onProgress?: ProgressCallback): Promise<CompareResult> {
+export async function compareFolders(): Promise<CompareResult> {
   const emptyResponse = () => Promise.resolve(new CompareResult([], [], [], [], [], '', ''));
-  try {
-    if (!validate()) {
-      return emptyResponse();
+  
+  return window.withProgress(
+    {
+      location: ProgressLocation.Notification,
+      title: 'Comparing folders...',
+      cancellable: false,
+    },
+    async (progress) => {
+      try {
+        if (!validate()) {
+          return emptyResponse();
+        }
+        const [folder1Path, folder2Path] = pathContext.getPaths();
+        validatePermissions(folder1Path, folder2Path);
+        const showIdentical = getConfiguration('showIdentical');
+        const options = getOptions();
+        
+        let processedCount = 0;
+        
+        // Create a custom result builder to track progress
+        const progressTrackingBuilder = (
+          entry1: Entry | undefined,
+          entry2: Entry | undefined,
+          state: DifferenceState,
+          level: number,
+          relativePath: string,
+          options: CompareOptions,
+          statistics: InitialStatistics,
+          diffSet: DiffSet | undefined,
+          reason: Reason | undefined,
+          permissionDeniedState: PermissionDeniedState
+        ) => {
+          processedCount++;
+          
+          // Report progress to VS Code UI
+          const currentPath = relativePath || '/';
+          progress.report({
+            message: `${processedCount} entries - ${currentPath}`,
+          });
+          
+          // Call default result builder behavior - add to diffSet if not disabled
+          if (!options.noDiffSet && diffSet) {
+            diffSet.push({
+              path1: entry1 ? path.dirname(entry1.path) : undefined,
+              path2: entry2 ? path.dirname(entry2.path) : undefined,
+              relativePath: relativePath,
+              name1: entry1 ? entry1.name : undefined,
+              name2: entry2 ? entry2.name : undefined,
+              state: state,
+              type1: entry1 ? (entry1.isBrokenLink ? 'broken-link' : entry1.isDirectory ? 'directory' : 'file') : 'missing',
+              type2: entry2 ? (entry2.isBrokenLink ? 'broken-link' : entry2.isDirectory ? 'directory' : 'file') : 'missing',
+              level: level,
+              size1: entry1 ? entry1.stat.size : undefined,
+              size2: entry2 ? entry2.stat.size : undefined,
+              date1: entry1 ? entry1.stat.mtime : undefined,
+              date2: entry2 ? entry2.stat.mtime : undefined,
+              reason: reason,
+              permissionDeniedState: permissionDeniedState
+            });
+          }
+        };
+        
+        const concatenatedOptions: CompareOptions = {
+          compareContent: true,
+          handlePermissionDenied: true,
+          ...options,
+          resultBuilder: progressTrackingBuilder,
+        };
+        // do the comparison
+        const res = await compare(folder1Path, folder2Path, concatenatedOptions);
+        printOptions(options);
+        printResult(res);
+
+        // get the diffs
+        const { diffSet = [] } = res;
+
+        // diffSet contains all the files and filter only the not equals files and map them to pairs of Uris
+        const distinct: DiffPathss = diffSet
+          .filter((diff) => diff.state === 'distinct')
+          .map((diff) => [path.join(diff.path1!, diff.name1!), path.join(diff.path2!, diff.name2!)]);
+
+        // readable 👍 performance 👎
+        const left: ViewOnlyPaths = diffSet
+          .filter((diff) => diff.state === 'left' && diff.type1 === 'file')
+          .map((diff) => [buildPath(diff, '1')]);
+
+        const right: ViewOnlyPaths = diffSet
+          .filter((diff) => diff.state === 'right' && diff.type2 === 'file')
+          .map((diff) => [buildPath(diff, '2')]);
+
+        const identicals: ViewOnlyPaths = showIdentical
+          ? diffSet
+              .filter((diff) => diff.state === 'equal' && diff.type1 === 'file')
+              .map((diff) => [buildPath(diff, '1')])
+          : [];
+
+        const unaccessibles = diffSet
+          .filter((diff) => diff.permissionDeniedState !== 'access-ok')
+          .map((diff) =>
+            buildPath(diff, diff.permissionDeniedState === 'access-error-left' ? '1' : '2')
+          );
+
+        return new CompareResult(
+          distinct,
+          left,
+          right,
+          identicals,
+          unaccessibles,
+          folder1Path,
+          folder2Path
+        );
+      } catch (error) {
+        log('error while comparing', error);
+        showErrorMessage('Oops, something went wrong while comparing', error);
+        return emptyResponse();
+      }
     }
-    const [folder1Path, folder2Path] = pathContext.getPaths();
-    validatePermissions(folder1Path, folder2Path);
-    const showIdentical = getConfiguration('showIdentical');
-    const options = getOptions();
-    
-    let processedCount = 0;
-    
-    // Create a custom result builder to track progress
-    const progressTrackingBuilder = (
-      entry1: Entry | undefined,
-      entry2: Entry | undefined,
-      state: DifferenceState,
-      level: number,
-      relativePath: string,
-      options: CompareOptions,
-      statistics: InitialStatistics,
-      diffSet: DiffSet | undefined,
-      reason: Reason | undefined,
-      permissionDeniedState: PermissionDeniedState
-    ) => {
-      processedCount++;
-      
-      // Report progress if callback is provided
-      if (onProgress) {
-        const currentPath = relativePath || '/';
-        onProgress(currentPath, processedCount);
-      }
-      
-      // Call default result builder behavior - add to diffSet if not disabled
-      if (!options.noDiffSet && diffSet) {
-        diffSet.push({
-          path1: entry1 ? path.dirname(entry1.path) : undefined,
-          path2: entry2 ? path.dirname(entry2.path) : undefined,
-          relativePath: relativePath,
-          name1: entry1 ? entry1.name : undefined,
-          name2: entry2 ? entry2.name : undefined,
-          state: state,
-          type1: entry1 ? (entry1.isBrokenLink ? 'broken-link' : entry1.isDirectory ? 'directory' : 'file') : 'missing',
-          type2: entry2 ? (entry2.isBrokenLink ? 'broken-link' : entry2.isDirectory ? 'directory' : 'file') : 'missing',
-          level: level,
-          size1: entry1 ? entry1.stat.size : undefined,
-          size2: entry2 ? entry2.stat.size : undefined,
-          date1: entry1 ? entry1.stat.mtime : undefined,
-          date2: entry2 ? entry2.stat.mtime : undefined,
-          reason: reason,
-          permissionDeniedState: permissionDeniedState
-        });
-      }
-    };
-    
-    const concatenatedOptions: CompareOptions = {
-      compareContent: true,
-      handlePermissionDenied: true,
-      ...options,
-      resultBuilder: progressTrackingBuilder,
-    };
-    // do the comparison
-    const res = await compare(folder1Path, folder2Path, concatenatedOptions);
-    printOptions(options);
-    printResult(res);
-
-    // get the diffs
-    const { diffSet = [] } = res;
-
-    // diffSet contains all the files and filter only the not equals files and map them to pairs of Uris
-    const distinct: DiffPathss = diffSet
-      .filter((diff) => diff.state === 'distinct')
-      .map((diff) => [path.join(diff.path1!, diff.name1!), path.join(diff.path2!, diff.name2!)]);
-
-    // readable 👍 performance 👎
-    const left: ViewOnlyPaths = diffSet
-      .filter((diff) => diff.state === 'left' && diff.type1 === 'file')
-      .map((diff) => [buildPath(diff, '1')]);
-
-    const right: ViewOnlyPaths = diffSet
-      .filter((diff) => diff.state === 'right' && diff.type2 === 'file')
-      .map((diff) => [buildPath(diff, '2')]);
-
-    const identicals: ViewOnlyPaths = showIdentical
-      ? diffSet
-          .filter((diff) => diff.state === 'equal' && diff.type1 === 'file')
-          .map((diff) => [buildPath(diff, '1')])
-      : [];
-
-    const unaccessibles = diffSet
-      .filter((diff) => diff.permissionDeniedState !== 'access-ok')
-      .map((diff) =>
-        buildPath(diff, diff.permissionDeniedState === 'access-error-left' ? '1' : '2')
-      );
-
-    return new CompareResult(
-      distinct,
-      left,
-      right,
-      identicals,
-      unaccessibles,
-      folder1Path,
-      folder2Path
-    );
-  } catch (error) {
-    log('error while comparing', error);
-    showErrorMessage('Oops, something went wrong while comparing', error);
-    return emptyResponse();
-  }
+  );
 }
 
 function buildPath(diff: Difference, side: '1' | '2') {

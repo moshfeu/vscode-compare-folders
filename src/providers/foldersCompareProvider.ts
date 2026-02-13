@@ -69,20 +69,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     const [{ fsPath: folder1Path }, { fsPath: folder2Path }] = uris;
     pathContext.setPaths(folder1Path, folder2Path);
-    return window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: 'Comparing folders...',
-        cancellable: false,
-      },
-      async (progress) => {
-        return this.handleDiffResult(await compareFolders((currentPath, processed) => {
-          progress.report({
-            message: `${processed} entries - ${currentPath}`,
-          });
-        }));
-      }
-    );
+    return this.handleDiffResult(await compareFolders());
   };
 
   dismissDifference = async (e: TreeItem) => {
@@ -98,24 +85,10 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   }
 
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: 'Comparing folders...',
-        cancellable: false,
-      },
-      async (progress) => {
-        this.handleDiffResult(
-          await chooseFoldersAndCompare(
-            ignoreWorkspace ? undefined : await this.getWorkspaceFolder(),
-            (currentPath, processed) => {
-              progress.report({
-                message: `${processed} entries - ${currentPath}`,
-              });
-            }
-          )
-        );
-      }
+    this.handleDiffResult(
+      await chooseFoldersAndCompare(
+        ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
+      )
     );
   };
 
@@ -236,20 +209,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
     try {
       if (shouldCompareFolders) {
-        await window.withProgress(
-          {
-            location: ProgressLocation.Notification,
-            title: 'Comparing folders...',
-            cancellable: false,
-          },
-          async (progress) => {
-            this._diffs = (await compareFolders((currentPath, processed) => {
-              progress.report({
-                message: `${processed} entries - ${currentPath}`,
-              });
-            }));
-          }
-        );
+        this._diffs = await compareFolders();
 
         this.filterIgnoredFromDiffs();
         if (shouldShowInfoMessage && this._diffs?.hasResult()) {
