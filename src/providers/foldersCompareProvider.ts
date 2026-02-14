@@ -92,7 +92,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     }
 
     const [leftPath, rightPath] = pathContext.getPaths();
-    
+
     // Determine which comparison side the file belongs to
     let basePath: string;
     if (fullPath.startsWith(leftPath)) {
@@ -103,26 +103,26 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       showErrorMessage(`File path does not belong to either comparison folder`, new Error(`Path: ${fullPath}`));
       return;
     }
-    
+
     const relativePath = path.relative(basePath, fullPath).replace(/\\/g, '/');
-    
+
     let pattern: string;
     if (e.type === 'folder') {
       pattern = `**/${relativePath}/**`;
     } else {
-      pattern = `**/${relativePath}`;
+      pattern = `/${relativePath}`;
     }
 
     const config = workspace.getConfiguration('compareFolders');
     const currentExcludeFilter = config.get<string[]>('excludeFilter') || [];
-    
+
     if (currentExcludeFilter.includes(pattern)) {
       window.showInformationMessage(`Pattern "${pattern}" is already in excludeFilter`);
       return;
     }
 
     const updatedExcludeFilter = [...currentExcludeFilter, pattern];
-    
+
     try {
       // Use workspace scope if workspace folders exist, otherwise use global scope
       const configTarget = workspace.workspaceFolders?.length ? undefined : true;

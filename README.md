@@ -51,6 +51,7 @@ There are several ways to choose folders to compare:
 - Files
   - `Copy to My Folder / Copy to Compared Folder`: Copy the file to the other side.
   - `Delete`: Permanently delete the file from the file system.
+  - `Exclude from Comparison`: Add the file or folder to the `excludeFilter` setting to permanently exclude it from comparisons.
 
 
 ## Options (under vscode settings)
