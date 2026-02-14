@@ -119,6 +119,7 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     filterHandler,
+    compareFileSync: fileCompareHandlers.lineBasedFileCompare.compareSync,
     compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,
   };
