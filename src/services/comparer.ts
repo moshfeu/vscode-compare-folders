@@ -145,7 +145,7 @@ export async function compareFolders(): Promise<CompareResult> {
         const options = getOptions();
         
         // First, do a quick scan to count total entries for percentage calculation
-        progress.report({ message: 'Counting entries...' });
+        progress.report({ message: 'Counting all entries...' });
         let totalEntries = 0;
         const countingBuilder = () => {
           totalEntries++;
@@ -158,7 +158,7 @@ export async function compareFolders(): Promise<CompareResult> {
             noDiffSet: true, // Don't build diff set for counting
             resultBuilder: countingBuilder,
           });
-          progress.report({ message: `Found ${totalEntries} entries, comparing...` });
+          progress.report({ message: `Found ${totalEntries} entries (all files/folders), comparing...` });
         } catch (error) {
           log('Warning: Failed to count entries, proceeding without percentage', error);
           totalEntries = 0; // Fallback to showing count without total
