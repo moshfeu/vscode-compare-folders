@@ -349,12 +349,12 @@
         },
         {
           "command": "foldersCompare.excludeFromComparison",
-          "when": "view =~ /^foldersCompareAppService/ && (viewItem == file || viewItem == file-parsable || viewItem == folder || viewItem != root)",
+          "when": "view =~ /^foldersCompareAppService/ && (viewItem == file || viewItem == file-parsable || viewItem == folder)",
           "group": "inline"
         },
         {
           "command": "foldersCompare.excludeFromComparison",
-          "when": "view =~ /^foldersCompareAppService/ && (viewItem == file || viewItem == file-parsable || viewItem == folder || viewItem != root)"
+          "when": "view =~ /^foldersCompareAppService/ && (viewItem == file || viewItem == file-parsable || viewItem == folder)"
         }
       ]
     },
