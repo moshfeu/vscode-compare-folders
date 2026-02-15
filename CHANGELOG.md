@@ -1,5 +1,9 @@
 ## Change log
 
+**0.27.0**
+
+- [#247](https://github.com/moshfeu/vscode-compare-folders/issues/247) - Add option to exclude files from comparison (Thanks [@Jay-hak](https://github.com/Jay-hak))
+
 **0.26.0**
 
 - [#222](https://github.com/moshfeu/vscode-compare-folders/issues/222) - Allow to set custom file parsing rules for specific file patterns (e.g. parse JSON files with `jq` or XML files with `xmllint`) under configuration (Thanks [@koby08](https://github.com/koby08))

@@ -117,7 +117,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     const currentExcludeFilter = config.get<string[]>('excludeFilter') || [];
 
     if (currentExcludeFilter.includes(pattern)) {
-      window.showInformationMessage(`Pattern "${pattern}" is already in excludeFilter`);
+      showInfoMessageWithTimeout(`Pattern "${pattern}" is already in excludeFilter`);
       return;
     }
 
@@ -127,8 +127,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       // Use workspace scope if workspace folders exist, otherwise use global scope
       const configTarget = workspace.workspaceFolders?.length ? undefined : true;
       await config.update('excludeFilter', updatedExcludeFilter, configTarget);
-      window.showInformationMessage(`Added "${pattern}" to excludeFilter`);
-      await this.refresh();
+      showInfoMessageWithTimeout(`"${pattern}" excluded from comparison`);
+      await this.refresh(false, false);
     } catch (error) {
       showErrorMessage(`Failed to update excludeFilter: ${error instanceof Error ? error.message : 'unknown error'}`, error);
     }
