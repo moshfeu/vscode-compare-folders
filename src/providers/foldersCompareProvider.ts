@@ -87,7 +87,8 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
   excludeFromComparison = async (treeItemFile: File) => {
     if (!treeItemFile.relativePath) {
       logger.error('File has no relative path', treeItemFile);
-      throw new Error('File has no relative path');
+      showErrorMessage('File has no relative path');
+      return;
     }
 
     const pattern = `/${treeItemFile.relativePath}`;
