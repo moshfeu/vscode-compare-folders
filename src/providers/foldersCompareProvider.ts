@@ -84,29 +84,13 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await this.updateUI();
   }
 
-  excludeFromComparison = async (e: File) => {
-    const { path: fullPath } = e.resourceUri || {};
-
-    if (!fullPath) {
-      return;
+  excludeFromComparison = async (treeItemFile: File) => {
+    if (!treeItemFile.relativePath) {
+      logger.error('File has no relative path', treeItemFile);
+      throw new Error('File has no relative path');
     }
 
-    const [leftPath, rightPath] = pathContext.getPaths();
-
-    // Determine which comparison side the file belongs to
-    let basePath: string;
-    if (fullPath.startsWith(leftPath)) {
-      basePath = leftPath;
-    } else if (fullPath.startsWith(rightPath)) {
-      basePath = rightPath;
-    } else {
-      showErrorMessage(`File path does not belong to either comparison folder`, new Error(`Path: ${fullPath}`));
-      return;
-    }
-
-    const relativePath = path.relative(basePath, fullPath).replace(/\\/g, '/');
-
-    const pattern = `/${relativePath}`;
+    const pattern = `/${treeItemFile.relativePath}`;
     const config = workspace.getConfiguration('compareFolders');
     const currentExcludeFilter = config.get<string[]>('excludeFilter') || [];
 
@@ -380,18 +364,18 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 }
 
 const openFolderChild = (isSingle: boolean) =>
-  new File(
-    isSingle ? 'Click to select a folder' : 'Click to select folders',
-    'open',
-    TreeItemCollapsibleState.None,
-    {
+  new File({
+    label: isSingle ? 'Click to select a folder' : 'Click to select folders',
+    type: 'open',
+    collapsibleState: TreeItemCollapsibleState.None,
+    command: {
       title: 'title',
       command: CHOOSE_FOLDERS_AND_COMPARE,
     }
-  );
+  });
 
-const emptyStateChild: File = new File(
-  'The compared folders are synchronized',
-  'empty',
-  TreeItemCollapsibleState.None
-);
+const emptyStateChild: File = new File({
+  label: 'The compared folders are synchronized',
+  type: 'empty',
+  collapsibleState: TreeItemCollapsibleState.None
+});

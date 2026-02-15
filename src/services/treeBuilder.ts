@@ -9,8 +9,9 @@ import type { DiffPaths, DiffPathss, ViewOnlyPaths } from '../types';
 import { log } from './logger';
 import { hasParsableContent } from './fileParser';
 
-type TreeNode = {
+export type TreeNode = {
   path: string;
+  relativePath: string;
   [key: string]: TreeNode | [[string, string], string] | string;
 };
 
@@ -34,6 +35,7 @@ export function build(paths: DiffPathss | ViewOnlyPaths, basePath: string) {
         if (!get(tree, prev)) {
           set(tree, prev, {
             path: path.join(basePath, ...prev),
+            relativePath: path.join(...prev),
           });
         }
         return prev;
@@ -54,20 +56,19 @@ function createList(paths: DiffPathss | ViewOnlyPaths, basePath: string): File[]
     return paths.map(([path1, path2]) => {
       const relativePath = path.relative(basePath, path1);
       const fileName = path.basename(path1);
-      return new File(
-        fileName,
-        hasParsableContent(path1, path2) ? 'file-parsable' : 'file',
-        TreeItemCollapsibleState.None,
-        {
+      return new File({
+        label: fileName,
+        type: hasParsableContent(path1, path2) ? 'file-parsable' : 'file',
+        collapsibleState: TreeItemCollapsibleState.None,
+        command: {
           title: path1,
           command: COMPARE_FILES,
           arguments: [[path1, path2 || ''], relativePath],
         },
-        undefined,
-        Uri.file(path1),
-        true,
-        undefined,
-      )
+        resourceUri: Uri.file(path1),
+        description: true,
+        relativePath,
+      });
     });
   } catch (error) {
     log(`can't create list`, error);
@@ -79,35 +80,33 @@ function createHierarchy(src: TreeNode): File[] {
   const children = (Object.entries(src) as Array<[string, TreeNode]>).reduce(
     (prev, [key, childrenOrFileData]) => {
       if (childrenOrFileData.path) {
-        const { path, ...children } = childrenOrFileData;
+        const { path, relativePath, ...children } = childrenOrFileData;
 
         prev.push(
-          new File(
-            key,
-            'folder',
-            TreeItemCollapsibleState.Collapsed,
-            undefined,
-            createHierarchy(children as TreeNode),
-            Uri.file(path)
-          )
+          new File({
+            label: key,
+            type: 'folder',
+            collapsibleState: TreeItemCollapsibleState.Collapsed,
+            children: createHierarchy(children as TreeNode),
+            resourceUri: Uri.file(path),
+            relativePath,
+          })
         );
       } else {
         const [paths, relativePath] = (childrenOrFileData as unknown) as [DiffPaths, string];
         prev.push(
-          new File(
-            key,
-            hasParsableContent(paths[0], paths[1]) ? 'file-parsable' : 'file',
-            TreeItemCollapsibleState.None,
-            {
+          new File({
+            label: key,
+            type: hasParsableContent(paths[0], paths[1]) ? 'file-parsable' : 'file',
+            collapsibleState: TreeItemCollapsibleState.None,
+            command: {
               title: key,
               command: COMPARE_FILES,
               arguments: [paths, relativePath],
             },
-            undefined,
-            Uri.file(paths[0]),
-            undefined,
-            undefined,
-          )
+            resourceUri: Uri.file(paths[0]),
+            relativePath,
+          })
         );
       }
       return prev;

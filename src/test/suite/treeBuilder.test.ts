@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { build } from '../../services/treeBuilder';
+import { build, type TreeNode } from '../../services/treeBuilder';
 import { File } from '../../models/file';
 import { TreeItemCollapsibleState, Uri } from 'vscode';
 import { COMPARE_FILES } from '../../constants/commands';
@@ -31,15 +31,17 @@ suite('Tree Builder', () => {
       build(paths, basePath).tree,
       {
         folder1: {
+          relativePath: path.join('folder1'),
           path: path.join(basePath, 'folder1'),
           folder2: {
+            relativePath: path.join('folder1', 'folder2'),
             path: path.join(basePath, 'folder1', 'folder2'),
             'index.html': [
               paths[0],
               path.join('folder1/folder2/index.html')
             ]
           }
-        }
+        } satisfies TreeNode
       }
     );
   });
@@ -53,15 +55,36 @@ suite('Tree Builder', () => {
     assert.deepStrictEqual(
       treeItems,
       [
-        new File('folder1', 'folder', TreeItemCollapsibleState.Collapsed, undefined, [
-          new File('folder2', 'folder', TreeItemCollapsibleState.Collapsed, undefined, [
-            new File('index.html', 'file', TreeItemCollapsibleState.None, {
-              title: 'index.html',
-              command: COMPARE_FILES,
-              arguments: [paths[0], path.join('folder1/folder2/index.html')]
-            }, undefined, Uri.file(paths[0][0]), undefined, undefined)
-          ], Uri.file(path.join(basePath, 'folder1', 'folder2')))
-        ], Uri.file(path.join(basePath, 'folder1')))
+        new File({
+          label: 'folder1',
+          type: 'folder',
+          collapsibleState: TreeItemCollapsibleState.Collapsed,
+          children: [
+            new File({
+              label: 'folder2',
+              type: 'folder',
+              collapsibleState: TreeItemCollapsibleState.Collapsed,
+              children: [
+                new File({
+                  label: 'index.html',
+                  type: 'file',
+                  collapsibleState: TreeItemCollapsibleState.None,
+                  command: {
+                    title: 'index.html',
+                    command: COMPARE_FILES,
+                    arguments: [paths[0], path.join('folder1/folder2/index.html')]
+                  },
+                  resourceUri: Uri.file(paths[0][0]),
+                  relativePath: path.join('folder1', 'folder2', 'index.html')
+                })
+              ],
+              resourceUri: Uri.file(path.join(basePath, 'folder1', 'folder2')),
+              relativePath: path.join('folder1', 'folder2')
+            })
+          ],
+          resourceUri: Uri.file(path.join(basePath, 'folder1')),
+          relativePath: 'folder1'
+        })
       ]
     );
   });
@@ -78,20 +101,19 @@ suite('Tree Builder', () => {
     assert.deepStrictEqual<File[]>(
       treeItems,
       [
-        new File(
-          'index.html',
-          'file',
-          TreeItemCollapsibleState.None,
-          {
+        new File({
+          label: 'index.html',
+          type: 'file',
+          collapsibleState: TreeItemCollapsibleState.None,
+          command: {
             title: path1,
             command: COMPARE_FILES,
             arguments: [[path1, path2], path.join('folder1', 'subfolder', 'index.html')],
           },
-          undefined,
-          Uri.file(path1),
-          true,
-          undefined
-        ),
+          resourceUri: Uri.file(path1),
+          description: true,
+          relativePath: path.join('folder1', 'subfolder', 'index.html')
+        }),
       ]
     );
   });
