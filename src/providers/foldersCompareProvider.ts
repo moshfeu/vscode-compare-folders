@@ -106,13 +106,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
     const relativePath = path.relative(basePath, fullPath).replace(/\\/g, '/');
 
-    let pattern: string;
-    if (e.type === 'folder') {
-      pattern = `**/${relativePath}/**`;
-    } else {
-      pattern = `/${relativePath}`;
-    }
-
+    const pattern = `/${relativePath}`;
     const config = workspace.getConfiguration('compareFolders');
     const currentExcludeFilter = config.get<string[]>('excludeFilter') || [];
 
