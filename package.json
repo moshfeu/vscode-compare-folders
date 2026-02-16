@@ -518,7 +518,7 @@
     "@cjs-exporter/globby": "^13.1.3",
     "dir-compare": "^4.2.0",
     "fs-extra": "8.1.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "parse-gitignore": "^2.0.0"
   }
 }
