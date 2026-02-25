@@ -84,6 +84,35 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     await this.updateUI();
   }
 
+  excludeFromComparison = async (treeItemFile: File) => {
+    if (!treeItemFile.relativePath) {
+      logger.error('File has no relative path', treeItemFile);
+      showErrorMessage('File has no relative path', new Error('relativePath is undefined'));
+      return;
+    }
+
+    const pattern = `/${treeItemFile.relativePath}`;
+    const config = workspace.getConfiguration('compareFolders');
+    const currentExcludeFilter = config.get<string[]>('excludeFilter') || [];
+
+    if (currentExcludeFilter.includes(pattern)) {
+      showInfoMessageWithTimeout(`Pattern "${pattern}" is already in excludeFilter`);
+      return;
+    }
+
+    const updatedExcludeFilter = [...currentExcludeFilter, pattern];
+
+    try {
+      // Use workspace scope if workspace folders exist, otherwise use global scope
+      const configTarget = workspace.workspaceFolders?.length ? undefined : true;
+      await config.update('excludeFilter', updatedExcludeFilter, configTarget);
+      showInfoMessageWithTimeout(`"${pattern}" excluded from comparison`);
+      await this.refresh(false, false);
+    } catch (error) {
+      showErrorMessage(`Failed to update excludeFilter: ${error instanceof Error ? error.message : 'unknown error'}`, error);
+    }
+  }
+
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
     await window.withProgress(
       {
@@ -336,18 +365,18 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 }
 
 const openFolderChild = (isSingle: boolean) =>
-  new File(
-    isSingle ? 'Click to select a folder' : 'Click to select folders',
-    'open',
-    TreeItemCollapsibleState.None,
-    {
+  new File({
+    label: isSingle ? 'Click to select a folder' : 'Click to select folders',
+    type: 'open',
+    collapsibleState: TreeItemCollapsibleState.None,
+    command: {
       title: 'title',
       command: CHOOSE_FOLDERS_AND_COMPARE,
     }
-  );
+  });
 
-const emptyStateChild: File = new File(
-  'The compared folders are synchronized',
-  'empty',
-  TreeItemCollapsibleState.None
-);
+const emptyStateChild: File = new File({
+  label: 'The compared folders are synchronized',
+  type: 'empty',
+  collapsibleState: TreeItemCollapsibleState.None
+});

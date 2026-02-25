@@ -16,3 +16,4 @@ export const DELETE_FILE = 'foldersCompare.deleteFile';
 export const PICK_FROM_RECENT_COMPARES = 'foldersCompare.pickFromRecentCompares';
 export const CLEAR_RECENT_COMPARES = 'foldersCompare.clearRecentCompares';
 export const DISMISS_DIFFERENCE = 'foldersCompare.dismissDifference';
+export const EXCLUDE_FROM_COMPARISON = 'foldersCompare.excludeFromComparison';

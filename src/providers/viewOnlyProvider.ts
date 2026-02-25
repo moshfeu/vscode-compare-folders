@@ -29,13 +29,12 @@ export class ViewOnlyProvider implements TreeDataProvider<File> {
     let children: Array<File> = [];
     if (this.rootPath && this.showPath) {
       children = [
-        new File(
-          this.rootPath,
-          'root',
-          TreeItemCollapsibleState.Expanded,
-          undefined,
-          treeItems
-        )
+        new File({
+          label: this.rootPath,
+          type: 'root',
+          collapsibleState: TreeItemCollapsibleState.Expanded,
+          children: treeItems
+        })
       ];
     } else {
       children = treeItems;
