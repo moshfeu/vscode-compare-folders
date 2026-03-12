@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Event,
   TreeItem,
+  TreeView,
   workspace,
   window,
   WorkspaceFolder,
@@ -40,6 +41,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
 
   private emptyState: boolean = false;
   private _diffs: CompareResult | null = null;
+  private treeView?: TreeView<File>;
 
   private workspaceRoot: string;
   private ignoreDifferencesList: Set<string> = new Set();
@@ -53,6 +55,10 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       workspace.workspaceFolders && workspace.workspaceFolders.length
         ? workspace.workspaceFolders[0].uri.fsPath
         : '';
+  }
+
+  setTreeView(treeView: TreeView<File>) {
+    this.treeView = treeView;
   }
 
   compareFoldersAgainstEachOther = async () => {
@@ -223,6 +229,9 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
       window.showInformationMessage(
         '[Compare Folders] There are no differences in any file at the same path.'
       );
+    }
+    if (this.treeView) {
+      this.treeView.description = getConfiguration('showFileCount') ? `(${this._diffs.distinct.length})` : undefined;
     }
     this.onlyInA.update(this._diffs.left, this._diffs.leftPath);
     this.onlyInB.update(this._diffs.right, this._diffs.rightPath);

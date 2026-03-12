@@ -167,6 +167,12 @@
           "description": "Show identical files",
           "scope": "resource"
         },
+        "compareFolders.showFileCount": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show the number of files in each view section",
+          "scope": "window"
+        },
         "compareFolders.useDiffMerge": {
           "type": "boolean",
           "default": false,

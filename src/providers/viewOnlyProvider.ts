@@ -1,6 +1,7 @@
-import { TreeDataProvider, TreeItem, EventEmitter, Event, Uri, TreeItemCollapsibleState } from 'vscode';
+import { TreeDataProvider, TreeItem, EventEmitter, Event, Uri, TreeItemCollapsibleState, TreeView } from 'vscode';
 import { File } from '../models/file';
 import { build } from '../services/treeBuilder';
+import { getConfiguration } from '../services/configuration';
 import type { ViewOnlyPaths } from '../types';
 
 export class ViewOnlyProvider implements TreeDataProvider<File> {
@@ -8,13 +9,21 @@ export class ViewOnlyProvider implements TreeDataProvider<File> {
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
   private diffs: ViewOnlyPaths = [];
   private rootPath: string = '';
+  private treeView?: TreeView<File>;
 
   constructor(private showPath = true) {}
+
+  setTreeView(treeView: TreeView<File>) {
+    this.treeView = treeView;
+  }
 
   update(diffs: ViewOnlyPaths, rootPath: string) {
     this.diffs = diffs;
     this.rootPath = rootPath;
     this._onDidChangeTreeData.fire(null);
+    if (this.treeView) {
+      this.treeView.description = getConfiguration('showFileCount') ? `(${diffs.length})` : undefined;
+    }
   }
 
   getTreeItem(element: File): TreeItem {
