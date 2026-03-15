@@ -1,29 +1,22 @@
-import { TreeDataProvider, TreeItem, EventEmitter, Event, Uri, TreeItemCollapsibleState, TreeView } from 'vscode';
+import { TreeItem, Uri, TreeItemCollapsibleState } from 'vscode';
 import { File } from '../models/file';
 import { build } from '../services/treeBuilder';
-import { getConfiguration } from '../services/configuration';
+import { BaseViewProvider } from './baseViewProvider';
 import type { ViewOnlyPaths } from '../types';
 
-export class ViewOnlyProvider implements TreeDataProvider<File> {
-  private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
-  readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
+export class ViewOnlyProvider extends BaseViewProvider {
   private diffs: ViewOnlyPaths = [];
   private rootPath: string = '';
-  private treeView?: TreeView<File>;
 
-  constructor(private showPath = true) {}
-
-  setTreeView(treeView: TreeView<File>) {
-    this.treeView = treeView;
+  constructor(private showPath = true) {
+    super();
   }
 
   update(diffs: ViewOnlyPaths, rootPath: string) {
     this.diffs = diffs;
     this.rootPath = rootPath;
     this._onDidChangeTreeData.fire(null);
-    if (this.treeView) {
-      this.treeView.description = getConfiguration('showFileCount') ? `(${diffs.length})` : undefined;
-    }
+    this.updateCount(diffs.length);
   }
 
   getTreeItem(element: File): TreeItem {

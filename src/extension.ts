@@ -10,6 +10,7 @@ import { validate } from './services/ignoreExtensionTools';
 import { uiContext } from './context/ui';
 import { cleanup } from './services/comparer';
 import { configurationContext } from './context/configuration';
+import { createTreeViewWithProvider } from './utils/createTreeViewWithProvider';
 
 export async function activate(context: ExtensionContext) {
   configurationContext.init(context);
@@ -21,25 +22,15 @@ export async function activate(context: ExtensionContext) {
   const identicals = new ViewOnlyProvider(false);
   const foldersCompareProvider = new CompareFoldersProvider(onlyInA, onlyInB, identicals);
 
-  const differencesView = window.createTreeView('foldersCompareAppService', { treeDataProvider: foldersCompareProvider });
-  const onlyInAView = window.createTreeView('foldersCompareAppServiceOnlyA', { treeDataProvider: onlyInA });
-  const onlyInBView = window.createTreeView('foldersCompareAppServiceOnlyB', { treeDataProvider: onlyInB });
-  const identicalsView = window.createTreeView('foldersCompareAppServiceIdenticals', { treeDataProvider: identicals });
-
-  foldersCompareProvider.setTreeView(differencesView);
-  onlyInA.setTreeView(onlyInAView);
-  onlyInB.setTreeView(onlyInBView);
-  identicals.setTreeView(identicalsView);
-
   configurationContext.setRefreshCallback(() => {
     foldersCompareProvider.refreshTreeView();
   });
 
   context.subscriptions.push(
-      differencesView,
-      onlyInAView,
-      onlyInBView,
-      identicalsView,
+    createTreeViewWithProvider('foldersCompareAppService', foldersCompareProvider),
+    createTreeViewWithProvider('foldersCompareAppServiceOnlyA', onlyInA),
+    createTreeViewWithProvider('foldersCompareAppServiceOnlyB', onlyInB),
+    createTreeViewWithProvider('foldersCompareAppServiceIdenticals', identicals),
       commands.registerCommand(COMPARE_FILES, foldersCompareProvider.onFileClicked),
       commands.registerCommand(CHOOSE_FOLDERS_AND_COMPARE, foldersCompareProvider.chooseFoldersAndCompare),
       commands.registerCommand(COMPARE_FOLDERS_AGAINST_EACH_OTHER, foldersCompareProvider.compareFoldersAgainstEachOther),
