@@ -1,33 +1,15 @@
 import * as assert from 'assert';
-import { workspace, WorkspaceConfiguration } from 'vscode';
 import { ViewOnlyProvider } from '../../providers/viewOnlyProvider';
-import type { TreeView } from 'vscode';
-import type { File } from '../../models/file';
 import type { ViewOnlyPaths } from '../../types';
-
-function mockTreeView(): TreeView<File> & { description: string | undefined } {
-  return {
-    description: undefined,
-  } as unknown as TreeView<File> & { description: string | undefined };
-}
-
-function mockConfiguration(showFileCount: boolean) {
-  const original = workspace.getConfiguration;
-  Object.assign(workspace, {
-    getConfiguration: () =>
-      ({
-        get: (key: string) => (key === 'showFileCount' ? showFileCount : undefined),
-      } as WorkspaceConfiguration),
-  });
-  return () => Object.assign(workspace, { getConfiguration: original });
-}
+import { MockTreeView } from './mocks/treeView';
+import { mockConfiguration } from './mocks/configuration';
 
 suite('showFileCount', () => {
   test('ViewOnlyProvider sets description with count when showFileCount is true', () => {
-    const restore = mockConfiguration(true);
+    const restore = mockConfiguration({ showFileCount: true });
     try {
       const provider = new ViewOnlyProvider();
-      const treeView = mockTreeView();
+      const treeView = new MockTreeView();
       provider.setTreeView(treeView);
 
       const diffs: ViewOnlyPaths = [['/a/file1.ts'], ['/a/file2.ts'], ['/a/file3.ts']];
@@ -40,10 +22,10 @@ suite('showFileCount', () => {
   });
 
   test('ViewOnlyProvider clears description when showFileCount is false', () => {
-    const restore = mockConfiguration(false);
+    const restore = mockConfiguration({ showFileCount: false });
     try {
       const provider = new ViewOnlyProvider();
-      const treeView = mockTreeView();
+      const treeView = new MockTreeView();
       treeView.description = '(3)';
       provider.setTreeView(treeView);
 
@@ -57,7 +39,7 @@ suite('showFileCount', () => {
   });
 
   test('ViewOnlyProvider does not set description when no TreeView is set', () => {
-    const restore = mockConfiguration(true);
+    const restore = mockConfiguration({ showFileCount: true });
     try {
       const provider = new ViewOnlyProvider();
 
@@ -70,10 +52,10 @@ suite('showFileCount', () => {
   });
 
   test('ViewOnlyProvider description reflects updated count on subsequent calls', () => {
-    const restore = mockConfiguration(true);
+    const restore = mockConfiguration({ showFileCount: true });
     try {
       const provider = new ViewOnlyProvider();
-      const treeView = mockTreeView();
+      const treeView = new MockTreeView();
       provider.setTreeView(treeView);
 
       provider.update([['/a/file1.ts'], ['/a/file2.ts']], '/a');
