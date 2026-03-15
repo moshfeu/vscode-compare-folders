@@ -1,7 +1,6 @@
 import {
   EventEmitter,
   type Event,
-  type Thenable,
   type TreeCheckboxChangeEvent,
   type TreeView,
   type TreeViewExpansionEvent,

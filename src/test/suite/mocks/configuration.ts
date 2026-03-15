@@ -1,4 +1,4 @@
-import { workspace, type Thenable, type WorkspaceConfiguration } from 'vscode';
+import { workspace, type WorkspaceConfiguration } from 'vscode';
 
 class MockWorkspaceConfiguration implements WorkspaceConfiguration {
   readonly [key: string]: any;
