@@ -1,5 +1,6 @@
 import { TreeDataProvider, EventEmitter, Event, TreeView, type TreeItem } from 'vscode';
 import { File } from '../models/file';
+import { getConfiguration } from '../services/configuration';
 
 export abstract class BaseViewProvider implements TreeDataProvider<File> {
   protected _onDidChangeTreeData = new EventEmitter<any | undefined>();
@@ -12,7 +13,7 @@ export abstract class BaseViewProvider implements TreeDataProvider<File> {
 
   updateCount(count: number) {
     if (this.treeView) {
-      this.treeView.description = `(${count})`;
+      this.treeView.description = getConfiguration('showFileCount') ? `(${count})` : undefined;
     }
   }
 
