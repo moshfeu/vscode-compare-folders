@@ -73,6 +73,7 @@ There are several ways to choose folders to compare:
 - `ignoreFileNameCase` - boolean - Compare files with the same name but different case
 - `diffLayout` - One of the options: "local <> compared" or "compared <> local"
 - `showIdentical` - boolean - Whether or not show the identical files panel
+- `showFileCount` - boolean - Show the number of files in each view section title
 - `useDiffMerge` - boolean - Whether or not using [`Diff & Merge`](https://marketplace.visualstudio.com/items?itemName=moshfeu.diff-merge) extension as the Diff viewer. In order to use this option, you should install the extension
 - `folderLeft` + `folderRight` - strings - paths of 2 folders, compare them on the extension load.
 - `fileParsingRules` - Array of rules for parsing specific file patterns with external tools when viewing diffs. Files are parsed on-demand only when you select "View Parsed Diff" button, which will show up next to files which match a parsing rule.

@@ -1,5 +1,9 @@
 ## Change log
 
+**0.28.0**
+
+- Add `showFileCount` configuration to display the number of files in each compare view section title (Thanks [@psybers](https://github.com/psybers))
+
 **0.27.0**
 
 - [#247](https://github.com/moshfeu/vscode-compare-folders/issues/247) - Add option to exclude files from comparison (Thanks [@Jay-hak](https://github.com/Jay-hak))

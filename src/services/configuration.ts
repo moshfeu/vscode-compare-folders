@@ -12,6 +12,7 @@ export interface IConfigurations {
   ignoreExtension: [string[]];
   ignoreFileNameCase: boolean;
   showIdentical: boolean;
+  showFileCount: boolean;
   useDiffMerge: boolean;
   warnBeforeDelete: boolean;
   warnBeforeTake: boolean;

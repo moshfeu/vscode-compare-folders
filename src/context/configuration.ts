@@ -2,7 +2,8 @@ import { workspace, Disposable, ExtensionContext } from 'vscode';
 import { ConfigurationItem } from '../services/configuration';
 
 const configurationToWatch: ConfigurationItem[] = [
-  'fileParsingRules'
+  'fileParsingRules',
+  'showFileCount'
 ];
 
 class ConfigurationContext {
@@ -20,10 +21,7 @@ class ConfigurationContext {
         return workspace.onDidChangeConfiguration(e => {
             for (const key of configurationToWatch) {
                 if (e.affectsConfiguration(`compareFolders.${key}`)) {
-                    // Trigger tree refresh when fileParsingRules changes
-                    if (key === 'fileParsingRules') {
-                      this.refreshCallback?.();
-                    }
+                    this.refreshCallback?.();
                 }
             }
         });

@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Event,
   TreeItem,
+  TreeView,
   workspace,
   window,
   WorkspaceFolder,
@@ -33,11 +34,9 @@ import * as logger from '../services/logger';
 import { showErrorMessage, showErrorMessageWithMoreInfo, showInfoMessageWithTimeout, warnBefore } from '../utils/ui';
 import { showUnaccessibleWarning } from '../services/validators';
 import { uiContext, type DiffViewMode } from '../context/ui';
+import { BaseViewProvider } from './baseViewProvider';
 
-export class CompareFoldersProvider implements TreeDataProvider<File> {
-  private _onDidChangeTreeData: EventEmitter<any | undefined> = new EventEmitter<any | undefined>();
-  readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
-
+export class CompareFoldersProvider extends BaseViewProvider {
   private emptyState: boolean = false;
   private _diffs: CompareResult | null = null;
 
@@ -49,6 +48,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
     private onlyInB: ViewOnlyProvider,
     private identicals: ViewOnlyProvider
   ) {
+    super();
     this.workspaceRoot =
       workspace.workspaceFolders && workspace.workspaceFolders.length
         ? workspace.workspaceFolders[0].uri.fsPath
@@ -224,6 +224,7 @@ export class CompareFoldersProvider implements TreeDataProvider<File> {
         '[Compare Folders] There are no differences in any file at the same path.'
       );
     }
+    this.updateCount(this._diffs.distinct.length);
     this.onlyInA.update(this._diffs.left, this._diffs.leftPath);
     this.onlyInB.update(this._diffs.right, this._diffs.rightPath);
     this.identicals.update(this._diffs.identicals, this._diffs.leftPath);
