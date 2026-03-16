@@ -114,18 +114,10 @@ export class CompareFoldersProvider extends BaseViewProvider {
   }
 
   chooseFoldersAndCompare = async (ignoreWorkspace = false) => {
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: `Compare folders...`,
-      },
-      async () => {
-        this.handleDiffResult(
-          await chooseFoldersAndCompare(
-            ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
-          )
-        );
-      }
+    this.handleDiffResult(
+      await chooseFoldersAndCompare(
+        ignoreWorkspace ? undefined : await this.getWorkspaceFolder()
+      )
     );
   };
 
@@ -247,10 +239,10 @@ export class CompareFoldersProvider extends BaseViewProvider {
     }
     try {
       if (shouldCompareFolders) {
-        this._diffs = (await compareFolders());
+        this._diffs = await compareFolders();
 
         this.filterIgnoredFromDiffs();
-        if (shouldShowInfoMessage && this._diffs.hasResult()) {
+        if (shouldShowInfoMessage && this._diffs?.hasResult()) {
           showInfoMessageWithTimeout('Source Refreshed');
         }
       }
