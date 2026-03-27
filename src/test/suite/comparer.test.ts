@@ -3,6 +3,7 @@ import { compareSync, fileCompareHandlers } from 'dir-compare';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';
+import { createIgnoreListHandlers } from '../../services/ignoreListCompare';
 
 suite('Comparer - Whitespace Handling', () => {
   let testDir: string;
@@ -150,5 +151,116 @@ suite('Comparer - Whitespace Handling', () => {
     assert.strictEqual(result.same, false, 'Files with actual content differences should be detected as different');
     assert.strictEqual(result.differences, 1, 'Should have 1 difference');
     assert.strictEqual(result.diffSet?.[0]?.state, 'distinct', 'Files should be marked as distinct');
+  });
+});
+
+suite('Comparer - Ignore List', () => {
+  let testDir: string;
+  let folder1: string;
+  let folder2: string;
+
+  setup(() => {
+    testDir = fs.mkdtempSync(path.join(os.tmpdir(), 'compare-ignorelist-test-'));
+    folder1 = path.join(testDir, 'folder1');
+    folder2 = path.join(testDir, 'folder2');
+    fs.mkdirSync(folder1);
+    fs.mkdirSync(folder2);
+  });
+
+  teardown(() => {
+    if (testDir && fs.existsSync(testDir)) {
+      fs.removeSync(testDir);
+    }
+  });
+
+  test('should treat files as identical when the only differences are ignored strings', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+
+    fs.writeFileSync(file1, 'host=dev.example.com\nport=8080');
+    fs.writeFileSync(file2, 'host=prod.example.com\nport=8080');
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'Files should be identical when only ignored strings differ');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
+  });
+
+  test('should detect differences beyond the ignored strings', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+
+    fs.writeFileSync(file1, 'host=dev.example.com\nport=8080');
+    fs.writeFileSync(file2, 'host=prod.example.com\nport=9090');
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, false, 'Files should be different when non-ignored content differs');
+    assert.strictEqual(result.differences, 1, 'Should have 1 difference');
+  });
+
+  test('should support multiple ignored strings', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+
+    fs.writeFileSync(file1, 'env=dev\nregion=us-east');
+    fs.writeFileSync(file2, 'env=staging\nregion=eu-west');
+
+    const handlers = createIgnoreListHandlers(['dev', 'staging', 'us-east', 'eu-west']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'Files should be identical when all differences are ignored strings');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
+  });
+
+  test('should work alongside ignoreAllWhiteSpaces option', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+
+    fs.writeFileSync(file1, 'host = dev.example.com\nport=8080');
+    fs.writeFileSync(file2, 'host=prod.example.com\nport = 8080');
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+      ignoreAllWhiteSpaces: true,
+    });
+
+    assert.strictEqual(result.same, true, 'Files should be identical with combined ignoreList and ignoreAllWhiteSpaces');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
+  });
+
+  test('should behave like lineBasedFileCompare when ignoreList is empty', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+
+    fs.writeFileSync(file1, 'same content');
+    fs.writeFileSync(file2, 'same content');
+
+    const handlers = createIgnoreListHandlers([]);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'Identical files should remain identical with empty ignoreList');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
   });
 });

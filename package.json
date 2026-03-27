@@ -191,6 +191,15 @@
           "description": "Show a warning message before taking/replacing files",
           "scope": "resource"
         },
+        "compareFolders.ignoreList": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "List of strings to ignore when comparing file contents. Files that differ only by these strings are treated as identical.",
+          "scope": "resource"
+        },
         "compareFolders.fileParsingRules": {
           "type": "array",
           "default": [],
