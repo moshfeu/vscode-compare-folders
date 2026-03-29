@@ -191,6 +191,15 @@
           "description": "Show a warning message before taking/replacing files",
           "scope": "resource"
         },
+        "compareFolders.ignoreList": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "List of strings to ignore when comparing file contents. Files that differ only by these strings are treated as identical. Only applies when compareContent is enabled. Note: binary files will be compared normally regardless of this setting. May be slow on large files.",
+          "scope": "resource"
+        },
         "compareFolders.fileParsingRules": {
           "type": "array",
           "default": [],

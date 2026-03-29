@@ -3,6 +3,7 @@ import { compareSync, fileCompareHandlers } from 'dir-compare';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';
+import { createIgnoreListHandlers, normalizeIgnoreList } from '../../services/ignoreListCompare';
 
 suite('Comparer - Whitespace Handling', () => {
   let testDir: string;
@@ -150,5 +151,198 @@ suite('Comparer - Whitespace Handling', () => {
     assert.strictEqual(result.same, false, 'Files with actual content differences should be detected as different');
     assert.strictEqual(result.differences, 1, 'Should have 1 difference');
     assert.strictEqual(result.diffSet?.[0]?.state, 'distinct', 'Files should be marked as distinct');
+  });
+});
+
+suite('Comparer - Ignore List', () => {
+  let testDir: string;
+  let folder1: string;
+  let folder2: string;
+
+  setup(() => {
+    testDir = fs.mkdtempSync(path.join(os.tmpdir(), 'compare-ignorelist-test-'));
+    folder1 = path.join(testDir, 'folder1');
+    folder2 = path.join(testDir, 'folder2');
+    fs.mkdirSync(folder1);
+    fs.mkdirSync(folder2);
+  });
+
+  teardown(() => {
+    if (testDir && fs.existsSync(testDir)) {
+      fs.removeSync(testDir);
+    }
+  });
+
+  test('should treat files as identical when the only differences are ignored strings', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+    fs.writeFileSync(file1, 'host=dev.example.com\nport=8080');
+    fs.writeFileSync(file2, 'host=prod.example.com\nport=8080');
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'Files should be identical when only ignored strings differ');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
+  });
+
+  test('should detect differences beyond the ignored strings', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+    fs.writeFileSync(file1, 'host=dev.example.com\nport=8080');
+    fs.writeFileSync(file2, 'host=prod.example.com\nport=9090');
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, false, 'Files should be different when non-ignored content differs');
+    assert.strictEqual(result.differences, 1, 'Should have 1 difference');
+  });
+
+  test('should support multiple ignored strings', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+    fs.writeFileSync(file1, 'env=dev\nregion=us-east');
+    fs.writeFileSync(file2, 'env=staging\nregion=eu-west');
+
+    const handlers = createIgnoreListHandlers(['dev', 'staging', 'us-east', 'eu-west']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'Files should be identical when all differences are ignored strings');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
+  });
+
+  test('should work alongside ignoreAllWhiteSpaces option', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+    fs.writeFileSync(file1, 'host = dev.example.com\nport=8080');
+    fs.writeFileSync(file2, 'host=prod.example.com\nport = 8080');
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+      ignoreAllWhiteSpaces: true,
+    });
+
+    assert.strictEqual(result.same, true, 'Files should be identical with combined ignoreList and ignoreAllWhiteSpaces');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
+  });
+
+  test('should behave like lineBasedFileCompare when ignoreList is empty', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+    fs.writeFileSync(file1, 'same content');
+    fs.writeFileSync(file2, 'same content');
+
+    const handlers = createIgnoreListHandlers([]);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'Identical files should remain identical with empty ignoreList');
+    assert.strictEqual(result.differences, 0, 'Should have no differences');
+  });
+
+  test('longer overlapping entries should win (development stripped before dev)', () => {
+    const normalized = normalizeIgnoreList(['dev', 'development']);
+    assert.strictEqual(normalized[0], 'development', 'development should come before dev after length-desc sort');
+    assert.strictEqual(normalized[1], 'dev');
+
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+    fs.writeFileSync(file1, 'mode=development');
+    fs.writeFileSync(file2, 'mode=dev');
+
+    const handlers = createIgnoreListHandlers(['dev', 'development']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'development and dev should both be stripped leaving identical files');
+  });
+
+  test('should not activate ignoreList when compareContent is false', () => {
+    const file1 = path.join(folder1, 'config.txt');
+    const file2 = path.join(folder2, 'config.txt');
+    fs.writeFileSync(file1, 'host=dev.example.com\nport=8080');
+    fs.writeFileSync(file2, 'host=prod.example.com\nport=8080');
+
+    const result = compareSync(folder1, folder2, {
+      compareContent: false,
+      compareFileSync: fileCompareHandlers.lineBasedFileCompare.compareSync,
+      compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
+    });
+
+    assert.strictEqual(result.same, true, 'With compareContent false, files are compared by size only and differ only in content');
+  });
+
+  test('should drop whitespace-only and newline-containing entries', () => {
+    const normalized = normalizeIgnoreList(['dev', '   ', '\nfoo', 'prod\r\n', '', 'staging']);
+    assert.ok(!normalized.includes('   '), 'whitespace-only entry should be dropped');
+    assert.ok(!normalized.includes('\nfoo'), 'newline-containing entry should be dropped');
+    assert.ok(!normalized.includes('prod\r\n'), 'carriage-return-containing entry should be dropped');
+    assert.ok(!normalized.includes(''), 'empty entry should be dropped');
+    assert.ok(normalized.includes('dev'), 'valid entry "dev" should be kept');
+    assert.ok(normalized.includes('staging'), 'valid entry "staging" should be kept');
+  });
+
+  test('should fall back safely for binary files without throwing', () => {
+    const file1 = path.join(folder1, 'data.bin');
+    const file2 = path.join(folder2, 'data.bin');
+    const binaryBuf = Buffer.from([0x00, 0x01, 0x02, 0x50, 0x4b, 0x03, 0x04]);
+    fs.writeFileSync(file1, binaryBuf);
+    fs.writeFileSync(file2, binaryBuf);
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    let threw = false;
+    let result;
+    try {
+      result = compareSync(folder1, folder2, {
+        compareContent: true,
+        compareFileSync: handlers.compareSync,
+        compareFileAsync: handlers.compareAsync,
+      });
+    } catch {
+      threw = true;
+    }
+
+    assert.strictEqual(threw, false, 'Should not throw for binary files');
+    assert.strictEqual(result?.same, true, 'Identical binary files should be equal');
+    assert.strictEqual(result?.differences, 0, 'Should have no differences');
+  });
+
+  test('binary files that differ should be detected as distinct', () => {
+    const file1 = path.join(folder1, 'data.bin');
+    const file2 = path.join(folder2, 'data.bin');
+    fs.writeFileSync(file1, Buffer.from([0x00, 0x01, 0x02]));
+    fs.writeFileSync(file2, Buffer.from([0x00, 0x01, 0x03]));
+
+    const handlers = createIgnoreListHandlers(['dev', 'prod']);
+    const result = compareSync(folder1, folder2, {
+      compareContent: true,
+      compareFileSync: handlers.compareSync,
+      compareFileAsync: handlers.compareAsync,
+    });
+
+    assert.strictEqual(result.same, false, 'Different binary files should be detected as distinct');
+    assert.strictEqual(result.differences, 1, 'Should have 1 difference');
   });
 });
