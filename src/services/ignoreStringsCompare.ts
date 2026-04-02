@@ -50,6 +50,18 @@ function removeTempDir(dir: string): void {
   }
 }
 
+function applyPatternToBuffers(
+  buf1: Buffer,
+  buf2: Buffer,
+  pattern: RegExp
+): { content1: string; content2: string } | null {
+  if (isBinaryBuffer(buf1) || isBinaryBuffer(buf2)) return null;
+  return {
+    content1: buf1.toString('utf8').replace(pattern, ''),
+    content2: buf2.toString('utf8').replace(pattern, ''),
+  };
+}
+
 export function createIgnoreStringsHandlers(ignoreStrings: string[]): FileCompareHandlerPair {
   const normalized = normalizeIgnoreStrings(ignoreStrings);
   const pattern = normalized.length > 0 ? buildIgnorePattern(normalized) : null;
@@ -64,28 +76,21 @@ export function createIgnoreStringsHandlers(ignoreStrings: string[]): FileCompar
     }
     let tmpDir: string | undefined;
     try {
-      const buf1 = fs.readFileSync(path1);
-      const buf2 = fs.readFileSync(path2);
-      if (isBinaryBuffer(buf1) || isBinaryBuffer(buf2)) {
+      const transformed = applyPatternToBuffers(fs.readFileSync(path1), fs.readFileSync(path2), pattern);
+      if (!transformed) {
         return fileCompareHandlers.lineBasedFileCompare.compareSync(path1, stat1, path2, stat2, options);
       }
-      const content1 = buf1.toString('utf8').replace(pattern, '');
-      const content2 = buf2.toString('utf8').replace(pattern, '');
       tmpDir = makeTempDirSync();
       const tmp1 = path.join(tmpDir, 'a');
       const tmp2 = path.join(tmpDir, 'b');
-      fs.writeFileSync(tmp1, content1, 'utf8');
-      fs.writeFileSync(tmp2, content2, 'utf8');
-      const tmpStat1 = fs.statSync(tmp1);
-      const tmpStat2 = fs.statSync(tmp2);
-      return fileCompareHandlers.lineBasedFileCompare.compareSync(tmp1, tmpStat1, tmp2, tmpStat2, options);
+      fs.writeFileSync(tmp1, transformed.content1, 'utf8');
+      fs.writeFileSync(tmp2, transformed.content2, 'utf8');
+      return fileCompareHandlers.lineBasedFileCompare.compareSync(tmp1, fs.statSync(tmp1), tmp2, fs.statSync(tmp2), options);
     } catch (err) {
       log('ignoreStrings: falling back to default compare due to error', err);
       return fileCompareHandlers.lineBasedFileCompare.compareSync(path1, stat1, path2, stat2, options);
     } finally {
-      if (tmpDir) {
-        removeTempDir(tmpDir);
-      }
+      if (tmpDir) removeTempDir(tmpDir);
     }
   }
 
@@ -99,34 +104,25 @@ export function createIgnoreStringsHandlers(ignoreStrings: string[]): FileCompar
     }
     let tmpDir: string | undefined;
     try {
-      const [buf1, buf2] = await Promise.all([
-        fs.promises.readFile(path1),
-        fs.promises.readFile(path2),
-      ]);
-      if (isBinaryBuffer(buf1) || isBinaryBuffer(buf2)) {
+      const [buf1, buf2] = await Promise.all([fs.promises.readFile(path1), fs.promises.readFile(path2)]);
+      const transformed = applyPatternToBuffers(buf1, buf2, pattern);
+      if (!transformed) {
         return fileCompareHandlers.lineBasedFileCompare.compareAsync(path1, stat1, path2, stat2, options);
       }
-      const content1 = buf1.toString('utf8').replace(pattern, '');
-      const content2 = buf2.toString('utf8').replace(pattern, '');
       tmpDir = await makeTempDirAsync();
       const tmp1 = path.join(tmpDir, 'a');
       const tmp2 = path.join(tmpDir, 'b');
       await Promise.all([
-        fs.promises.writeFile(tmp1, content1, 'utf8'),
-        fs.promises.writeFile(tmp2, content2, 'utf8'),
+        fs.promises.writeFile(tmp1, transformed.content1, 'utf8'),
+        fs.promises.writeFile(tmp2, transformed.content2, 'utf8'),
       ]);
-      const [tmpStat1, tmpStat2] = await Promise.all([
-        fs.promises.stat(tmp1),
-        fs.promises.stat(tmp2),
-      ]);
+      const [tmpStat1, tmpStat2] = await Promise.all([fs.promises.stat(tmp1), fs.promises.stat(tmp2)]);
       return fileCompareHandlers.lineBasedFileCompare.compareAsync(tmp1, tmpStat1, tmp2, tmpStat2, options);
     } catch (err) {
       log('ignoreStrings: falling back to default compare due to error', err);
       return fileCompareHandlers.lineBasedFileCompare.compareAsync(path1, stat1, path2, stat2, options);
     } finally {
-      if (tmpDir) {
-        removeTempDir(tmpDir);
-      }
+      if (tmpDir) removeTempDir(tmpDir);
     }
   }
 
