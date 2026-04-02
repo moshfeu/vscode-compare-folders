@@ -25,7 +25,7 @@ export interface IConfigurations {
   respectGitIgnore: boolean;
   defaultDiffViewMode: DiffViewMode;
   fileParsingRules: FileParsingRule[];
-  ignoreList: string[];
+  ignoreStrings: string[];
 }
 
 export interface FileParsingRule {

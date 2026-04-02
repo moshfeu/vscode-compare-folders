@@ -191,7 +191,7 @@
           "description": "Show a warning message before taking/replacing files",
           "scope": "resource"
         },
-        "compareFolders.ignoreList": {
+        "compareFolders.ignoreStrings": {
           "type": "array",
           "default": [],
           "items": {
