@@ -1,5 +1,9 @@
 ## Change log
 
+**0.29.0**
+
+- [#135](https://github.com/moshfeu/vscode-compare-folders/issues/135) - Add `ignoreStrings` configuration to treat files as identical when the only differences are specified strings (Thanks [@iacullo-atri](https://github.com/iacullo-atri))
+
 **0.28.0**
 
 - Add `showFileCount` configuration to display the number of files in each compare view section title (Thanks [@psybers](https://github.com/psybers))
