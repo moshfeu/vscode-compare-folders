@@ -117,7 +117,7 @@ export function createIgnoreStringsHandlers(ignoreStrings: string[]): FileCompar
         fs.promises.writeFile(tmp2, transformed.content2, 'utf8'),
       ]);
       const [tmpStat1, tmpStat2] = await Promise.all([fs.promises.stat(tmp1), fs.promises.stat(tmp2)]);
-      return fileCompareHandlers.lineBasedFileCompare.compareAsync(tmp1, tmpStat1, tmp2, tmpStat2, options);
+      return await fileCompareHandlers.lineBasedFileCompare.compareAsync(tmp1, tmpStat1, tmp2, tmpStat2, options);
     } catch (err) {
       log('ignoreStrings: falling back to default compare due to error', err);
       return fileCompareHandlers.lineBasedFileCompare.compareAsync(path1, stat1, path2, stat2, options);
