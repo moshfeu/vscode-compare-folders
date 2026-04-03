@@ -2,7 +2,9 @@
   "name": "compare-folders",
   "displayName": "Compare Folders",
   "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-  "version": "0.28.1",
+
+
+  "version": "0.29.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -191,6 +193,15 @@
           "description": "Show a warning message before taking/replacing files",
           "scope": "resource"
         },
+        "compareFolders.ignoreStrings": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "List of strings to ignore when comparing file contents. Files that differ only by these strings are treated as identical. Only applies when compareContent is enabled. Note: binary files will be compared normally regardless of this setting. May be slow on large files.",
+          "scope": "resource"
+        },
         "compareFolders.fileParsingRules": {
           "type": "array",
           "default": [],
@@ -230,7 +241,11 @@
                 }
               }
             },
-            "required": ["pattern", "command", "args"]
+            "required": [
+              "pattern",
+              "command",
+              "args"
+            ]
           },
           "scope": "resource"
         }
@@ -509,7 +524,7 @@
     "@types/glob": "^8.1.0",
     "@types/lodash": "^4.14.140",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^10.12.21",
+    "@types/node": "^20.0.0",
     "@types/sinon": "^10.0.13",
     "@types/vscode": "^1.38.0",
     "@vscode/test-electron": "^2.3.8",

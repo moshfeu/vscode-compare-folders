@@ -6,7 +6,7 @@ export const pathExistsSync: typeof fsPathExistsSync = (path: string) => {
   return fsPathExistsSync(path);
 }
 
-export const readFileSync = (path: string, encoding: string): string => {
+export const readFileSync = (path: string, encoding: BufferEncoding): string => {
   return fsReadFileSync(path, encoding);
 }
 

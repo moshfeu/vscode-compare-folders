@@ -13,6 +13,7 @@ import { getIncludeAndExcludePaths } from './includeExcludeFilesGetter';
 import { getGitignoreFilter } from './gitignoreFilter';
 import { shouldParseFile } from './fileParser';
 import { prepareParsedDiff, cleanup as cleanupParsedDiff } from './parsedDiffViewer';
+import { createIgnoreStringsHandlers } from './ignoreStringsCompare';
 
 export function cleanup(): void {
   cleanupParsedDiff();
@@ -94,6 +95,7 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     respectGitIgnore,
+    ignoreStrings,
   } = getConfiguration(
     'compareContent',
     'ignoreFileNameCase',
@@ -103,10 +105,16 @@ function getOptions() {
     'ignoreEmptyLines',
     'ignoreLineEnding',
     'respectGitIgnore',
+    'ignoreStrings',
   );
 
   const { excludeFilter, includeFilter } = getIncludeAndExcludePaths();
   const filterHandler = respectGitIgnore ? getGitignoreFilter(...pathContext.getPaths()) : undefined;
+
+  const activeIgnoreStrings: string[] = compareContent ? (ignoreStrings || []) : [];
+  const fileCompareHandlerPair = activeIgnoreStrings.length > 0
+    ? createIgnoreStringsHandlers(activeIgnoreStrings)
+    : fileCompareHandlers.lineBasedFileCompare;
 
   const options: CompareOptions = {
     compareContent,
@@ -119,8 +127,8 @@ function getOptions() {
     ignoreEmptyLines,
     ignoreLineEnding,
     filterHandler,
-    compareFileSync: fileCompareHandlers.lineBasedFileCompare.compareSync,
-    compareFileAsync: fileCompareHandlers.lineBasedFileCompare.compareAsync,
+    compareFileSync: fileCompareHandlerPair.compareSync,
+    compareFileAsync: fileCompareHandlerPair.compareAsync,
     compareNameHandler: (ignoreExtension && compareName) || undefined,
   };
   return options;
