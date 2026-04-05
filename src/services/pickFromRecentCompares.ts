@@ -1,4 +1,4 @@
-import { window, commands, Uri, workspace } from 'vscode';
+import { window, commands, Uri, workspace, l10n } from 'vscode';
 import { globalState, SEPERATOR } from './globalState';
 import { showInfoMessageWithTimeout } from '../utils/ui';
 import { COMPARE_SELECTED_FOLDERS } from '../constants/commands';
@@ -7,12 +7,12 @@ import { log } from './logger';
 export async function pickFromRecents() {
   const paths = globalState.getPaths();
   if (!paths?.length) {
-    showInfoMessageWithTimeout('History is empty');
+    showInfoMessageWithTimeout(l10n.t('history.empty'));
     return;
   }
 
   const chosen = await window.showQuickPick(Array.from(paths), {
-    placeHolder: 'Pick from history',
+    placeHolder: l10n.t('history.placeholder'),
   });
 
   if (!chosen) {

@@ -11,6 +11,7 @@ import {
   ProgressLocation,
   commands,
   Uri,
+  l10n,
 } from 'vscode';
 import * as path from 'path';
 import { copySync, removeSync } from 'fs-extra';
@@ -62,7 +63,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
   compareSelectedFolders = async (_e: Uri, uris?: [Uri, Uri]) => {
     if (uris?.length !== 2) {
       showErrorMessageWithMoreInfo(
-        'Unfortunately, this command can run only by right clicking on 2 folders, no shortcuts here 😕',
+        l10n.t('provider.rightClickError'),
         'https://github.com/microsoft/vscode/issues/3553'
       );
       return;
@@ -87,7 +88,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
   excludeFromComparison = async (treeItemFile: File) => {
     if (!treeItemFile.relativePath) {
       logger.error('File has no relative path', treeItemFile);
-      showErrorMessage('File has no relative path', new Error('relativePath is undefined'));
+      showErrorMessage(l10n.t('provider.fileHasNoRelativePath'), new Error('relativePath is undefined'));
       return;
     }
 
@@ -96,7 +97,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
     const currentExcludeFilter = config.get<string[]>('excludeFilter') || [];
 
     if (currentExcludeFilter.includes(pattern)) {
-      showInfoMessageWithTimeout(`Pattern "${pattern}" is already in excludeFilter`);
+      showInfoMessageWithTimeout(l10n.t('provider.alreadyExcluded', pattern));
       return;
     }
 
@@ -106,10 +107,10 @@ export class CompareFoldersProvider extends BaseViewProvider {
       // Use workspace scope if workspace folders exist, otherwise use global scope
       const configTarget = workspace.workspaceFolders?.length ? undefined : true;
       await config.update('excludeFilter', updatedExcludeFilter, configTarget);
-      showInfoMessageWithTimeout(`"${pattern}" excluded from comparison`);
+      showInfoMessageWithTimeout(l10n.t('provider.excluded', pattern));
       await this.refresh(false, false);
     } catch (error) {
-      showErrorMessage(`Failed to update excludeFilter: ${error instanceof Error ? error.message : 'unknown error'}`, error);
+      showErrorMessage(l10n.t('provider.excludeUpdateError', error instanceof Error ? error.message : 'unknown error'), error);
     }
   }
 
@@ -117,7 +118,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
     await window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: `Compare folders...`,
+        title: l10n.t('provider.compareFoldersProgress'),
       },
       async () => {
         this.handleDiffResult(
@@ -171,7 +172,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
     }));
     const result = await window.showQuickPick(workspaces, {
       canPickMany: false,
-      placeHolder: 'Choose a workspace to compare with',
+      placeHolder: l10n.t('provider.chooseWorkspacePlaceholder'),
     });
     if (result) {
       this.workspaceRoot = result.description;
@@ -197,7 +198,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
       }
     } catch (error) {
       console.error(error);
-      showErrorMessage(`Failed to open diff: ${error instanceof Error ? error.message : 'unknown error'}`, error);
+      showErrorMessage(l10n.t('provider.openDiffError', error instanceof Error ? error.message : 'unknown error'), error);
     }
   };
 
@@ -207,7 +208,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
       await this.openDiff(paths, relativePath, true);
     } catch (error) {
       console.error(error);
-      showErrorMessage(`Failed to view parsed diff: ${error instanceof Error ? error.message : 'unknown error'}`, error);
+      showErrorMessage(l10n.t('provider.viewParsedDiffError', error instanceof Error ? error.message : 'unknown error'), error);
     }
   };
 
@@ -221,7 +222,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
     } else {
       this.showEmptyState();
       window.showInformationMessage(
-        '[Compare Folders] There are no differences in any file at the same path.'
+        l10n.t('provider.noDifferences')
       );
     }
     this.updateCount(this._diffs.distinct.length);
@@ -251,7 +252,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
 
         this.filterIgnoredFromDiffs();
         if (shouldShowInfoMessage && this._diffs.hasResult()) {
-          showInfoMessageWithTimeout('Source Refreshed');
+          showInfoMessageWithTimeout(l10n.t('provider.sourceRefreshed'));
         }
       }
       this.updateUI();
@@ -287,7 +288,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
   };
 
   deleteFile = async (e: TreeItem) => {
-    const shouldDelete = await warnBefore('Are you sure you want to delete this file?');
+    const shouldDelete = await warnBefore(l10n.t('provider.deleteConfirm'));
 
     if (shouldDelete) {
       removeSync(e.resourceUri!.fsPath);
@@ -296,7 +297,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
   };
 
   takeMyFile = async (e: TreeItem) => {
-    const shouldTake = await warnBefore('Are you sure you want to take my file?');
+    const shouldTake = await warnBefore(l10n.t('provider.takeMyConfirm'));
 
     if (shouldTake) {
       const [[filePath]] = e.command!.arguments!;
@@ -305,7 +306,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
   };
 
   takeComparedFile = async (e: TreeItem) => {
-    const shouldTake = await warnBefore('Are you sure you want to take the compared file?');
+    const shouldTake = await warnBefore(l10n.t('provider.takeComparedConfirm'));
 
     if (shouldTake) {
       const [[, filePath]] = e.command!.arguments!;
@@ -323,7 +324,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
       copySync(fromPath, toPath);
       this.refresh(false);
     } catch (error) {
-      showErrorMessage('Failed to copy file', error);
+      showErrorMessage(l10n.t('provider.copyError'), error);
       logger.error(error);
     }
   }
@@ -367,7 +368,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
 
 const openFolderChild = (isSingle: boolean) =>
   new File({
-    label: isSingle ? 'Click to select a folder' : 'Click to select folders',
+    label: isSingle ? l10n.t('provider.selectFolderSingle') : l10n.t('provider.selectFolderPlural'),
     type: 'open',
     collapsibleState: TreeItemCollapsibleState.None,
     command: {
@@ -377,7 +378,7 @@ const openFolderChild = (isSingle: boolean) =>
   });
 
 const emptyStateChild: File = new File({
-  label: 'The compared folders are synchronized',
+  label: l10n.t('provider.synchronized'),
   type: 'empty',
   collapsibleState: TreeItemCollapsibleState.None
 });

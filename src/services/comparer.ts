@@ -1,4 +1,4 @@
-import { commands, Uri, window, extensions } from 'vscode';
+import { commands, Uri, window, extensions, l10n } from 'vscode';
 import { compare, fileCompareHandlers,type Difference } from 'dir-compare';
 import { openFolder } from './openFolder';
 import * as path from 'path';
@@ -39,7 +39,7 @@ async function showDiffView(uri1: Uri, uri2: Uri, title: string): Promise<void> 
       commands.executeCommand('diffMerge.compareSelected', uri1, [uri1, uri2]);
     } else {
       window.showErrorMessage(
-        'In order to use "Diff & Merge" extension you should install / enable it'
+        l10n.t('comparer.installDiffMerge')
       );
     }
     return;
@@ -194,7 +194,7 @@ export async function compareFolders(): Promise<CompareResult> {
     );
   } catch (error) {
     log('error while comparing', error);
-    showErrorMessage('Oops, something went wrong while comparing', error);
+    showErrorMessage(l10n.t('comparer.errorComparing'), error);
     return emptyResponse();
   }
 }

@@ -1,4 +1,4 @@
-import { window, ProgressLocation, env, Uri, version } from 'vscode';
+import { window, ProgressLocation, env, Uri, version, l10n } from 'vscode';
 import os from 'os';
 import * as logger from '../services/logger';
 import { globalState } from '../services/globalState';
@@ -39,7 +39,8 @@ export async function showDoneableInfo(title: string, callback: () => Promise<vo
 }
 
 export async function showErrorMessage(message: string, error: any) {
-  if ((await window.showErrorMessage(message, 'Report')) === 'Report') {
+  const report = l10n.t('ui.report');
+  if ((await window.showErrorMessage(message, report)) === report) {
     try {
       const body = `**Original message**: ${message}
 
@@ -63,7 +64,7 @@ ${error.stack || error.message || error}
 }
 
 export async function showErrorMessageWithMoreInfo(message: string, link: string) {
-  const moreInfo = 'More Info';
+  const moreInfo = l10n.t('ui.moreInfo');
   const result = await window.showErrorMessage(message, moreInfo);
   if (result === moreInfo) {
     env.openExternal(Uri.parse(link));
