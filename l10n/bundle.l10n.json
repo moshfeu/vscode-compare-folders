@@ -26,5 +26,6 @@
   "provider.fileHasNoRelativePath": "File has no relative path",
   "includeExclude.errorParsing": "Error while parsing include/exclude files",
   "history.empty": "History is empty",
-  "history.placeholder": "Pick from history"
+  "history.placeholder": "Pick from history",
+  "ui.yes": "Yes, go for it"
 }

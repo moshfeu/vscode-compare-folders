@@ -26,5 +26,6 @@
   "provider.fileHasNoRelativePath": "파일에 상대 경로가 없습니다.",
   "includeExclude.errorParsing": "포함/제외 파일 분석 중 오류 발생",
   "history.empty": "이력이 비어 있습니다.",
-  "history.placeholder": "이력에서 선택"
+  "history.placeholder": "이력에서 선택",
+  "ui.yes": "네, 진행하세요"
 }
