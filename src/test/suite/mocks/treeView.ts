@@ -1,7 +1,6 @@
 import {
   EventEmitter,
   type Event,
-  type TreeCheckboxChangeEvent,
   type TreeView,
   type TreeViewExpansionEvent,
   type TreeViewSelectionChangeEvent,
@@ -21,8 +20,6 @@ export class MockTreeView implements TreeView<File> {
   readonly onDidCollapseElement: Event<TreeViewExpansionEvent<File>> = new EventEmitter<TreeViewExpansionEvent<File>>().event;
   readonly onDidChangeSelection: Event<TreeViewSelectionChangeEvent<File>> = new EventEmitter<TreeViewSelectionChangeEvent<File>>().event;
   readonly onDidChangeVisibility: Event<TreeViewVisibilityChangeEvent> = new EventEmitter<TreeViewVisibilityChangeEvent>().event;
-  readonly onDidChangeCheckboxState: Event<TreeCheckboxChangeEvent<File>> = new EventEmitter<TreeCheckboxChangeEvent<File>>().event;
-
   reveal(): Thenable<void> {
     return Promise.resolve();
   }
