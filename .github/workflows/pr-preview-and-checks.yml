@@ -1,11 +1,32 @@
-name: PR Preview Build
+name: PR Preview & Checks
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
+  validate-localization:
+    name: Validate Localization
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Validate Localization
+        run: npm run l10n:validate
+
   build-preview:
+    name: Build Preview
     runs-on: ubuntu-latest
     permissions:
       contents: read

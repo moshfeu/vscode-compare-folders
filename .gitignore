@@ -4,3 +4,4 @@ node_modules
 *.vsix
 package-lock.json
 .env
+l10n/bundle.l10n.json

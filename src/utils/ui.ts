@@ -1,9 +1,8 @@
-import { window, ProgressLocation, env, Uri, version } from 'vscode';
+import { window, ProgressLocation, env, Uri, version, l10n } from 'vscode';
 import os from 'os';
 import * as logger from '../services/logger';
 import { globalState } from '../services/globalState';
 import { getConfiguration } from '../services/configuration';
-import { YES_MESSAGE } from '../utils/consts';
 
 export function showInfoMessageWithTimeout(message: string, timeout: number = 3000) {
   const upTo = timeout / 10;
@@ -39,7 +38,8 @@ export async function showDoneableInfo(title: string, callback: () => Promise<vo
 }
 
 export async function showErrorMessage(message: string, error: any) {
-  if ((await window.showErrorMessage(message, 'Report')) === 'Report') {
+  const report = l10n.t('Report');
+  if ((await window.showErrorMessage(message, report)) === report) {
     try {
       const body = `**Original message**: ${message}
 
@@ -63,7 +63,7 @@ ${error.stack || error.message || error}
 }
 
 export async function showErrorMessageWithMoreInfo(message: string, link: string) {
-  const moreInfo = 'More Info';
+  const moreInfo = l10n.t('More Info');
   const result = await window.showErrorMessage(message, moreInfo);
   if (result === moreInfo) {
     env.openExternal(Uri.parse(link));
@@ -72,13 +72,14 @@ export async function showErrorMessageWithMoreInfo(message: string, link: string
 
 export const warnBefore = async (message: string) => {
   if (getConfiguration('warnBeforeTake')) {
-    return YES_MESSAGE ===
+    const yesMessage = l10n.t('Yes, go for it');
+    return yesMessage ===
       (await window.showInformationMessage(
         message,
         {
           modal: true,
         },
-        YES_MESSAGE
+        yesMessage
       ));
   }
 

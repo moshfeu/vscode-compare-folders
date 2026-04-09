@@ -1,4 +1,4 @@
-import { window, commands, ExtensionContext, workspace, Uri, version} from 'vscode';
+import { window, commands, ExtensionContext, workspace, Uri, l10n } from 'vscode';
 import { CompareFoldersProvider } from './providers/foldersCompareProvider';
 import { COMPARE_FILES, CHOOSE_FOLDERS_AND_COMPARE, REFRESH, COMPARE_FOLDERS_AGAINST_EACH_OTHER, COMPARE_FOLDERS_AGAINST_WORKSPACE, COMPARE_SELECTED_FOLDERS, SWAP, COPY_TO_COMPARED, COPY_TO_MY, VIEW_PARSED_DIFF, TAKE_MY_FILE, TAKE_COMPARED_FILE, DELETE_FILE, PICK_FROM_RECENT_COMPARES, CLEAR_RECENT_COMPARES, DISMISS_DIFFERENCE, VIEW_AS_LIST, VIEW_AS_TREE, EXCLUDE_FROM_COMPARISON } from './constants/commands';
 import { ViewOnlyProvider } from './providers/viewOnlyProvider';
@@ -57,18 +57,18 @@ export async function activate(context: ExtensionContext) {
     // if the user set both folderLeft and folderRight they will be used on activation
     if (!folderLeft || !folderRight)
     {
-      window.showInformationMessage(`In order to compare folders, the command should have been called with 2 folderLeft and folderRight settings`);
+      window.showInformationMessage(l10n.t('In order to compare folders, the command should have been called with 2 folderLeft and folderRight settings'));
       return;
     }
     const folderLeftUri = Uri.file(folderLeft);
     const folderRightUri = Uri.file(folderRight);
-    showDoneableInfo(`Please wait, comparing folder ${folderLeft}-->${folderRight}`, () =>
+    showDoneableInfo(l10n.t('Please wait, comparing folder {0}-->{1}', folderLeft, folderRight), () =>
       foldersCompareProvider.compareSelectedFolders(folderLeftUri, [folderLeftUri, folderRightUri])
     );
   }
   else if (process.env.COMPARE_FOLDERS === 'DIFF') {
     if (workspace.workspaceFolders?.length !== 2) {
-      window.showInformationMessage(`In order to compare folders, the command should been called with 2 folders: e.g. COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2. Actual folders: ${workspace.workspaceFolders?.length || 0}`);
+      window.showInformationMessage(l10n.t('In order to compare folders, the command should been called with 2 folders: e.g. COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2. Actual folders: {0}', workspace.workspaceFolders?.length || 0));
       return;
     }
     const [folder1Path, folder2Path] = workspace.workspaceFolders.map(folder => folder.uri);

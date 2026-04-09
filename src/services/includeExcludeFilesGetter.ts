@@ -1,3 +1,4 @@
+import { l10n } from 'vscode';
 import type { IncludeExcludePathsResult } from '../types';
 import { showErrorMessage } from '../utils/ui';
 import { getConfiguration } from './configuration';
@@ -18,7 +19,7 @@ export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
       includeFilter: includeFiles.join(','),
     };
   } catch (error) {
-    showErrorMessage('Error while parsing include/exclude files', error);
+    showErrorMessage(l10n.t('Error while parsing include/exclude files'), error);
     log(error);
     return {
       excludeFilter: '',

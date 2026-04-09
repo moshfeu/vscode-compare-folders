@@ -1,10 +1,8 @@
 {
   "name": "compare-folders",
-  "displayName": "Compare Folders",
-  "description": "Compare folders by contents, present the files that have differences and display the diffs side by side",
-
-
-  "version": "0.29.0",
+  "displayName": "%ext.displayName%",
+  "description": "%ext.description%",
+  "version": "0.30.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -27,7 +25,7 @@
     "url": "https://twitter.com/moshfeu"
   },
   "engines": {
-    "vscode": "^1.38.0",
+    "vscode": "^1.73.0",
     "node": ">=20.0.0"
   },
   "categories": [
@@ -37,10 +35,11 @@
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "contributes": {
     "icons": {
       "comparefolders-icon": {
-        "description": "compare folders icon",
+        "description": "%ext.icon.description%",
         "default": {
           "fontPath": "resources/fonts/comparefolders.woff",
           "fontCharacter": "\\e900"
@@ -49,75 +48,75 @@
     },
     "configuration": {
       "type": "object",
-      "title": "Compare Folders",
+      "title": "%ext.configuration.title%",
       "properties": {
         "compareFolders.folderLeft": {
           "type": "string",
-          "description": "Default setting for left folder",
+          "description": "%ext.config.folderLeft.description%",
           "default": "",
           "scope": "resource"
         },
         "compareFolders.folderRight": {
           "type": "string",
-          "description": "Default setting for right folder",
+          "description": "%ext.config.folderRight.description%",
           "default": "",
           "scope": "resource"
         },
         "compareFolders.compareContent": {
           "type": "boolean",
           "default": true,
-          "description": "Compare content",
+          "description": "%ext.config.compareContent.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreLineEnding": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore crlf/lf line ending differences",
+          "description": "%ext.config.ignoreLineEnding.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreWhiteSpaces": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore white spaces at the beginning and ending of a line (similar to 'diff -b')",
+          "description": "%ext.config.ignoreWhiteSpaces.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreAllWhiteSpaces": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore all white space differences (similar to 'diff -w')",
+          "description": "%ext.config.ignoreAllWhiteSpaces.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreEmptyLines": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore differences caused by empty lines (similar to 'diff -B')",
+          "description": "%ext.config.ignoreEmptyLines.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreFileNameCase": {
           "type": "boolean",
           "default": true,
-          "description": "If true fileName / FileName / FiLE naMe will consider as same file and will be compared",
+          "description": "%ext.config.ignoreFileNameCase.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreExtension": {
           "type": "array",
           "default": [],
-          "description": "Pairs of extensions to to considered the same file (.e.g [index.js, index.ts]). Each extension can appear **only once**",
+          "description": "%ext.config.ignoreExtension.description%",
           "scope": "resource"
         },
         "compareFolders.includeFilter": {
           "type": "array",
-          "description": "Include filters",
+          "description": "%ext.config.includeFilter.description%",
           "scope": "resource"
         },
         "compareFolders.excludeFilter": {
           "type": "array",
-          "description": "Exclude filters",
+          "description": "%ext.config.excludeFilter.description%",
           "scope": "resource"
         },
         "compareFolders.respectGitIgnore": {
           "type": "boolean",
-          "description": "Include / Exclude files based on .gitignore",
+          "description": "%ext.config.respectGitIgnore.description%",
           "scope": "resource"
         },
         "compareFolders.diffViewTitle": {
@@ -129,11 +128,11 @@
             "full path"
           ],
           "enumDescriptions": [
-            "eg. file-name.txt",
-            "eg. file-name.txt ↔ path/to/compared/file-name.txt",
-            "eg. c://file-name.txt ↔ c://path/to/compared/file-name.txt"
+            "%ext.config.diffViewTitle.enum.nameOnly%",
+            "%ext.config.diffViewTitle.enum.comparedPath%",
+            "%ext.config.diffViewTitle.enum.fullPath%"
           ],
-          "markdownDescription": "Specifies how the diff view's title look like",
+          "markdownDescription": "%ext.config.diffViewTitle.description%",
           "scope": "window"
         },
         "compareFolders.diffLayout": {
@@ -144,10 +143,10 @@
             "compared <> local"
           ],
           "enumDescriptions": [
-            "eg. left: local file, right: compared file",
-            "eg. left: compared file, right: local file"
+            "%ext.config.diffLayout.enum.localCompared%",
+            "%ext.config.diffLayout.enum.comparedLocal%"
           ],
-          "markdownDescription": "Specifies which file will be in the left and the right sides of the diff view",
+          "markdownDescription": "%ext.config.diffLayout.description%",
           "scope": "window"
         },
         "compareFolders.defaultDiffViewMode": {
@@ -158,39 +157,39 @@
             "list"
           ],
           "enumDescriptions": [
-            "Presents files and folders in a hierarchical tree structure, allowing for a more organized and nested view",
-            "Displays files and folders in a simple, flat list format"
+            "%ext.config.defaultDiffViewMode.enum.tree%",
+            "%ext.config.defaultDiffViewMode.enum.list%"
           ],
           "scope": "window"
         },
         "compareFolders.showIdentical": {
           "type": "boolean",
           "default": false,
-          "description": "Show identical files",
+          "description": "%ext.config.showIdentical.description%",
           "scope": "resource"
         },
         "compareFolders.showFileCount": {
           "type": "boolean",
           "default": false,
-          "description": "Show the number of files in each view section",
+          "description": "%ext.config.showFileCount.description%",
           "scope": "window"
         },
         "compareFolders.useDiffMerge": {
           "type": "boolean",
           "default": false,
-          "description": "Use Diff & Merge extension as diff view",
+          "description": "%ext.config.useDiffMerge.description%",
           "scope": "window"
         },
         "compareFolders.warnBeforeDelete": {
           "type": "boolean",
           "default": "true",
-          "description": "Show a warning message before deleting files",
+          "description": "%ext.config.warnBeforeDelete.description%",
           "scope": "resource"
         },
         "compareFolders.warnBeforeTake": {
           "type": "boolean",
           "default": true,
-          "description": "Show a warning message before taking/replacing files",
+          "description": "%ext.config.warnBeforeTake.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreStrings": {
@@ -199,43 +198,43 @@
           "items": {
             "type": "string"
           },
-          "description": "List of strings to ignore when comparing file contents. Files that differ only by these strings are treated as identical. Only applies when compareContent is enabled. Note: binary files will be compared normally regardless of this setting. May be slow on large files.",
+          "description": "%ext.config.ignoreStrings.description%",
           "scope": "resource"
         },
         "compareFolders.fileParsingRules": {
           "type": "array",
           "default": [],
-          "description": "Rules for parsing specific file patterns with external tools",
+          "description": "%ext.config.fileParsingRules.description%",
           "items": {
             "type": "object",
             "properties": {
               "pattern": {
                 "type": "string",
-                "description": "Glob pattern to match files (e.g., '*.json', '**/*.xml')"
+                "description": "%ext.config.fileParsingRules.pattern.description%"
               },
               "command": {
                 "type": "string",
-                "description": "Command to execute for parsing files"
+                "description": "%ext.config.fileParsingRules.command.description%"
               },
               "args": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "Arguments to pass to the command. Use '{file}' as placeholder for the file path"
+                "description": "%ext.config.fileParsingRules.args.description%"
               },
               "workingDirectory": {
                 "type": "string",
-                "description": "Working directory for the command (optional)"
+                "description": "%ext.config.fileParsingRules.workingDirectory.description%"
               },
               "timeout": {
                 "type": "number",
                 "default": 30000,
-                "description": "Parsing timeout in milliseconds (default: 30000)"
+                "description": "%ext.config.fileParsingRules.timeout.description%"
               },
               "env": {
                 "type": "object",
-                "description": "Environment variables to set for the command (optional)",
+                "description": "%ext.config.fileParsingRules.env.description%",
                 "additionalProperties": {
                   "type": "string"
                 }
@@ -380,107 +379,107 @@
     },
     "commands": [
       {
-        "title": "Pick from recent compares",
+        "title": "%ext.command.pickFromRecent.title%",
         "command": "foldersCompare.pickFromRecentCompares",
         "icon": "$(history)",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "Clear Recent Compares",
+        "title": "%ext.command.clearRecent.title%",
         "command": "foldersCompare.clearRecentCompares",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "Copy to Compared Folder",
+        "title": "%ext.command.copyToCompared.title%",
         "command": "foldersCompare.copyToCompared",
         "icon": "$(files)"
       },
       {
-        "title": "Copy to My Folder",
+        "title": "%ext.command.copyToMy.title%",
         "command": "foldersCompare.copyToMy",
         "icon": "$(files)"
       },
       {
-        "title": "Delete File",
+        "title": "%ext.command.deleteFile.title%",
         "command": "foldersCompare.deleteFile",
         "icon": "$(trash)"
       },
       {
-        "title": "Dismiss Difference",
+        "title": "%ext.command.dismissDifference.title%",
         "command": "foldersCompare.dismissDifference",
         "icon": "$(close)"
       },
       {
-        "title": "Exclude from Comparison",
+        "title": "%ext.command.excludeFromComparison.title%",
         "command": "foldersCompare.excludeFromComparison",
         "icon": "$(exclude)"
       },
       {
-        "title": "View Parsed Diff",
+        "title": "%ext.command.viewParsedDiff.title%",
         "command": "foldersCompare.viewParsedDiff",
         "icon": "$(code)",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "Take My File",
+        "title": "%ext.command.takeMyFile.title%",
         "command": "foldersCompare.takeMyFile",
         "icon": "$(debug-step-over)"
       },
       {
-        "title": "Take Compared File",
+        "title": "%ext.command.takeComparedFile.title%",
         "command": "foldersCompare.takeComparedFile",
         "icon": "$(debug-step-back)"
       },
       {
-        "title": "Choose Folders and Compare",
+        "title": "%ext.command.chooseFolders.title%",
         "command": "foldersCompare.chooseFoldersAndCompare",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "Compare a Folder Against Workspace",
+        "title": "%ext.command.compareAgainstWorkspace.title%",
         "command": "foldersCompare.compareFoldersAgainstWorkspace",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "Choose 2 Folders and Compare",
+        "title": "%ext.command.choose2Folders.title%",
         "command": "foldersCompare.compareFoldersAgainstEachOther",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "Refresh",
+        "title": "%ext.command.refresh.title%",
         "command": "foldersCompare.refresh",
         "icon": "$(refresh)",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "Swap Sides",
+        "title": "%ext.command.swapSides.title%",
         "command": "foldersCompare.swap",
         "icon": "$(arrow-swap)",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "View as List",
+        "title": "%ext.command.viewAsList.title%",
         "command": "foldersCompare.viewAsList",
         "icon": "$(list-selection)",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "View as Tree",
+        "title": "%ext.command.viewAsTree.title%",
         "command": "foldersCompare.viewAsTree",
         "icon": "$(list-tree)",
-        "category": "CompareFolders"
+        "category": "%ext.command.category%"
       },
       {
         "command": "foldersCompare.compareSelectedFolders",
-        "title": "[Compare Folders] Compare selected folders",
-        "category": "CompareFolders"
+        "title": "%ext.command.compareSelected.title%",
+        "category": "%ext.command.category%"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "foldersCompare",
-          "title": "Compare Folders",
+          "title": "%ext.viewContainer.title%",
           "icon": "$(comparefolders-icon)"
         }
       ]
@@ -489,19 +488,19 @@
       "foldersCompare": [
         {
           "id": "foldersCompareAppService",
-          "name": "Differences"
+          "name": "%ext.view.differences.name%"
         },
         {
           "id": "foldersCompareAppServiceOnlyA",
-          "name": "Only in my folder"
+          "name": "%ext.view.onlyInMy.name%"
         },
         {
           "id": "foldersCompareAppServiceOnlyB",
-          "name": "Only in compared folder"
+          "name": "%ext.view.onlyInCompared.name%"
         },
         {
           "id": "foldersCompareAppServiceIdenticals",
-          "name": "Identical files",
+          "name": "%ext.view.identicals.name%",
           "when": "config.compareFolders.showIdentical"
         }
       ]
@@ -513,6 +512,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
+    "l10n:extract": "npx @vscode/l10n-dev export --outDir ./l10n ./src/**/*.ts",
+    "l10n:validate": "node scripts/validate-l10n.js",
     "deploy": "npx vsce publish -p",
     "deploy:insider": "node scripts/deploy-insider.js",
     "deploy:openvsx": "sh scripts/deploy-openvsx.sh",
@@ -526,7 +527,8 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.0.0",
     "@types/sinon": "^10.0.13",
-    "@types/vscode": "^1.38.0",
+    "@types/vscode": "^1.110.0",
+    "@vscode/l10n-dev": "^0.0.35",
     "@vscode/test-electron": "^2.3.8",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
@@ -537,6 +539,7 @@
   },
   "dependencies": {
     "@cjs-exporter/globby": "^13.1.3",
+    "@vscode/l10n": "^0.0.18",
     "dir-compare": "^4.2.0",
     "fs-extra": "8.1.0",
     "lodash": "^4.18.1",
