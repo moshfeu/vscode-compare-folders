@@ -19,7 +19,7 @@ export function getIncludeAndExcludePaths(): IncludeExcludePathsResult {
       includeFilter: includeFiles.join(','),
     };
   } catch (error) {
-    showErrorMessage(l10n.t('includeExclude.errorParsing'), error);
+    showErrorMessage(l10n.t('Error while parsing include/exclude files'), error);
     log(error);
     return {
       excludeFilter: '',

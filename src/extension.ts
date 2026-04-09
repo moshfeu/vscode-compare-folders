@@ -57,18 +57,18 @@ export async function activate(context: ExtensionContext) {
     // if the user set both folderLeft and folderRight they will be used on activation
     if (!folderLeft || !folderRight)
     {
-      window.showInformationMessage(l10n.t('extension.compareSettingsError'));
+      window.showInformationMessage(l10n.t('In order to compare folders, the command should have been called with 2 folderLeft and folderRight settings'));
       return;
     }
     const folderLeftUri = Uri.file(folderLeft);
     const folderRightUri = Uri.file(folderRight);
-    showDoneableInfo(l10n.t('extension.comparingFolders', folderLeft, folderRight), () =>
+    showDoneableInfo(l10n.t('Please wait, comparing folder {0}-->{1}', folderLeft, folderRight), () =>
       foldersCompareProvider.compareSelectedFolders(folderLeftUri, [folderLeftUri, folderRightUri])
     );
   }
   else if (process.env.COMPARE_FOLDERS === 'DIFF') {
     if (workspace.workspaceFolders?.length !== 2) {
-      window.showInformationMessage(l10n.t('extension.compareEnvironmentError', workspace.workspaceFolders?.length || 0));
+      window.showInformationMessage(l10n.t('In order to compare folders, the command should been called with 2 folders: e.g. COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2. Actual folders: {0}', workspace.workspaceFolders?.length || 0));
       return;
     }
     const [folder1Path, folder2Path] = workspace.workspaceFolders.map(folder => folder.uri);

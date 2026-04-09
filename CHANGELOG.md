@@ -1,5 +1,9 @@
 ## Change log
 
+**0.30.0**
+
+- [#263](https://github.com/moshfeu/vscode-compare-folders/pull/263) - Add localization support with Korean translation and automated validation (Thanks [@justcontributor](https://github.com/justcontributor)). See [LOCALIZATION.md](LOCALIZATION.md) for contributing translations
+
 **0.29.0**
 
 - [#135](https://github.com/moshfeu/vscode-compare-folders/issues/135) - Add `ignoreStrings` configuration to treat files as identical when the only differences are specified strings (Thanks [@iacullo-atri](https://github.com/iacullo-atri))
