@@ -2,7 +2,7 @@
   "name": "compare-folders",
   "displayName": "%ext.displayName%",
   "description": "%ext.description%",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/moshfeu/vscode-compare-folders"
@@ -25,7 +25,7 @@
     "url": "https://twitter.com/moshfeu"
   },
   "engines": {
-    "vscode": "^1.71.0",
+    "vscode": "^1.73.0",
     "node": ">=20.0.0"
   },
   "categories": [
@@ -39,7 +39,7 @@
   "contributes": {
     "icons": {
       "comparefolders-icon": {
-        "description": "%ext.description.1%",
+        "description": "%ext.icon.description%",
         "default": {
           "fontPath": "resources/fonts/comparefolders.woff",
           "fontCharacter": "\\e900"
@@ -48,75 +48,75 @@
     },
     "configuration": {
       "type": "object",
-      "title": "%ext.title.2%",
+      "title": "%ext.configuration.title%",
       "properties": {
         "compareFolders.folderLeft": {
           "type": "string",
-          "description": "%ext.description.3%",
+          "description": "%ext.config.folderLeft.description%",
           "default": "",
           "scope": "resource"
         },
         "compareFolders.folderRight": {
           "type": "string",
-          "description": "%ext.description.4%",
+          "description": "%ext.config.folderRight.description%",
           "default": "",
           "scope": "resource"
         },
         "compareFolders.compareContent": {
           "type": "boolean",
           "default": true,
-          "description": "%ext.description.5%",
+          "description": "%ext.config.compareContent.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreLineEnding": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.description.6%",
+          "description": "%ext.config.ignoreLineEnding.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreWhiteSpaces": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.description.7%",
+          "description": "%ext.config.ignoreWhiteSpaces.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreAllWhiteSpaces": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.description.8%",
+          "description": "%ext.config.ignoreAllWhiteSpaces.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreEmptyLines": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.description.9%",
+          "description": "%ext.config.ignoreEmptyLines.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreFileNameCase": {
           "type": "boolean",
           "default": true,
-          "description": "%ext.description.10%",
+          "description": "%ext.config.ignoreFileNameCase.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreExtension": {
           "type": "array",
           "default": [],
-          "description": "%ext.description.11%",
+          "description": "%ext.config.ignoreExtension.description%",
           "scope": "resource"
         },
         "compareFolders.includeFilter": {
           "type": "array",
-          "description": "%ext.description.12%",
+          "description": "%ext.config.includeFilter.description%",
           "scope": "resource"
         },
         "compareFolders.excludeFilter": {
           "type": "array",
-          "description": "%ext.description.13%",
+          "description": "%ext.config.excludeFilter.description%",
           "scope": "resource"
         },
         "compareFolders.respectGitIgnore": {
           "type": "boolean",
-          "description": "%ext.description.14%",
+          "description": "%ext.config.respectGitIgnore.description%",
           "scope": "resource"
         },
         "compareFolders.diffViewTitle": {
@@ -128,11 +128,11 @@
             "full path"
           ],
           "enumDescriptions": [
-            "%ext.enumDescriptions.15%",
-            "%ext.enumDescriptions.16%",
-            "%ext.enumDescriptions.17%"
+            "%ext.config.diffViewTitle.enum.nameOnly%",
+            "%ext.config.diffViewTitle.enum.comparedPath%",
+            "%ext.config.diffViewTitle.enum.fullPath%"
           ],
-          "markdownDescription": "%ext.markdownDescription.18%",
+          "markdownDescription": "%ext.config.diffViewTitle.description%",
           "scope": "window"
         },
         "compareFolders.diffLayout": {
@@ -143,10 +143,10 @@
             "compared <> local"
           ],
           "enumDescriptions": [
-            "%ext.enumDescriptions.19%",
-            "%ext.enumDescriptions.20%"
+            "%ext.config.diffLayout.enum.localCompared%",
+            "%ext.config.diffLayout.enum.comparedLocal%"
           ],
-          "markdownDescription": "%ext.markdownDescription.21%",
+          "markdownDescription": "%ext.config.diffLayout.description%",
           "scope": "window"
         },
         "compareFolders.defaultDiffViewMode": {
@@ -157,39 +157,39 @@
             "list"
           ],
           "enumDescriptions": [
-            "%ext.enumDescriptions.22%",
-            "%ext.enumDescriptions.23%"
+            "%ext.config.defaultDiffViewMode.enum.tree%",
+            "%ext.config.defaultDiffViewMode.enum.list%"
           ],
           "scope": "window"
         },
         "compareFolders.showIdentical": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.description.24%",
+          "description": "%ext.config.showIdentical.description%",
           "scope": "resource"
         },
         "compareFolders.showFileCount": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.description.25%",
+          "description": "%ext.config.showFileCount.description%",
           "scope": "window"
         },
         "compareFolders.useDiffMerge": {
           "type": "boolean",
           "default": false,
-          "description": "%ext.description.26%",
+          "description": "%ext.config.useDiffMerge.description%",
           "scope": "window"
         },
         "compareFolders.warnBeforeDelete": {
           "type": "boolean",
           "default": "true",
-          "description": "%ext.description.27%",
+          "description": "%ext.config.warnBeforeDelete.description%",
           "scope": "resource"
         },
         "compareFolders.warnBeforeTake": {
           "type": "boolean",
           "default": true,
-          "description": "%ext.description.28%",
+          "description": "%ext.config.warnBeforeTake.description%",
           "scope": "resource"
         },
         "compareFolders.ignoreStrings": {
@@ -198,43 +198,43 @@
           "items": {
             "type": "string"
           },
-          "description": "%ext.description.29%",
+          "description": "%ext.config.ignoreStrings.description%",
           "scope": "resource"
         },
         "compareFolders.fileParsingRules": {
           "type": "array",
           "default": [],
-          "description": "%ext.description.30%",
+          "description": "%ext.config.fileParsingRules.description%",
           "items": {
             "type": "object",
             "properties": {
               "pattern": {
                 "type": "string",
-                "description": "%ext.description.31%"
+                "description": "%ext.config.fileParsingRules.pattern.description%"
               },
               "command": {
                 "type": "string",
-                "description": "%ext.description.32%"
+                "description": "%ext.config.fileParsingRules.command.description%"
               },
               "args": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 },
-                "description": "%ext.description.33%"
+                "description": "%ext.config.fileParsingRules.args.description%"
               },
               "workingDirectory": {
                 "type": "string",
-                "description": "%ext.description.34%"
+                "description": "%ext.config.fileParsingRules.workingDirectory.description%"
               },
               "timeout": {
                 "type": "number",
                 "default": 30000,
-                "description": "%ext.description.35%"
+                "description": "%ext.config.fileParsingRules.timeout.description%"
               },
               "env": {
                 "type": "object",
-                "description": "%ext.description.36%",
+                "description": "%ext.config.fileParsingRules.env.description%",
                 "additionalProperties": {
                   "type": "string"
                 }
@@ -379,107 +379,107 @@
     },
     "commands": [
       {
-        "title": "%ext.title.37%",
+        "title": "%ext.command.pickFromRecent.title%",
         "command": "foldersCompare.pickFromRecentCompares",
         "icon": "$(history)",
-        "category": "%ext.category.38%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.39%",
+        "title": "%ext.command.clearRecent.title%",
         "command": "foldersCompare.clearRecentCompares",
-        "category": "%ext.category.40%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.41%",
+        "title": "%ext.command.copyToCompared.title%",
         "command": "foldersCompare.copyToCompared",
         "icon": "$(files)"
       },
       {
-        "title": "%ext.title.42%",
+        "title": "%ext.command.copyToMy.title%",
         "command": "foldersCompare.copyToMy",
         "icon": "$(files)"
       },
       {
-        "title": "%ext.title.43%",
+        "title": "%ext.command.deleteFile.title%",
         "command": "foldersCompare.deleteFile",
         "icon": "$(trash)"
       },
       {
-        "title": "%ext.title.44%",
+        "title": "%ext.command.dismissDifference.title%",
         "command": "foldersCompare.dismissDifference",
         "icon": "$(close)"
       },
       {
-        "title": "%ext.title.45%",
+        "title": "%ext.command.excludeFromComparison.title%",
         "command": "foldersCompare.excludeFromComparison",
         "icon": "$(exclude)"
       },
       {
-        "title": "%ext.title.46%",
+        "title": "%ext.command.viewParsedDiff.title%",
         "command": "foldersCompare.viewParsedDiff",
         "icon": "$(code)",
-        "category": "%ext.category.47%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.48%",
+        "title": "%ext.command.takeMyFile.title%",
         "command": "foldersCompare.takeMyFile",
         "icon": "$(debug-step-over)"
       },
       {
-        "title": "%ext.title.49%",
+        "title": "%ext.command.takeComparedFile.title%",
         "command": "foldersCompare.takeComparedFile",
         "icon": "$(debug-step-back)"
       },
       {
-        "title": "%ext.title.50%",
+        "title": "%ext.command.chooseFolders.title%",
         "command": "foldersCompare.chooseFoldersAndCompare",
-        "category": "%ext.category.51%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.52%",
+        "title": "%ext.command.compareAgainstWorkspace.title%",
         "command": "foldersCompare.compareFoldersAgainstWorkspace",
-        "category": "%ext.category.53%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.54%",
+        "title": "%ext.command.choose2Folders.title%",
         "command": "foldersCompare.compareFoldersAgainstEachOther",
-        "category": "%ext.category.55%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.56%",
+        "title": "%ext.command.refresh.title%",
         "command": "foldersCompare.refresh",
         "icon": "$(refresh)",
-        "category": "%ext.category.57%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.58%",
+        "title": "%ext.command.swapSides.title%",
         "command": "foldersCompare.swap",
         "icon": "$(arrow-swap)",
-        "category": "%ext.category.59%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.60%",
+        "title": "%ext.command.viewAsList.title%",
         "command": "foldersCompare.viewAsList",
         "icon": "$(list-selection)",
-        "category": "%ext.category.61%"
+        "category": "%ext.command.category%"
       },
       {
-        "title": "%ext.title.62%",
+        "title": "%ext.command.viewAsTree.title%",
         "command": "foldersCompare.viewAsTree",
         "icon": "$(list-tree)",
-        "category": "%ext.category.63%"
+        "category": "%ext.command.category%"
       },
       {
         "command": "foldersCompare.compareSelectedFolders",
-        "title": "%ext.title.64%",
-        "category": "%ext.category.65%"
+        "title": "%ext.command.compareSelected.title%",
+        "category": "%ext.command.category%"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "foldersCompare",
-          "title": "%ext.title.66%",
+          "title": "%ext.viewContainer.title%",
           "icon": "$(comparefolders-icon)"
         }
       ]
@@ -488,19 +488,19 @@
       "foldersCompare": [
         {
           "id": "foldersCompareAppService",
-          "name": "%ext.name.67%"
+          "name": "%ext.view.differences.name%"
         },
         {
           "id": "foldersCompareAppServiceOnlyA",
-          "name": "%ext.name.68%"
+          "name": "%ext.view.onlyInMy.name%"
         },
         {
           "id": "foldersCompareAppServiceOnlyB",
-          "name": "%ext.name.69%"
+          "name": "%ext.view.onlyInCompared.name%"
         },
         {
           "id": "foldersCompareAppServiceIdenticals",
-          "name": "%ext.name.70%",
+          "name": "%ext.view.identicals.name%",
           "when": "config.compareFolders.showIdentical"
         }
       ]
@@ -512,6 +512,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
+    "l10n:extract": "npx @vscode/l10n-dev export --outDir ./l10n ./src/**/*.ts",
+    "l10n:validate": "node scripts/validate-l10n.js",
     "deploy": "npx vsce publish -p",
     "deploy:insider": "node scripts/deploy-insider.js",
     "deploy:openvsx": "sh scripts/deploy-openvsx.sh",
@@ -525,7 +527,8 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.0.0",
     "@types/sinon": "^10.0.13",
-    "@types/vscode": "^1.38.0",
+    "@types/vscode": "^1.110.0",
+    "@vscode/l10n-dev": "^0.0.35",
     "@vscode/test-electron": "^2.3.8",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",

@@ -7,12 +7,12 @@ import { log } from './logger';
 export async function pickFromRecents() {
   const paths = globalState.getPaths();
   if (!paths?.length) {
-    showInfoMessageWithTimeout(l10n.t('history.empty'));
+    showInfoMessageWithTimeout(l10n.t('History is empty'));
     return;
   }
 
   const chosen = await window.showQuickPick(Array.from(paths), {
-    placeHolder: l10n.t('history.placeholder'),
+    placeHolder: l10n.t('Pick from history'),
   });
 
   if (!chosen) {
