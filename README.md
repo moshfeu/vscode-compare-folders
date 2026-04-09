@@ -179,6 +179,15 @@ COMPARE_FOLDERS=DIFF code path/to/folder1 path/to/folder2
   </tr>
 </table>
 
+## Localization
+
+Compare Folders is available in the following languages:
+
+- **English** - Default
+- **한국어 (Korean)** - Thanks to [@justcontributor](https://github.com/justcontributor)
+
+Want to help translate this extension into your language? See the [Localization Guide](LOCALIZATION.md) for instructions.
+
 ## Like the extension?
 
 Show your love

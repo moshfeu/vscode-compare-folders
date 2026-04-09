@@ -39,7 +39,7 @@ async function showDiffView(uri1: Uri, uri2: Uri, title: string): Promise<void> 
       commands.executeCommand('diffMerge.compareSelected', uri1, [uri1, uri2]);
     } else {
       window.showErrorMessage(
-        l10n.t('comparer.installDiffMerge')
+        l10n.t('In order to use "Diff & Merge" extension you should install / enable it')
       );
     }
     return;
@@ -194,7 +194,7 @@ export async function compareFolders(): Promise<CompareResult> {
     );
   } catch (error) {
     log('error while comparing', error);
-    showErrorMessage(l10n.t('comparer.errorComparing'), error);
+    showErrorMessage(l10n.t('Oops, something went wrong while comparing'), error);
     return emptyResponse();
   }
 }
