@@ -165,10 +165,10 @@ function showExtractedStrings() {
 function checkHardcodedStrings() {
   console.log('🔎 Checking for hardcoded user-facing strings...\n');
   
-  const glob = require('child_process').execSync(
-    'find ./src -name "*.ts" -not -path "*/test/*"',
-    { encoding: 'utf8' }
-  ).trim().split('\n').filter(Boolean);
+  const glob = require('glob');
+  const files = glob.sync('./src/**/*.ts', {
+    ignore: ['**/test/**', '**/**.test.ts']
+  });
   
   const suspiciousPatterns = [
     // UI message functions with string literals (not using l10n.t)
@@ -182,7 +182,7 @@ function checkHardcodedStrings() {
   
   const issues = [];
   
-  glob.forEach(file => {
+  files.forEach(file => {
     const content = fs.readFileSync(file, 'utf8');
     const lines = content.split('\n');
     

@@ -366,12 +366,6 @@ export class CompareFoldersProvider extends BaseViewProvider {
   }
 }
 
-console.log(
-  l10n.bundle,
-  l10n.uri,
-  l10n.t('Click to select folders'),
-)
-
 const openFolderChild = (isSingle: boolean) =>
   new File({
     label: isSingle ? l10n.t('Click to select a folder') : l10n.t('Click to select folders'),
