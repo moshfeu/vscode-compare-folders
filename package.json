@@ -512,6 +512,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile",
     "test": "node ./out/test/runTest.js",
+    "vscode": "node scripts/run-vscode.js",
     "l10n:extract": "npx @vscode/l10n-dev export --outDir ./l10n ./src/**/*.ts",
     "l10n:validate": "node scripts/validate-l10n.js",
     "deploy": "npx vsce publish -p",
