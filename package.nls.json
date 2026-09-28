@@ -55,6 +55,7 @@
   "ext.command.viewAsList.title": "View as List",
   "ext.command.viewAsTree.title": "View as Tree",
   "ext.command.compareSelected.title": "[Compare Folders] Compare selected folders",
+  "ext.command.compareWithSelected.title": "Compare with Selected File",
   "ext.command.category": "CompareFolders",
   "ext.viewContainer.title": "Compare Folders",
   "ext.view.differences.name": "Differences",

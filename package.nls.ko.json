@@ -55,6 +55,7 @@
   "ext.command.viewAsList.title": "목록으로 보기",
   "ext.command.viewAsTree.title": "트리로 보기",
   "ext.command.compareSelected.title": "[폴더 비교] 선택한 폴더 비교",
+  "ext.command.compareWithSelected.title": "선택한 파일과 비교",
   "ext.command.category": "폴더 비교",
   "ext.viewContainer.title": "폴더 비교",
   "ext.view.differences.name": "차이점",

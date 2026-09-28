@@ -14,12 +14,19 @@ export class MockTreeView implements TreeView<File> {
   message: string | undefined = undefined;
   title: string | undefined = undefined;
   badge: ViewBadge | undefined = undefined;
-  readonly selection: readonly File[] = [];
+  selection: readonly File[] = [];
   readonly visible = false;
+  readonly selectionEmitter = new EventEmitter<TreeViewSelectionChangeEvent<File>>();
   readonly onDidExpandElement: Event<TreeViewExpansionEvent<File>> = new EventEmitter<TreeViewExpansionEvent<File>>().event;
   readonly onDidCollapseElement: Event<TreeViewExpansionEvent<File>> = new EventEmitter<TreeViewExpansionEvent<File>>().event;
-  readonly onDidChangeSelection: Event<TreeViewSelectionChangeEvent<File>> = new EventEmitter<TreeViewSelectionChangeEvent<File>>().event;
+  readonly onDidChangeSelection: Event<TreeViewSelectionChangeEvent<File>> = this.selectionEmitter.event;
   readonly onDidChangeVisibility: Event<TreeViewVisibilityChangeEvent> = new EventEmitter<TreeViewVisibilityChangeEvent>().event;
+
+  fireSelectionChange(selectedItems: File[]): void {
+    this.selection = selectedItems;
+    this.selectionEmitter.fire({ selection: selectedItems });
+  }
+
   reveal(): Thenable<void> {
     return Promise.resolve();
   }

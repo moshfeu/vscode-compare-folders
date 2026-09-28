@@ -9,18 +9,24 @@ import type { DiffPaths, DiffPathss, ViewOnlyPaths } from '../types';
 import { log } from './logger';
 import { hasParsableContent } from './fileParser';
 
+
 export type TreeNode = {
   path: string;
   relativePath: string;
   [key: string]: TreeNode | [[string, string], string] | string;
 };
 
-export function build(paths: DiffPathss | ViewOnlyPaths, basePath: string) {
+export type BuildTreeResult = {
+  tree: TreeNode | Record<string, never>;
+  treeItems: File[];
+};
+
+export function build(paths: DiffPathss | ViewOnlyPaths, basePath: string): BuildTreeResult {
   if (uiContext.diffViewMode === 'list') {
     return {
       tree: {},
       treeItems: createList(paths, basePath),
-    }
+    };
   }
 
   const tree = {} as TreeNode;

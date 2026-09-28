@@ -1,7 +1,7 @@
 import { commands } from 'vscode';
-import { HAS_FOLDERS, type FILES_VIEW_MODE } from '../constants/contextKeys';
+import { HAS_FOLDERS, HAS_SELECTED_FILE, type FILES_VIEW_MODE } from '../constants/contextKeys';
 
-type ContextKey = typeof HAS_FOLDERS | typeof FILES_VIEW_MODE;
+type ContextKey = typeof HAS_FOLDERS | typeof FILES_VIEW_MODE | typeof HAS_SELECTED_FILE;
 
 export const setContext = (key: ContextKey, value: string | boolean): void => {
   commands.executeCommand('setContext', key, value);

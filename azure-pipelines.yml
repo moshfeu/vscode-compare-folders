@@ -20,7 +20,7 @@ steps:
 
 - task: NodeTool@0
   inputs:
-    versionSpec: '20.x'
+    versionSpec: '24.x'
   displayName: 'Install Node.js'
 
 - bash: |
@@ -31,10 +31,6 @@ steps:
 
 - bash: |
     echo ">>> Compile vscode-test"
-    yarn && yarn compile
-    echo ">>> Compiled vscode-test"
-    cd sample
-    echo ">>> Run sample integration test"
     yarn && yarn compile && yarn test
   displayName: Run Tests
   env:

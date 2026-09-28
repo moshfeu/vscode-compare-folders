@@ -36,6 +36,7 @@ import { showErrorMessage, showErrorMessageWithMoreInfo, showInfoMessageWithTime
 import { showUnaccessibleWarning } from '../services/validators';
 import { uiContext, type DiffViewMode } from '../context/ui';
 import { BaseViewProvider } from './baseViewProvider';
+import { selectionContext } from '../context/selection';
 
 export class CompareFoldersProvider extends BaseViewProvider {
   private emptyState: boolean = false;
@@ -132,6 +133,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
 
   async handleDiffResult(diffs?: CompareResult) {
     this.ignoreDifferencesList.clear();
+    selectionContext.clear();
     if (!diffs) {
       return;
     }
@@ -189,6 +191,65 @@ export class CompareFoldersProvider extends BaseViewProvider {
     await showDiffs(diffs, relativePath, allowParsedDiff);
   }
 
+  private getFilePath(file: File): string | undefined {
+    if (file.resourceUri?.fsPath) {
+      return file.resourceUri.fsPath;
+    }
+    const args = file.command?.arguments?.[0];
+    if (Array.isArray(args)) {
+      return args[0] || args[1];
+    }
+    return undefined;
+  }
+
+  compareWithSelected = async (targetFile?: File) => {
+    try {
+      const selectedFile = selectionContext.getSelectedFile(targetFile);
+      if (!selectedFile || !targetFile) {
+        return;
+      }
+
+      const selectedPath = this.getFilePath(selectedFile);
+      const targetPath = this.getFilePath(targetFile);
+
+      if (!selectedPath || !targetPath || selectedPath === targetPath) {
+        return;
+      }
+
+      const [folder1Path, folder2Path] = pathContext.getPaths();
+
+      let leftPath = selectedPath;
+      let rightPath = targetPath;
+
+      if (folder1Path && folder2Path) {
+        const selectedIn1 = selectedPath.startsWith(folder1Path);
+        const targetIn2 = targetPath.startsWith(folder2Path);
+        const selectedIn2 = selectedPath.startsWith(folder2Path);
+        const targetIn1 = targetPath.startsWith(folder1Path);
+
+        if ((selectedIn2 || targetIn1) && (!selectedIn1 && !targetIn2)) {
+          leftPath = targetPath;
+          rightPath = selectedPath;
+        }
+      }
+
+      const relPathLeft = folder1Path && leftPath.startsWith(folder1Path)
+        ? path.relative(folder1Path, leftPath)
+        : path.basename(leftPath);
+
+      const relPathRight = folder2Path && rightPath.startsWith(folder2Path)
+        ? path.relative(folder2Path, rightPath)
+        : path.basename(rightPath);
+
+      const relativePath = `${relPathLeft} ↔ ${relPathRight}`;
+
+      await this.openDiff([leftPath, rightPath], relativePath, false);
+    } catch (error) {
+      console.error(error);
+      showErrorMessage(l10n.t('Failed to compare selected files: {0}', error instanceof Error ? error.message : 'unknown error'), error);
+    }
+  };
+
   onFileClicked = async ([path1, path2]: [string, string], relativePath: string) => {
     try {
       if (path2) {
@@ -243,6 +304,7 @@ export class CompareFoldersProvider extends BaseViewProvider {
   }
 
   refresh = async (resetIgnoredFiles = true, shouldShowInfoMessage = true, shouldCompareFolders = true) => {
+    selectionContext.clear();
     if (resetIgnoredFiles) {
       this.ignoreDifferencesList.clear();
     }

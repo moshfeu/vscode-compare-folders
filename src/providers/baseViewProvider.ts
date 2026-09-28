@@ -7,11 +7,11 @@ export abstract class BaseViewProvider implements TreeDataProvider<File> {
   readonly onDidChangeTreeData: Event<any | undefined> = this._onDidChangeTreeData.event;
   protected treeView?: TreeView<File>;
 
-  setTreeView(treeView: TreeView<File>) {
+  setTreeView(treeView: TreeView<File>): void {
     this.treeView = treeView;
   }
 
-  updateCount(count: number) {
+  updateCount(count: number): void {
     if (this.treeView) {
       this.treeView.description = getConfiguration('showFileCount') ? `(${count})` : undefined;
     }

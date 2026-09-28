@@ -1,14 +1,20 @@
-import { window, TreeView, Disposable, TreeDataProvider } from 'vscode';
+import { window, TreeView, Disposable } from 'vscode';
+import { File } from '../models/file';
+import { BaseViewProvider } from '../providers/baseViewProvider';
+import { treeViewSelectionManager } from '../services/treeViewSelectionManager';
 
-interface TreeDataProviderWithView<T> extends TreeDataProvider<T> {
-  setTreeView(treeView: TreeView<T>): void;
-}
-
-export function createTreeViewWithProvider<T>(
+export function createTreeViewWithProvider(
   viewId: string,
-  provider: TreeDataProviderWithView<T>
+  provider: BaseViewProvider
 ): Disposable {
-  const treeView = window.createTreeView(viewId, { treeDataProvider: provider }) as TreeView<T>;
+  const treeView = window.createTreeView(viewId, { treeDataProvider: provider }) as TreeView<File>;
   provider.setTreeView(treeView);
-  return treeView;
+  const selectionDisposable = treeViewSelectionManager.register(viewId, treeView);
+
+  return {
+    dispose: (): void => {
+      selectionDisposable.dispose();
+      treeView.dispose();
+    },
+  };
 }

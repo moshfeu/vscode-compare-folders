@@ -12,6 +12,7 @@
   "Failed to update excludeFilter: {0}": "excludeFilter 업데이트 실패: {0}",
   "Compare folders...": "폴더 비교 중...",
   "Choose a workspace to compare with": "비교할 작업 영역을 선택하세요",
+  "Failed to compare selected files: {0}": "선택한 파일 비교 실패: {0}",
   "Failed to open diff: {0}": "Diff 열기 실패: {0}",
   "Failed to view parsed diff: {0}": "해석된 Diff 보기 실패: {0}",
   "[Compare Folders] There are no differences in any file at the same path.": "[폴더 비교] 동일한 경로의 파일 간에 차이점이 없습니다.",

@@ -295,6 +295,10 @@
         {
           "command": "foldersCompare.excludeFromComparison",
           "when": "false"
+        },
+        {
+          "command": "foldersCompare.compareWithSelected",
+          "when": "false"
         }
       ],
       "view/title": [
@@ -374,6 +378,11 @@
         {
           "command": "foldersCompare.excludeFromComparison",
           "when": "view =~ /^foldersCompareAppService/ && (viewItem == file || viewItem == file-parsable || viewItem == folder)"
+        },
+        {
+          "command": "foldersCompare.compareWithSelected",
+          "when": "view =~ /^foldersCompareAppService/ && (viewItem == file || viewItem == file-parsable) && foldersCompareContext.hasSelectedFile",
+          "group": "inline@1"
         }
       ]
     },
@@ -413,6 +422,11 @@
         "title": "%ext.command.excludeFromComparison.title%",
         "command": "foldersCompare.excludeFromComparison",
         "icon": "$(exclude)"
+      },
+      {
+        "title": "%ext.command.compareWithSelected.title%",
+        "command": "foldersCompare.compareWithSelected",
+        "icon": "$(diff)"
       },
       {
         "title": "%ext.command.viewParsedDiff.title%",
@@ -529,7 +543,7 @@
     "@types/sinon": "^10.0.13",
     "@types/vscode": "1.73.1",
     "@vscode/l10n-dev": "^0.0.35",
-    "@vscode/test-electron": "^2.3.8",
+    "@vscode/test-electron": "^3.1.0",
     "dotenv": "^8.2.0",
     "glob": "^7.1.4",
     "mocha": "^10.2.0",

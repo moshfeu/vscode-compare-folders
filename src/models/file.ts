@@ -37,7 +37,7 @@ export class File extends TreeItem {
     } : undefined;
   }
 
-  get hasIcon() {
+  get hasIcon(): boolean {
     return ['open', 'empty', 'root'].includes(this.type);
   }
 }

@@ -8,7 +8,7 @@ import type { DiffPathss } from '../../types';
 import { uiContext } from '../../context/ui';
 
 suite('Tree Builder', () => {
-	test('Generate tree with one file', () => {
+  test('Generate tree with one file', () => {
     const paths: DiffPathss = [['/base/path/to/rootFolder/index.html', '/base/path/to/rootFolder1/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
@@ -23,7 +23,7 @@ suite('Tree Builder', () => {
     );
   });
 
-	test('Generate tree with deep hierarchy', () => {
+  test('Generate tree with deep hierarchy', () => {
     const paths: DiffPathss = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
@@ -46,7 +46,7 @@ suite('Tree Builder', () => {
     );
   });
 
-	test('Generte list of TreeView\'s', () => {
+  test('Generte list of TreeView\'s', () => {
     const paths: DiffPathss = [['/base/path/to/rootFolder/folder1/folder2/index.html', '/base/path/to/rootFolder1/folder1/folder2/index.html']];
     const basePath = '/base/path/to/rootFolder';
 
@@ -89,13 +89,13 @@ suite('Tree Builder', () => {
     );
   });
 
-	test('Generte diffs as list', () => {
+  test('Generte diffs as list', () => {
     const paths: DiffPathss = [['/base/path/to/rootFolder/folder1/subfolder/index.html', '/base/path/to/rootFolder/folder2/subfolder/index.html']];
     const [path1, path2] = paths[0];
     const basePath = '/base/path/to/rootFolder';
 
     uiContext.diffViewMode = 'list';
-    const {tree, treeItems} = build(paths, basePath);
+    const { tree, treeItems } = build(paths, basePath);
 
     assert.deepStrictEqual(tree, {});
     assert.deepStrictEqual<File[]>(
@@ -118,3 +118,4 @@ suite('Tree Builder', () => {
     );
   });
 });
+
